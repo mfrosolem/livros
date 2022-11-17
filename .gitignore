@@ -1,0 +1,11 @@
+.metadata
+livros-api/.settings
+livros-api/target
+livros-api/.classpath
+livros-api/.factorypath
+livros-api/.project
+livros-api/HELP.md
+livros-api/.mvn
+livros-api/mvnw
+livros-api/mvnw.cmd
+livros-api/.gitignore
