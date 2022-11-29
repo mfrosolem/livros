@@ -1,0 +1,38 @@
+<div class="container-fluid">
+
+  <form autocomplete="off" [formGroup]="form">
+    <div class="row">
+      <div>
+        <h1 class="mt-2">{{ editando ? 'Edição de' : 'Novo' }} Gênero</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Descrição:</label>
+          <input type="text" class="form-control" formControlName="descricao">
+
+
+
+          <!-- <input type="text" class="form-control" name="descricao" [(ngModel)]="genero.descricao" #descricao="ngModel"
+            required="true"  [class.is-invalid]="descricao.invalid && descricao.touched">
+
+            <div class="invalid-feedback" *ngIf="descricao.invalid && descricao.touched">
+              Informe a descrição
+            </div> -->
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 py-2">
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="onSubmit()">Salvar</button>
+        <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+      </div>
+    </div>
+
+  </form>
+
+</div>

@@ -9,3 +9,7 @@ livros-api/.mvn
 livros-api/mvnw
 livros-api/mvnw.cmd
 livros-api/.gitignore
+livros-ui/.angular
+livros-ui/.vscode
+livros-ui/node_modules
+livros-ui/.browserslistrc

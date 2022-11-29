@@ -1,0 +1,132 @@
+<div class="container-fluid">
+  <form [formGroup]="form" autocomplete="off">
+
+    <div class="row">
+      <div>
+        <h1 class="mt-2">{{ editando ? 'Edição de' : 'Novo' }} Autor</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Nome:</label>
+          <input type="text" class="form-control" name="nome" formControlName="nome">
+
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Sobrenome:</label>
+          <input type="text" class="form-control" name="sobrenome" formControlName="sobrenome">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Nome conhecido:</label>
+          <input type="text" class="form-control" name="nomeConhecido" formControlName="nomeConhecido">
+        </div>
+      </div>
+
+      <div class="col-md-2">
+        <div class="form-group">
+          <label>Gênero:</label>
+          <select class="form-select" name="sexo" formControlName="sexo">
+            <option value="F">Feminino</option>
+            <option value="M" selected>Masculino</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-md-2">
+        <div class="form-group">
+          <label>Data nascimento:</label>
+          <input type="date" class="form-control" name="dataNascimento" formControlName="dataNascimento">
+        </div>
+      </div>
+
+      <div class="col-md-2">
+        <div class="form-group">
+          <label>Data falecimento:</label>
+          <input type="date" class="form-control" name="dataFalecimento" formControlName="dataFalecimento">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>País nascimento:</label>
+          <input type="text" class="form-control" name="paisNascimento" formControlName="paisNascimento">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Estado nascimento:</label>
+          <input type="text" class="form-control" name="estadoNascimento" formControlName="estadoNascimento">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Cidade nascimento:</label>
+          <input type="text" class="form-control" name="cidadeNascimento" formControlName="cidadeNascimento">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Site:</label>
+          <input type="text" class="form-control" name="urlSiteOficial" formControlName="urlSiteOficial">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Facebook:</label>
+          <input type="text" class="form-control" name="urlFacebook" formControlName="urlFacebook">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Twitter:</label>
+          <input type="text" class="form-control" name="ultTwitter" formControlName="ultTwitter">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Wikipedia:</label>
+          <input type="text" class="form-control" name="urlWikipedia" formControlName="urlWikipedia">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Biografia:</label>
+          <textarea class="form-control" name="biografia" formControlName="biografia" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 py-2">
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="onSubmit()">Salvar</button>
+        <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+      </div>
+    </div>
+
+  </form>
+</div>

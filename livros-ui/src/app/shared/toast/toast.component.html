@@ -1,0 +1,18 @@
+<div #toastElement class="toast fade toast-width mt-2" [ngClass]="type" role="alert" aria-live="assertive"
+  aria-atomic="true">
+  <div *ngIf="title; else elseBlock">
+    <div class="toast-header">
+      <strong class="me-auto">{{ title }}</strong>
+      <button type="button" class="btn-close" aria-label="Close" (click)="hide()"></button>
+    </div>
+    <div class="toast-body">{{ message }}</div>
+  </div>
+  <ng-template #elseBlock>
+    <div class="d-flex">
+      <div class="toast-body">
+        {{ message }}
+      </div>
+      <button type="button" class="btn-close me-2 m-auto" aria-label="Close" (click)="hide()"></button>
+    </div>
+  </ng-template>
+</div>
