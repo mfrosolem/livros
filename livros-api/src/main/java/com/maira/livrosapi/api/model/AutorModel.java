@@ -1,6 +1,6 @@
 package com.maira.livrosapi.api.model;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,9 +19,9 @@ public class AutorModel {
 
 	private String sexo;
 
-	private OffsetDateTime dataNascimento;
+	private LocalDate dataNascimento;
 
-	private OffsetDateTime dataFalecimento;
+	private LocalDate dataFalecimento;
 
 	private String paisNascimento;
 

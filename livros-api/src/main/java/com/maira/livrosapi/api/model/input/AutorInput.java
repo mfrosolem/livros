@@ -1,11 +1,8 @@
 package com.maira.livrosapi.api.model.input;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,11 +21,9 @@ public class AutorInput {
 
 	private String sexo;
 
-	@DateTimeFormat(iso = ISO.DATE_TIME)
-	private OffsetDateTime dataNascimento;
+	private LocalDate dataNascimento;
 
-	@DateTimeFormat(iso = ISO.DATE_TIME)
-	private OffsetDateTime dataFalecimento;
+	private LocalDate dataFalecimento;
 
 	private String paisNascimento;
 

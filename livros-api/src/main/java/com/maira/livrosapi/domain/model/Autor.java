@@ -1,6 +1,6 @@
 package com.maira.livrosapi.domain.model;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,10 +35,10 @@ public class Autor {
 	private String sexo;
 
 	@Column(columnDefinition = "datetime")
-	private OffsetDateTime dataNascimento;
+	private LocalDate dataNascimento;
 
 	@Column(columnDefinition = "datetime")
-	private OffsetDateTime dataFalecimento;
+	private LocalDate dataFalecimento;
 
 	private String paisNascimento;
 
