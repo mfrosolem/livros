@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ import com.maira.livrosapi.domain.service.GeneroService;
 
 @RestController
 @RequestMapping(value = "/generos")
+@CrossOrigin("http://localhost:4200")
 public class GeneroController {
 
 	@Autowired
@@ -57,7 +59,7 @@ public class GeneroController {
 	}
 
 	@GetMapping(value = "/{generoId}")
-	public GeneroModel buscar(@RequestParam Long generoId) {
+	public GeneroModel buscar(@PathVariable Long generoId) {
 		Genero genero = cadastroGenero.buscarOuFalhar(generoId);
 		return generoModelAssembler.toModel(genero);
 	}
