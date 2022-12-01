@@ -48,7 +48,7 @@ public class AutorController {
 
 	@GetMapping
 	public Page<AutorModel> listar(@RequestParam(required = false, defaultValue = "") String nome, Pageable pageable) {
-		Page<Autor> autoresPage = autorRepository.findAll(pageable);
+		Page<Autor> autoresPage = autorRepository.findByNomeContaining(nome, pageable);
 		List<AutorModel> autoresModel = autorModelAssembler.toCollectionModel(autoresPage.getContent());
 		Page<AutorModel> autoresModelPage = new PageImpl<>(autoresModel, pageable, autoresPage.getTotalElements());
 		return autoresModelPage;
