@@ -4,7 +4,7 @@ create table livro (
 	titulo varchar(50) not null,
 	subtitulo varchar(50),
 	idioma varchar(15) not null,
-	serieColecao varchar(20),
+	serie_colecao varchar(20),
 	volume bigint,
 	tradutor varchar(60),
 	editora_id bigint not null,
