@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
+import { IAutor } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { AutorFilter, AutorService } from './../autor.service';
@@ -15,14 +17,17 @@ import { AutorFilter, AutorService } from './../autor.service';
 })
 export class AutoresPesquisaComponent implements OnInit {
 
-  autores: any[] = [];
-  filterAutor = new AutorFilter();
+  autores: IAutor[] = [];
+  form: FormGroup = this.formBuilder.group({
+    nome: []
+  });
 
   currentPage = 0;
   totalRegistros = 0;
   totalPages = 0;
 
   constructor(
+    private formBuilder: FormBuilder,
     private autorService: AutorService,
     private errorHandlerService: ErrorHandlerService,
     private toastService: ToastService,
@@ -41,13 +46,13 @@ export class AutoresPesquisaComponent implements OnInit {
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
-  onEdit(autor: any) {
+  onEdit(autor: IAutor) {
     this.router.navigate(['edit', autor.id], { relativeTo: this.route });
   }
 
   onSearch(page: number = 0) {
-    this.filterAutor.pagina = page;
-    this.autorService.findByFilter(this.filterAutor)
+    const filterAutor = new AutorFilter(page, 5, this.form.value.nome);
+    this.autorService.findByFilter(filterAutor)
       .subscribe({
         next: (dados) => {
           this.autores = dados.autores;
@@ -64,7 +69,7 @@ export class AutoresPesquisaComponent implements OnInit {
     this.onSearch(this.currentPage - 1);
   }
 
-  confirmDelete(autor: any) {
+  confirmDelete(autor: IAutor) {
     const resultado =
       this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${autor.nome} ${autor.sobrenome}`);
     resultado.then(res => {

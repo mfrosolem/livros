@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -19,14 +19,14 @@ import { GeneroService } from './../genero.service';
 })
 export class GeneroCadastroComponent implements OnInit {
 
-  form = this.formBuilder.group({
-    id: [0],
-    descricao: ['', [Validators.required, Validators.maxLength(60)]],
+  form: FormGroup = this.formBuilder.group({
+    id: [],
+    descricao: [null, [Validators.required, Validators.maxLength(60)]],
   });
 
 
   constructor(
-    private formBuilder: NonNullableFormBuilder,
+    private formBuilder: FormBuilder,
     private generoService: GeneroService,
     private errorHandler: ErrorHandlerService,
     private toastService: ToastService,
@@ -73,20 +73,13 @@ export class GeneroCadastroComponent implements OnInit {
     this.generoService.findById(codigo)
       .subscribe({
         next: (generoRetornado: Genero) => {
-          this.popularForm(generoRetornado);
+          this.form.patchValue(generoRetornado);
           this.atualizarTituloEdicao();
         },
         error: (falha) => {
           this.errorHandler.handle(falha);
         },
       });
-  }
-
-  private popularForm(genero: Genero) {
-    this.form.setValue({
-      id: genero.id,
-      descricao: genero.descricao
-    });
   }
 
   private atualizarTituloEdicao() {

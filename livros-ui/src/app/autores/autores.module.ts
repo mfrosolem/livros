@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AutorCadastroComponent } from './autor-cadastro/autor-cadastro.component';
@@ -18,7 +18,6 @@ import { AutoresRoutingModule } from './autores-routing.module';
     CommonModule,
     HttpClientModule,
 
-    FormsModule,
     ReactiveFormsModule,
     NgbPaginationModule,
 

@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { NgForm, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -19,17 +19,17 @@ import { EditoraService } from './../editora.service';
 export class EditoraCadastroComponent implements OnInit {
 
 
-  form = this.formBuilder.group({
-    id: [0],
-    nome: ['', [Validators.required, Validators.maxLength(60)]],
-    urlSiteOficial: ['', [Validators.maxLength(100)]],
-    urlFacebook: ['', [Validators.maxLength(100)]],
-    ultTwitter: ['', [Validators.maxLength(100)]],
-    urlWikipedia: ['', [Validators.maxLength(100)]]
+  form: FormGroup = this.formBuilder.group({
+    id: [],
+    nome: [null, [Validators.required, Validators.maxLength(60)]],
+    urlSiteOficial: [null, [Validators.maxLength(100)]],
+    urlFacebook: [null, [Validators.maxLength(100)]],
+    ultTwitter: [null, [Validators.maxLength(100)]],
+    urlWikipedia: [null, [Validators.maxLength(100)]]
   });
 
   constructor(
-    private formBuilder: NonNullableFormBuilder,
+    private formBuilder: FormBuilder,
     private editoraService: EditoraService,
     private errorHandlerService: ErrorHandlerService,
     private toastService: ToastService,
@@ -75,7 +75,7 @@ export class EditoraCadastroComponent implements OnInit {
     this.editoraService.findById(codigo)
       .subscribe({
         next: (editoraRetornada: Editora) => {
-          this.popularForm(editoraRetornada);
+          this.form.patchValue(editoraRetornada);
           this.atualizarTituloEdicao();
         },
         error: (falha) => {

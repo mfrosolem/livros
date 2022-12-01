@@ -8,6 +8,7 @@ import { AutoresModule } from './autores/autores.module';
 import { CoreModule } from './core/core.module';
 import { EditorasModule } from './editoras/editoras.module';
 import { GenerosModule } from './generos/generos.module';
+import { LivrosModule } from './livros/livros.module';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -23,7 +24,8 @@ import { SharedModule } from './shared/shared.module';
     SharedModule,
     GenerosModule,
     EditorasModule,
-    AutoresModule
+    AutoresModule,
+    LivrosModule
   ],
   providers: [],
   bootstrap: [AppComponent]

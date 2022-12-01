@@ -1,11 +1,11 @@
 <div class="container-fluid">
   <h1 class="mt-2">Gêneros Literários</h1>
-  <form autocomplete="off" #generoPesquisaForm="ngForm" (ngSubmit)="search()">
+  <form [formGroup]="form" autocomplete="off" (ngSubmit)="search()">
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
           <label>Descrição:</label>
-          <input type="text" class="form-control" name="descricao" [(ngModel)]="filterGenero.descricao">
+          <input type="text" class="form-control" name="descricao" formControlName="descricao">
         </div>
       </div>
     </div>
@@ -61,8 +61,6 @@
       <a class="btn btn-primary" role="button" (click)="onAdd()">Novo gênero</a>
     </div>
   </div>
-
-
 
 
 </div>

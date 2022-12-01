@@ -1,14 +1,20 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, take, tap, firstValueFrom } from 'rxjs';
+import { map, take } from 'rxjs';
 
 import { environment } from './../../environments/environment';
 import { Genero } from './../core/models/model';
 
 export class GeneroFilter {
   descricao?: string;
-  pagina = 0;
-  itensPorPagina = 5;
+  pagina: number;
+  itensPorPagina: number;
+
+  constructor(pagina: number, itensPorPagina: number, descricao?: string) {
+    this.pagina = pagina;
+    this.itensPorPagina = itensPorPagina;
+    this.descricao = descricao;
+  }
 }
 
 @Injectable({
@@ -26,6 +32,10 @@ export class GeneroService {
     return this.http.get<Genero[]>(this.API)
       .pipe(
         //delay(2000),
+        map((response: any) => {
+          const generos = response['content'];
+          return generos;
+        }),
         take(1)
       );
   }

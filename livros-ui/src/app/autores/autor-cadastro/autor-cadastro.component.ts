@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
@@ -17,26 +17,26 @@ import { AutorService } from './../autor.service';
 })
 export class AutorCadastroComponent implements OnInit {
 
-  form = this.formBuilder.group({
-    id: [0],
-    nome: ['', [Validators.required, Validators.maxLength(30)]],
-    sobrenome: ['', [Validators.required, Validators.maxLength(40)]],
-    nomeConhecido: ['', [Validators.maxLength(60)]],
+  form: FormGroup = this.formBuilder.group({
+    id: [],
+    nome: [null, [Validators.required, Validators.maxLength(30)]],
+    sobrenome: [null, [Validators.required, Validators.maxLength(40)]],
+    nomeConhecido: [null, [Validators.maxLength(60)]],
     sexo: ['M'],
-    dataNascimento: [new Date()],
-    dataFalecimento: [new Date()],
-    paisNascimento: [''],
-    estadoNascimento: [''],
-    cidadeNascimento: [''],
-    biografia: [''],
-    urlSiteOficial: ['', [Validators.maxLength(100)]],
-    urlFacebook: ['', [Validators.maxLength(100)]],
-    ultTwitter: ['', [Validators.maxLength(100)]],
-    urlWikipedia: ['', [Validators.maxLength(100)]]
+    dataNascimento: [null],
+    dataFalecimento: [null],
+    paisNascimento: [null],
+    estadoNascimento: [null],
+    cidadeNascimento: [null],
+    biografia: [null],
+    urlSiteOficial: [null, [Validators.maxLength(100)]],
+    urlFacebook: [null, [Validators.maxLength(100)]],
+    ultTwitter: [null, [Validators.maxLength(100)]],
+    urlWikipedia: [null, [Validators.maxLength(100)]]
   });
 
   constructor(
-    private formBuilder: NonNullableFormBuilder,
+    private formBuilder: FormBuilder,
     private autorService: AutorService,
     private errorHandlerService: ErrorHandlerService,
     private toastService: ToastService,
@@ -85,7 +85,7 @@ export class AutorCadastroComponent implements OnInit {
     this.autorService.findById(codigo)
       .subscribe({
         next: (autorRetornado: Autor) => {
-          this.popularForm(autorRetornado);
+          this.form.patchValue(autorRetornado);
           this.atualizarTituloEdicao();
         },
         error: (falha) => {

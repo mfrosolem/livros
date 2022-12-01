@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SharedModule } from '../shared/shared.module';
@@ -19,7 +19,6 @@ import { GenerosRoutingModule } from './generos-routing.module';
   imports: [
     CommonModule,
     HttpClientModule,
-    FormsModule,
     ReactiveFormsModule,
     NgbPaginationModule,
     SharedModule,

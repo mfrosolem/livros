@@ -11,16 +11,13 @@
       <div class="col-md-12">
         <div class="form-group">
           <label>Descrição:</label>
-          <input type="text" class="form-control" formControlName="descricao">
+          <input type="text" class="form-control" formControlName="descricao"
+            [class.is-invalid]="form.get('descricao')?.invalid && form.get('descricao')?.touched">
 
+          <div class="invalid-feedback" *ngIf="form.get('descricao')?.invalid && form.get('descricao')?.touched">
+            Informe a descrição
+          </div>
 
-
-          <!-- <input type="text" class="form-control" name="descricao" [(ngModel)]="genero.descricao" #descricao="ngModel"
-            required="true"  [class.is-invalid]="descricao.invalid && descricao.touched">
-
-            <div class="invalid-feedback" *ngIf="descricao.invalid && descricao.touched">
-              Informe a descrição
-            </div> -->
         </div>
 
       </div>

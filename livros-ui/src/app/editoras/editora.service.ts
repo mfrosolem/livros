@@ -7,8 +7,14 @@ import { Editora } from './../core/models/model';
 
 export class EditoraFilter {
   nome?: string;
-  pagina = 0;
-  itensPorPagina = 5;
+  pagina: number;
+  itensPorPagina: number;
+
+  constructor(pagina: number, itensPorPagina: number, nome?: string) {
+    this.pagina = pagina;
+    this.itensPorPagina = itensPorPagina;
+    this.nome = nome;
+  }
 }
 
 @Injectable({
@@ -26,6 +32,10 @@ export class EditoraService {
     return this.http.get<Editora[]>(this.API)
       .pipe(
         //delay(2000),
+        map((response: any) => {
+          const editoras = response['content'];
+          return editoras;
+        }),
         take(1)
       );
   }
@@ -66,7 +76,6 @@ export class EditoraService {
     }
   }
 
-
   remove(codigo: number) {
     return this.http.delete(`${this.API}/${codigo}`).pipe(take(1));
   }
@@ -78,7 +87,6 @@ export class EditoraService {
   private update(record: Partial<Editora>) {
     return this.http.put<Editora>(`${this.API}/${record.id}`, record).pipe(take(1));
   }
-
 
 
 }

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
+import { IEditora } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { EditoraFilter, EditoraService } from './../editora.service';
@@ -16,14 +18,17 @@ import { EditoraFilter, EditoraService } from './../editora.service';
 })
 export class EditorasPesquisaComponent implements OnInit {
 
-  editoras: any[] = [];
-  filterEditora = new EditoraFilter();
+  editoras: IEditora[] = [];
+  form: FormGroup = this.formBuilder.group({
+    nome: []
+  });
 
   currentPage = 0;
   totalRegistros = 0;
   totalPages = 0;
 
   constructor(
+    private formBuilder: FormBuilder,
     private editoraService: EditoraService,
     private errorHandlerService: ErrorHandlerService,
     private confirmModalService: ConfirmModalService,
@@ -41,8 +46,8 @@ export class EditorasPesquisaComponent implements OnInit {
   }
 
   onSearch(page: number = 0) {
-    this.filterEditora.pagina = page;
-    this.editoraService.findByFilter(this.filterEditora)
+    const filterEditora = new EditoraFilter(page, 5, this.form.value.nome);
+    this.editoraService.findByFilter(filterEditora)
       .subscribe({
         next: (dados) => {
           this.editoras = dados.editoras;
@@ -59,7 +64,7 @@ export class EditorasPesquisaComponent implements OnInit {
     this.onSearch(this.currentPage - 1);
   }
 
-  confirmDelete(editora: any) {
+  confirmDelete(editora: IEditora) {
     const resultado = this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${editora.nome}`);
     resultado.then(res => {
       this.deleteRegister(editora.id);
@@ -72,8 +77,8 @@ export class EditorasPesquisaComponent implements OnInit {
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
-  onEdit(genero: any) {
-    this.router.navigate(['edit', genero.id], { relativeTo: this.route });
+  onEdit(editora: IEditora) {
+    this.router.navigate(['edit', editora.id], { relativeTo: this.route });
   }
 
   private deleteRegister(id: number) {

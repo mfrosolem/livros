@@ -1,11 +1,11 @@
 <div class="container-fluid">
   <h1 class="mt-2">Editoras</h1>
-  <form autocomplete="off" #editoraPesquisaForm="ngForm" (ngSubmit)="onSearch()">
+  <form [formGroup]="form" autocomplete="off" (ngSubmit)="onSearch()">
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
           <label>Nome:</label>
-          <input type="text" class="form-control" name="nome" [(ngModel)]="filterEditora.nome">
+          <input type="text" class="form-control" name="nome" formControlName="nome">
         </div>
       </div>
     </div>

@@ -11,13 +11,13 @@
       <div class="col-md-12">
         <div class="form-group">
           <label>Nome:</label>
-          <input type="text" class="form-control" name="nome" formControlName="nome">
+          <input type="text" class="form-control" name="nome" formControlName="nome"
+            [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched">
 
-          <!-- <input type="text" class="form-control" name="nome" [(ngModel)]="editora.nome" #nome="ngModel"
-            required="true" [class.is-invalid]="nome.invalid && nome.touched">
-            <div class="invalid-feedback" *ngIf="nome.invalid && nome.touched">
-              Informe o nome
-            </div> -->
+          <div class="invalid-feedback" *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
+            Informe o nome
+          </div>
+
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@
     <div class="row">
       <div class="col-md-12 py-2">
         <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="onSubmit()">Salvar</button>
-        <button type="button" class="btn btn-danger"  (click)="onCancel()">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
       </div>
     </div>
 

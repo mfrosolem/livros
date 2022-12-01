@@ -1,13 +1,13 @@
-import { Genero } from './../../core/models/model';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { GeneroFilter } from '../genero.service';
 import { ErrorHandlerService } from './../../core/error-handler.service';
+import { IGenero } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
-import { GeneroService } from './../genero.service';
+import { GeneroFilter, GeneroService } from './../genero.service';
 
 @Component({
   selector: 'app-generos-pesquisa',
@@ -17,14 +17,18 @@ import { GeneroService } from './../genero.service';
 })
 export class GenerosPesquisaComponent implements OnInit {
 
-  filterGenero = new GeneroFilter();
-  generos: any[] = [];
+  generos: IGenero[] = [];
+  form: FormGroup = this.formBuilder.group({
+    descricao: []
+  });
+
 
   currentPage = 0;
   totalRegistros = 0;
   totalPages = 0;
 
   constructor(
+    private formBuilder: FormBuilder,
     private generoService: GeneroService,
     private errorHandlerService: ErrorHandlerService,
     private confirmModalService: ConfirmModalService,
@@ -40,8 +44,8 @@ export class GenerosPesquisaComponent implements OnInit {
   }
 
   search(page: number = 0) {
-    this.filterGenero.pagina = page;
-    this.generoService.findByFilter(this.filterGenero)
+    const filterGenero = new GeneroFilter(page, 5, this.form.value.descricao);
+    this.generoService.findByFilter(filterGenero)
       .subscribe({
         next: (dados) => {
           this.generos = dados.generos;
@@ -58,7 +62,7 @@ export class GenerosPesquisaComponent implements OnInit {
     this.search(this.currentPage - 1);
   }
 
-  confirmDelete(genero: any) {
+  confirmDelete(genero: IGenero) {
     const resultado = this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${genero.descricao}`);
     resultado.then(res => {
       this.deleteRegister(genero.id);
@@ -71,7 +75,7 @@ export class GenerosPesquisaComponent implements OnInit {
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
-  onEdit(genero: any) {
+  onEdit(genero: IGenero) {
     this.router.navigate(['edit', genero.id], { relativeTo: this.route });
   }
 

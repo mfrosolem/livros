@@ -1,14 +1,20 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, take, tap } from 'rxjs';
+import { map, take } from 'rxjs';
 
 import { environment } from './../../environments/environment';
 import { Autor } from './../core/models/model';
 
 export class AutorFilter {
   nome?: string;
-  pagina = 0;
-  itensPorPagina = 5;
+  pagina: number;
+  itensPorPagina: number;
+
+  constructor(pagina: number, itensPorPagina: number, nome?: string) {
+    this.pagina = pagina;
+    this.itensPorPagina = itensPorPagina;
+    this.nome = nome;
+  }
 }
 
 @Injectable({
@@ -26,6 +32,10 @@ export class AutorService {
     return this.http.get<Autor[]>(this.API)
       .pipe(
         //delay(2000),
+        map((response: any) => {
+          const autores = response['content'];
+          return autores;
+        }),
         take(1)
       );
   }
@@ -66,18 +76,17 @@ export class AutorService {
     }
   }
 
-
   remove(codigo: number) {
-    return this.http.delete(`${this.API}/${codigo}`).pipe(tap(console.log), take(1));
+    return this.http.delete(`${this.API}/${codigo}`).pipe(take(1));
   }
 
 
   private create(record: Partial<Autor>) {
-    return this.http.post<Autor>(this.API, record).pipe(tap(console.log), take(1));
+    return this.http.post<Autor>(this.API, record).pipe(take(1));
   }
 
   private update(record: Partial<Autor>) {
-    return this.http.put<Autor>(`${this.API}/${record.id}`, record).pipe(tap(console.log), take(1));
+    return this.http.put<Autor>(`${this.API}/${record.id}`, record).pipe(take(1));
   }
 
 

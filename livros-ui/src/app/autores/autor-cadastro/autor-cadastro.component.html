@@ -11,7 +11,13 @@
       <div class="col-md-6">
         <div class="form-group">
           <label>Nome:</label>
-          <input type="text" class="form-control" name="nome" formControlName="nome">
+          <input type="text" class="form-control" name="nome" formControlName="nome"
+            [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched">
+
+          <div class="invalid-feedback" *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
+            Informe o nome
+          </div>
+
 
         </div>
       </div>
@@ -19,7 +25,13 @@
       <div class="col-md-6">
         <div class="form-group">
           <label>Sobrenome:</label>
-          <input type="text" class="form-control" name="sobrenome" formControlName="sobrenome">
+          <input type="text" class="form-control" name="sobrenome" formControlName="sobrenome"
+            [class.is-invalid]="form.get('sobrenome')?.invalid && form.get('sobrenome')?.touched">
+
+          <div class="invalid-feedback" *ngIf="form.get('sobrenome')?.invalid && form.get('sobrenome')?.touched">
+            Informe o sobrenome
+          </div>
+
         </div>
       </div>
     </div>

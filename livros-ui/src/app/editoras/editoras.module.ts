@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SharedModule } from '../shared/shared.module';
@@ -17,7 +17,6 @@ import { EditorasRoutingModule } from './editoras-routing.module';
   ],
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
 
