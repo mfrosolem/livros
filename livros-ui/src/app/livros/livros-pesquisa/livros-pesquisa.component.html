@@ -25,6 +25,8 @@
           <tr>
             <th scope="col">ISBN</th>
             <th scope="col">Título</th>
+            <th scope="col">Autor</th>
+            <th scope="col">Gênero</th>
             <th scope="col">Páginas</th>
             <th class="col-acoes-header"></th>
           </tr>
@@ -33,6 +35,8 @@
           <tr *ngFor="let livro of livros">
             <td>{{ livro.isbn }}</td>
             <td>{{ livro.titulo }}</td>
+            <td>{{ livro.autor.nomeConhecido }}</td>
+            <td>{{ livro.genero.descricao }}</td>
             <td>{{ livro.paginas }}</td>
             <td class="col-acoes">
               <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(livro)" ngbTooltip="Editar">

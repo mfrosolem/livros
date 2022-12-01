@@ -39,13 +39,13 @@ export interface ILivro {
   serieColecao: string;
   volume: number;
   tradutor: string;
-  editora: number;
   ano: number;
   edicao: number;
   paginas: number;
-  genero: Genero;
   sinopse: string;
-  autor: number;
+  autor: Autor;
+  editora: Editora;
+  genero: Genero;
 }
 
 // CLASSES
@@ -100,22 +100,3 @@ export class Livro {
   genero = new Genero();
   autor = new Autor();
 }
-
-// export class Livro {
-//   id: number = 0;
-//   isbn: string = '';
-//   titulo: string = '';
-//   subtitulo: string = '';
-//   idioma: string = '';
-//   serieColecao: string = '';
-//   volume: number = 0;
-//   tradutor: string = '';
-//   editora = new Editora();
-//   ano: number = 0;
-//   edicao: number = 0;
-//   paginas: number = 0;
-//   genero = new Genero();
-//   sinopse: string = '';
-//   autor = new Autor();
-
-// }

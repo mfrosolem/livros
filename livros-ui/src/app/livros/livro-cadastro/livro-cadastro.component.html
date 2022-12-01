@@ -47,27 +47,44 @@
       <div class="col-md-4">
         <div class="form-group" formGroupName="genero">
           <label>Gênero:</label>
-          <select id="inputState" class="form-select" name="genero" formControlName="id">
+          <select id="inputState" class="form-select" name="genero" formControlName="id"
+            [class.is-invalid]="form.get('genero')?.invalid && form.get('genero')?.touched">
             <option *ngFor="let genero of generos" [value]="genero.id">{{ genero.descricao }}</option>
           </select>
+
+          <div class="invalid-feedback" *ngIf="form.get('genero')?.invalid && form.get('genero')?.touched">
+            Selecione um gênero
+          </div>
+
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="form-group" formGroupName="autor">
           <label>Autor:</label>
-          <select id="inputState" class="form-select" name="autor" formControlName="id">
+          <select id="inputState" class="form-select" name="autor" formControlName="id"
+          [class.is-invalid]="form.get('autor')?.invalid && form.get('autor')?.touched">
             <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nomeConhecido }}</option>
           </select>
+
+          <div class="invalid-feedback" *ngIf="form.get('autor')?.invalid && form.get('autor')?.touched">
+            Selecione um autor
+          </div>
+
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="form-group" formGroupName="editora">
           <label>Editora:</label>
-          <select id="inputState" class="form-select" name="editora" formControlName="id" >
+          <select id="inputState" class="form-select" name="editora" formControlName="id"
+          [class.is-invalid]="form.get('editora')?.invalid && form.get('editora')?.touched">
             <option *ngFor="let editora of editoras" [value]="editora.id">{{ editora.nome }}</option>
           </select>
+
+          <div class="invalid-feedback" *ngIf="form.get('editora')?.invalid && form.get('editora')?.touched">
+            Selecione uma editora
+          </div>
 
         </div>
       </div>
