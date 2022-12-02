@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
@@ -17,7 +16,6 @@ import { LivrosRoutingModule } from './livros-routing.module';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    HttpClientModule,
     NgbPaginationModule,
     LivrosRoutingModule
   ]

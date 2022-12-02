@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
@@ -16,7 +15,6 @@ import { AutoresRoutingModule } from './autores-routing.module';
   ],
   imports: [
     CommonModule,
-    HttpClientModule,
 
     ReactiveFormsModule,
     NgbPaginationModule,
