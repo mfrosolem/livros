@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "livros-ui": {
+    "livros-ui-bootstrap": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -16,7 +16,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/livros-ui",
+            "outputPath": "dist/livros-ui-bootstrap",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -71,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "livros-ui:build:production"
+              "browserTarget": "livros-ui-bootstrap:build:production"
             },
             "development": {
-              "browserTarget": "livros-ui:build:development"
+              "browserTarget": "livros-ui-bootstrap:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -82,7 +82,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "livros-ui:build"
+            "browserTarget": "livros-ui-bootstrap:build"
           }
         },
         "test": {

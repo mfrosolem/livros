@@ -5,11 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AutoresModule } from './autores/autores.module';
 import { CoreModule } from './core/core.module';
-import { EditorasModule } from './editoras/editoras.module';
-import { GenerosModule } from './generos/generos.module';
-import { LivrosModule } from './livros/livros.module';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -23,11 +19,7 @@ import { SharedModule } from './shared/shared.module';
     HttpClientModule,
 
     CoreModule,
-    SharedModule,
-    GenerosModule,
-    EditorasModule,
-    AutoresModule,
-    LivrosModule
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
