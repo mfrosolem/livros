@@ -14,7 +14,7 @@ livros-ui/.vscode
 livros-ui/node_modules
 livros-ui/.browserslistrc
 livros-ui
-#livros-ui-bootstrap/.angular
-#livros-ui-bootstrap/.vscode
-#livros-ui-bootstrap/node_modules
-#livros-ui-bootstrap/.browserslistrc
+livros-ui-bootstrap/.angular
+livros-ui-bootstrap/.vscode
+livros-ui-bootstrap/node_modules
+livros-ui-bootstrap/.browserslistrc
