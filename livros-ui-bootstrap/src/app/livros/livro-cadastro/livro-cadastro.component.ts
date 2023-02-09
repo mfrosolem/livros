@@ -24,6 +24,9 @@ export class LivroCadastroComponent implements OnInit {
   generos: Genero[] = [];
   editoras: Editora[] = [];
 
+  URL_SEM_IMAGEM = '/assets/images/sem_imagem.jpg';
+  imagemUrl = this.URL_SEM_IMAGEM;
+
   form: FormGroup = this.formBuilder.group({
     id: [],
     isbn: [null, [Validators.required, Validators.minLength(13), Validators.maxLength(13)]],
@@ -76,6 +79,7 @@ export class LivroCadastroComponent implements OnInit {
 
     if (codigoLivro) {
       this.carregarRegistro(codigoLivro);
+      this.carregaFotoLivro(codigoLivro);
     }
   }
 
@@ -98,6 +102,10 @@ export class LivroCadastroComponent implements OnInit {
 
   onCancel() {
     this.location.back();
+  }
+
+  onChangeFoto() {
+    this.router.navigate(['foto'], { relativeTo: this.route });
   }
 
   private carregarRegistro(codigo: number) {
@@ -140,6 +148,28 @@ export class LivroCadastroComponent implements OnInit {
         next: (result: Editora[]) => { this.editoras = result; },
         error: (falha) => { this.errorHandlerService.handle(falha); }
       });
+  }
+
+  private carregaFotoLivro(codigo: number) {
+    this.livroService.getFoto(codigo)
+      .subscribe({
+        next: (fotoRecebida: any) => {
+          this.readFile(fotoRecebida);
+        },
+        error: (falha) => {
+
+        }
+      });
+
+  }
+
+  private readFile(blob: Blob) {
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagemUrl = reader.result as string;
+    }
+    reader.readAsDataURL(blob);
   }
 
 }

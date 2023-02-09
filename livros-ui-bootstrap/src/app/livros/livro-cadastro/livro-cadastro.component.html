@@ -7,167 +7,196 @@
       </div>
     </div>
 
-    <div class="row">
 
-      <div class="col-md-2">
-        <div class="form-group">
-          <label>ISBN:</label>
-          <input type="text" class="form-control" formControlName="isbn"
-            [class.is-invalid]="form.get('isbn')?.invalid && form.get('isbn')?.touched">
+    <div class="row"> <!-- colocado -->
 
-          <div class="invalid-feedback" *ngIf="form.get('isbn')?.invalid && form.get('isbn')?.touched">
-            Informe o ISBN
-          </div>
-        </div>
-      </div>
+      <div class="col-md-2" *ngIf="editando"> <!-- inicia coluna foto -->
+        <div class="row">
+          <div class="col-md-12">
 
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Título:</label>
-          <input type="text" class="form-control" formControlName="titulo"
-            [class.is-invalid]="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+            <img [src]="imagemUrl" class="rounded img-thumbnail img-fluid" [alt]="form.get('titulo')">
 
-          <div class="invalid-feedback" *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched">
-            Informe o Título
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="form-group">
-          <label>Subtítulo:</label>
-          <input type="text" class="form-control" formControlName="subtitulo">
-        </div>
-      </div>
-
-    </div>
-
-    <div class="row">
-
-      <div class="col-md-4">
-        <div class="form-group" formGroupName="genero">
-          <label>Gênero:</label>
-          <select id="inputState" class="form-select" name="genero" formControlName="id"
-            [class.is-invalid]="form.get('genero')?.invalid && form.get('genero')?.touched">
-            <option *ngFor="let genero of generos" [value]="genero.id">{{ genero.descricao }}</option>
-          </select>
-
-          <div class="invalid-feedback" *ngIf="form.get('genero')?.invalid && form.get('genero')?.touched">
-            Selecione um gênero
           </div>
 
         </div>
-      </div>
 
-      <div class="col-md-4">
-        <div class="form-group" formGroupName="autor">
-          <label>Autor:</label>
-          <select id="inputState" class="form-select" name="autor" formControlName="id"
-          [class.is-invalid]="form.get('autor')?.invalid && form.get('autor')?.touched">
-            <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nomeConhecido }}</option>
-          </select>
+        <div class="row">
+          <div class="d-grid">
 
-          <div class="invalid-feedback" *ngIf="form.get('autor')?.invalid && form.get('autor')?.touched">
-            Selecione um autor
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="onChangeFoto()">Mudar Foto</button>
+
+          </div>
+        </div>
+
+      </div> <!-- termina coluna foto -->
+
+      <div [ngClass]="editando ? 'col-md-10' : 'col-md-12'"> <!-- inicia coluna cadastro -->
+
+        <div class="row">
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>ISBN:</label>
+              <input type="text" class="form-control" formControlName="isbn"
+                [class.is-invalid]="form.get('isbn')?.invalid && form.get('isbn')?.touched">
+
+              <div class="invalid-feedback" *ngIf="form.get('isbn')?.invalid && form.get('isbn')?.touched">
+                Informe o ISBN
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Título:</label>
+              <input type="text" class="form-control" formControlName="titulo"
+                [class.is-invalid]="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+
+              <div class="invalid-feedback" *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+                Informe o Título
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Subtítulo:</label>
+              <input type="text" class="form-control" formControlName="subtitulo">
+            </div>
           </div>
 
         </div>
-      </div>
 
-      <div class="col-md-4">
-        <div class="form-group" formGroupName="editora">
-          <label>Editora:</label>
-          <select id="inputState" class="form-select" name="editora" formControlName="id"
-          [class.is-invalid]="form.get('editora')?.invalid && form.get('editora')?.touched">
-            <option *ngFor="let editora of editoras" [value]="editora.id">{{ editora.nome }}</option>
-          </select>
+        <div class="row">
 
-          <div class="invalid-feedback" *ngIf="form.get('editora')?.invalid && form.get('editora')?.touched">
-            Selecione uma editora
+          <div class="col-md-4">
+            <div class="form-group" formGroupName="genero">
+              <label>Gênero:</label>
+              <select id="inputState" class="form-select" name="genero" formControlName="id"
+                [class.is-invalid]="form.get('genero')?.invalid && form.get('genero')?.touched">
+                <option *ngFor="let genero of generos" [value]="genero.id">{{ genero.descricao }}</option>
+              </select>
+
+              <div class="invalid-feedback" *ngIf="form.get('genero')?.invalid && form.get('genero')?.touched">
+                Selecione um gênero
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group" formGroupName="autor">
+              <label>Autor:</label>
+              <select id="inputState" class="form-select" name="autor" formControlName="id"
+                [class.is-invalid]="form.get('autor')?.invalid && form.get('autor')?.touched">
+                <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nomeConhecido }}</option>
+              </select>
+
+              <div class="invalid-feedback" *ngIf="form.get('autor')?.invalid && form.get('autor')?.touched">
+                Selecione um autor
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group" formGroupName="editora">
+              <label>Editora:</label>
+              <select id="inputState" class="form-select" name="editora" formControlName="id"
+                [class.is-invalid]="form.get('editora')?.invalid && form.get('editora')?.touched">
+                <option *ngFor="let editora of editoras" [value]="editora.id">{{ editora.nome }}</option>
+              </select>
+
+              <div class="invalid-feedback" *ngIf="form.get('editora')?.invalid && form.get('editora')?.touched">
+                Selecione uma editora
+              </div>
+
+            </div>
           </div>
 
         </div>
-      </div>
 
-    </div>
+        <div class="row">
 
-    <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Idioma:</label>
+              <input type="text" class="form-control" formControlName="idioma"
+                [class.is-invalid]="form.get('idioma')?.invalid && form.get('idioma')?.touched">
 
-      <div class="col-md-3">
-        <div class="form-group">
-          <label>Idioma:</label>
-          <input type="text" class="form-control" formControlName="idioma"
-            [class.is-invalid]="form.get('idioma')?.invalid && form.get('idioma')?.touched">
-
-          <div class="invalid-feedback" *ngIf="form.get('idioma')?.invalid && form.get('idioma')?.touched">
-            Informe o idioma
+              <div class="invalid-feedback" *ngIf="form.get('idioma')?.invalid && form.get('idioma')?.touched">
+                Informe o idioma
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="col-md-3">
-        <div class="form-group">
-          <label>Páginas:</label>
-          <input type="text" class="form-control" formControlName="paginas"
-            [class.is-invalid]="form.get('paginas')?.invalid && form.get('paginas')?.touched">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Páginas:</label>
+              <input type="text" class="form-control" formControlName="paginas"
+                [class.is-invalid]="form.get('paginas')?.invalid && form.get('paginas')?.touched">
 
-          <div class="invalid-feedback" *ngIf="form.get('paginas')?.invalid && form.get('paginas')?.touched">
-            Informe a quantidade de páginas
+              <div class="invalid-feedback" *ngIf="form.get('paginas')?.invalid && form.get('paginas')?.touched">
+                Informe a quantidade de páginas
+              </div>
+            </div>
           </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Ano:</label>
+              <input type="text" class="form-control" formControlName="ano">
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Edição:</label>
+              <input type="text" class="form-control" formControlName="edicao">
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>Série/Coleção:</label>
+              <input type="text" class="form-control" formControlName="serieColecao">
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      <div class="col-md-2">
-        <div class="form-group">
-          <label>Ano:</label>
-          <input type="text" class="form-control" formControlName="ano">
+        <div class="row">
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Volume:</label>
+              <input type="text" class="form-control" formControlName="volume">
+            </div>
+          </div>
+
+          <div class="col-md-8">
+            <div class="form-group">
+              <label>Tradutor:</label>
+              <input type="text" class="form-control" formControlName="tradutor">
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      <div class="col-md-2">
-        <div class="form-group">
-          <label>Edição:</label>
-          <input type="text" class="form-control" formControlName="edicao">
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Sinopse:</label>
+              <textarea class="form-control" name="sinopse" formControlName="sinopse" rows="3"></textarea>
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      <div class="col-md-2">
-        <div class="form-group">
-          <label>Série/Coleção:</label>
-          <input type="text" class="form-control" formControlName="serieColecao">
-        </div>
-      </div>
+      </div> <!-- termina coluna cadastro -->
 
-    </div>
-
-    <div class="row">
-
-      <div class="col-md-4">
-        <div class="form-group">
-          <label>Volume:</label>
-          <input type="text" class="form-control" formControlName="volume">
-        </div>
-      </div>
-
-      <div class="col-md-8">
-        <div class="form-group">
-          <label>Tradutor:</label>
-          <input type="text" class="form-control" formControlName="tradutor">
-        </div>
-      </div>
-
-    </div>
-
-    <div class="row">
-
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Sinopse:</label>
-          <textarea class="form-control" name="sinopse" formControlName="sinopse" rows="3"></textarea>
-        </div>
-      </div>
-
-    </div>
+    </div> <!--termina aqui-->
 
     <div class="row">
       <div class="col-md-12 py-2">
