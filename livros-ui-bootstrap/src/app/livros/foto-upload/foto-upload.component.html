@@ -1,0 +1,79 @@
+<div class="container-fluid">
+
+  <div class="row">
+    <div>
+      <h1 class="mt-2">{{ livro.titulo }}</h1>
+    </div>
+  </div>
+
+  <form autocomplete="off" [formGroup]="form">
+
+    <div class="row">
+
+      <div class="col-md-2">
+
+        <div class="row">
+
+          <div class="col-md-12">
+
+            <div *ngIf="imagemUrl && imagemUrl !== ''">
+
+              <img [src]="imagemUrl" class="rounded img-thumbnail" alt="{{ livro.titulo }}">
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="d-grid">
+
+            <button type="button" class="btn btn-outline-danger btn-sm" [disabled]="!habilitaExcluir" (click)="onRemoveFoto()">Excluir
+              Foto</button>
+
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="col-md-10">
+
+
+
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="form-group">
+              <input type="file" class="form-control" formControlName="arquivo" accept=".jpg, .jpeg, .png"
+                (change)="inputFotoChange($event)"
+                [class.is-invalid]="form.get('arquivo')?.invalid && form.get('arquivo')?.touched" />
+
+              <div class="invalid-feedback" *ngIf="form.get('arquivo')?.invalid && form.get('arquivo')?.touched">
+                Escolha uma imagem
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-2 py-2">
+            <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="onSubmit()">Salvar</button>
+          </div>
+          <div class="col-md-2 py-2">
+            <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+
+  </form>
+
+</div>
