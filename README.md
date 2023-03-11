@@ -1,6 +1,35 @@
 # REST API com Spring Boot e Angular
 
-## Tecnologias
+![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
+
+## Descrição do Projeto
+
+Projeto em desenvolvimento para organização de livros.
+
+## :hamer: Funcionalidades do projeto
+
+- Lista de Gêneros;
+- Consulta de Gênero;
+- Cadastro de Gênero;
+- Edição de Gênero;
+- Exclusão de Gênero;
+- Lista de Editoras;
+- Consulta de Editora;
+- Cadastro de Editora;
+- Edição de Editora;
+- Exclusão de Editora;
+- Lista de Autores;
+- Consulta de Autor(a);
+- Cadastro de Autor(a);
+- Edição de Autor(a);
+- Exclusão de Autor(a);
+- Lista de Livros;
+- Consulta de Livro;
+- Cadastro de Livro;
+- Edição de Livro;
+- Exclusão de Livro;
+
+## Tecnologias utilizadas
 - Java 17
 - Spring Boot 2.7.4
 - MySQL 8.0
