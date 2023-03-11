@@ -6,7 +6,7 @@
 
 Projeto em desenvolvimento para organização de livros.
 
-## :hamer: Funcionalidades do projeto
+## :hammer: Funcionalidades do projeto
 
 - Lista de Gêneros;
 - Consulta de Gênero;
