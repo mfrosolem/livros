@@ -37,7 +37,9 @@ Você precisa ter Java e Maven instalados e configurados local.
 2. Abra o arquivo `application.properties` e configure a aplicação;
 3. Execute o comando abaixo para fazer o download das dependências configuradas no arquivo `pom.xml`:
 
-```mvn dependency:resolve```
+```
+mvn dependency:resolve
+```
 
 4. Execute o projeto como Spring Boot application.
 
