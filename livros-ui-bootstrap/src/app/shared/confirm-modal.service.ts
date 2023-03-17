@@ -1,8 +1,8 @@
-import { tap, map } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,27 +10,26 @@ import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 export class ConfirmModalService {
 
   constructor(
-    private modalService: NgbModal
+    private modalService: BsModalService
   ) { }
 
   showConfirm(title: string, message: string, okTxt?: string, cancelTxt?: string) {
 
-    const modalRef = this.modalService.open(ConfirmModalComponent);
+    const modalRef: BsModalRef = this.modalService.show(ConfirmModalComponent);
 
-    modalRef.componentInstance.title = title;
-    modalRef.componentInstance.message = message;
+    modalRef.content.title = title;
+    modalRef.content.message = message;
 
     if (okTxt) {
-      modalRef.componentInstance.okTxt = okTxt;
+      modalRef.content.okTxt = okTxt;
     }
 
     if (cancelTxt) {
-      modalRef.componentInstance.cancelTxt = cancelTxt;
+      modalRef.content.cancelTxt = cancelTxt;
     }
 
-    const resultado = modalRef.result;
 
-    return resultado;
+    return (<ConfirmModalComponent> modalRef.content).confirmResult;
 
   }
 }

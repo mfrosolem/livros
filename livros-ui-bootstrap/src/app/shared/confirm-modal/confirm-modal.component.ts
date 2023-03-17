@@ -1,7 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-
-
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -13,13 +11,13 @@ export class ConfirmModalComponent implements OnInit {
 
   @Input() title!: string;
   @Input() message!: string;
-  @Input() cancelTxt = 'Cancelar';
-  @Input() okTxt = 'Sim';
+  @Input() cancelTxt: string = 'Cancelar';
+  @Input() okTxt: string = 'Sim';
 
-  confirmResult = new Subject<boolean>();
+  confirmResult!: Subject<boolean>;
 
   constructor(
-    public modal: NgbActiveModal
+    public modal: BsModalRef
 
   ) { }
 
@@ -37,11 +35,7 @@ export class ConfirmModalComponent implements OnInit {
 
    confirmAndClose(value: boolean) {
     this.confirmResult.next(value);
-    if (value) {
-      this.modal.close(value);
-    } else {
-      this.modal.dismiss(value);
-    }
+    this.modal.hide();
   }
 
 }

@@ -1,13 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgModule } from '@angular/core';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { ToastComponent } from './toast/toast.component';
 import { ToasterComponent } from './toaster/toaster.component';
-
-
 
 @NgModule({
   declarations: [
@@ -17,7 +14,7 @@ import { ToasterComponent } from './toaster/toaster.component';
   ],
   imports: [
     CommonModule,
-    NgbModalModule
+    ModalModule.forRoot()
   ],
   exports: [
     ConfirmModalComponent,
