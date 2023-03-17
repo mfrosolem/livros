@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EMPTY, switchMap, take } from 'rxjs';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
 import { IGenero } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { GeneroFilter, GeneroService } from './../genero.service';
+import { PageChangedEvent } from 'ngx-bootstrap/pagination';
 
 @Component({
   selector: 'app-generos-pesquisa',
@@ -23,7 +25,8 @@ export class GenerosPesquisaComponent implements OnInit {
   });
 
 
-  currentPage = 0;
+  quantidadeItemPagina: number = 5;
+  page?: number = 1;
   totalRegistros = 0;
   totalPages = 0;
 
@@ -40,11 +43,11 @@ export class GenerosPesquisaComponent implements OnInit {
 
   ngOnInit(): void {
     this.title.setTitle('Pesquisa Gêneros');
-    this.search();
+    this.onSearch();
   }
 
-  search(page: number = 0) {
-    const filterGenero = new GeneroFilter(page, 5, this.form.value.descricao);
+  onSearch(page: number = 0) {
+    const filterGenero = new GeneroFilter(page, this.quantidadeItemPagina, this.form.value.descricao);
     this.generoService.findByFilter(filterGenero)
       .subscribe({
         next: (dados) => {
@@ -58,16 +61,27 @@ export class GenerosPesquisaComponent implements OnInit {
       });
   }
 
-  pageChanged(): void {
-    this.search(this.currentPage - 1);
+  pageChanged(event: PageChangedEvent): void {
+    this.page = event.page;
+    this.onSearch(this.page - 1);
   }
 
   confirmDelete(genero: IGenero) {
-    const resultado = this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${genero.descricao}`);
-    resultado.then(res => {
-      this.deleteRegister(genero.id);
-    })
-      .catch(erro => {
+
+    const resultado$ =
+      this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${genero.descricao}`);
+
+    resultado$.asObservable()
+      .pipe(
+        take(1),
+        switchMap(resultConfirm => resultConfirm ? this.generoService.remove(genero.id) : EMPTY)
+      )
+      .subscribe({
+        next: () => {
+          this.toastService.showSuccessToast('Gênero excluído com sucesso!');
+          this.onRefreshPagina();
+        },
+        error: (falha) => this.errorHandlerService.handle(falha)
       });
   }
 
@@ -79,19 +93,11 @@ export class GenerosPesquisaComponent implements OnInit {
     this.router.navigate(['edit', genero.id], { relativeTo: this.route });
   }
 
-  private deleteRegister(id: number) {
-    this.generoService.remove(id)
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccessToast('Gênero excluído com sucesso!');
-          this.onRefreshPagina();
-        },
-        error: (falha) => this.errorHandlerService.handle(falha)
-      });
-  }
-
   private onRefreshPagina() {
-    this.search();
+    this.page = 1;
+    this.totalRegistros = 0;
+    this.totalPages = 0;
+    this.onSearch();
   }
 
 

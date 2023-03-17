@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PageChangedEvent } from 'ngx-bootstrap/pagination';
+import { EMPTY, switchMap, take } from 'rxjs';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
 import { ILivro } from './../../core/models/model';
@@ -22,7 +24,8 @@ export class LivrosPesquisaComponent implements OnInit {
     titulo: []
   });
 
-  currentPage = 0;
+  quantidadeItemPagina: number = 5;
+  page?: number = 1;
   totalRegistros = 0;
   totalPages = 0;
 
@@ -51,7 +54,7 @@ export class LivrosPesquisaComponent implements OnInit {
   }
 
   onSearch(page: number = 0) {
-    const filterLivro = new LivroFilter(page, 5, this.form.value.titulo);
+    const filterLivro = new LivroFilter(page, this.quantidadeItemPagina, this.form.value.titulo);
     this.livroService.findByFilter(filterLivro)
       .subscribe({
         next: (dados) => {
@@ -65,35 +68,39 @@ export class LivrosPesquisaComponent implements OnInit {
       });
   }
 
-  pageChanged(): void {
-    this.onSearch(this.currentPage - 1);
+  pageChanged(event: PageChangedEvent): void {
+    this.page = event.page;
+    this.onSearch(this.page - 1);
   }
 
   confirmDelete(livro: ILivro) {
-    const resultado =
+
+    const resultado$ =
       this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${livro.titulo}`);
-    resultado.then(res => {
-      this.deleteRegister(livro.id);
-    })
-      .catch(erro => {
-      });
-  }
 
-  private deleteRegister(id: number) {
-    this.livroService.remove(id)
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccessToast('Livro excluído com sucesso');
-          this.onRefreshPagina();
-        },
-        error: (erro) => {
-          this.errorHandlerService.handle(erro);
+    resultado$.asObservable()
+      .pipe(
+        take(1),
+        switchMap(resultConfirm => resultConfirm ? this.livroService.remove(livro.id) : EMPTY)
+      )
+      .subscribe(
+        {
+          next: () => {
+            this.toastService.showSuccessToast('Livro excluído com sucesso');
+            this.onRefreshPagina();
+          },
+          error: (erro) => {
+            this.errorHandlerService.handle(erro);
+          }
         }
-      });
-
+      );
   }
+
 
   private onRefreshPagina() {
+    this.page = 1;
+    this.totalRegistros = 0;
+    this.totalPages = 0;
     this.onSearch();
   }
 

@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PageChangedEvent } from 'ngx-bootstrap/pagination';
+import { EMPTY, switchMap, take } from 'rxjs';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
 import { IAutor } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { AutorFilter, AutorService } from './../autor.service';
+
 
 @Component({
   selector: 'app-autores-pesquisa',
@@ -22,9 +25,11 @@ export class AutoresPesquisaComponent implements OnInit {
     nome: []
   });
 
-  currentPage = 0;
+  quantidadeItemPagina: number = 5;
+  page?: number = 1;
   totalRegistros = 0;
   totalPages = 0;
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,7 +56,7 @@ export class AutoresPesquisaComponent implements OnInit {
   }
 
   onSearch(page: number = 0) {
-    const filterAutor = new AutorFilter(page, 5, this.form.value.nome);
+    const filterAutor = new AutorFilter(page, this.quantidadeItemPagina, this.form.value.nome);
     this.autorService.findByFilter(filterAutor)
       .subscribe({
         next: (dados) => {
@@ -65,35 +70,36 @@ export class AutoresPesquisaComponent implements OnInit {
       });
   }
 
-  pageChanged(): void {
-    this.onSearch(this.currentPage - 1);
+  pageChanged(event: PageChangedEvent): void {
+    this.page = event.page;
+    this.onSearch(this.page - 1);
   }
 
   confirmDelete(autor: IAutor) {
-    const resultado =
+
+    const resultado$ =
       this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${autor.nome} ${autor.sobrenome}`);
-    resultado.then(res => {
-      this.deleteRegister(autor.id);
-    })
-      .catch(erro => {
-      });
-  }
 
-  private deleteRegister(id: number) {
-    this.autorService.remove(id)
+    resultado$.asObservable()
+      .pipe(
+        take(1),
+        switchMap(resultConfirm => resultConfirm ? this.autorService.remove(autor.id) : EMPTY)
+      )
       .subscribe({
-        next: () => {
-          this.toastService.showSuccessToast('Autor excluído com sucesso');
-          this.onRefreshPagina();
-        },
-        error: (erro) => {
-          this.errorHandlerService.handle(erro);
-        }
-      });
-
+          next: () => {
+            this.toastService.showSuccessToast('Autor excluído com sucesso');
+            this.onRefreshPagina();
+          },
+          error: (erro) => {
+            this.errorHandlerService.handle(erro);
+          }
+        });
   }
 
   private onRefreshPagina() {
+    this.page = 1;
+    this.totalRegistros = 0;
+    this.totalPages = 0;
     this.onSearch();
   }
 

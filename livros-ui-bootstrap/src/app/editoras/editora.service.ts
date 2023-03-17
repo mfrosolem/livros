@@ -31,12 +31,11 @@ export class EditoraService {
   listAll() {
     return this.http.get<Editora[]>(this.API)
       .pipe(
-        //delay(2000),
+        take(1),
         map((response: any) => {
           const editoras = response['content'];
           return editoras;
-        }),
-        take(1)
+        })
       );
   }
 
@@ -51,6 +50,7 @@ export class EditoraService {
 
     return this.http.get<Editora[]>(this.API, { params })
       .pipe(
+        take(1),
         map((response: any) => {
           const editoras = response['content'];
           const resultado = {
@@ -59,8 +59,7 @@ export class EditoraService {
             totalPages: response['totalPages']
           }
           return resultado;
-        }),
-        take(1)
+        })
       );
   }
 
@@ -87,6 +86,5 @@ export class EditoraService {
   private update(record: Partial<Editora>) {
     return this.http.put<Editora>(`${this.API}/${record.id}`, record).pipe(take(1));
   }
-
 
 }

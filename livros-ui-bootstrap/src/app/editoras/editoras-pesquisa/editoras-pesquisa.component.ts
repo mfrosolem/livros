@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PageChangedEvent } from 'ngx-bootstrap/pagination';
+import { EMPTY, switchMap, take } from 'rxjs';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
 import { IEditora } from './../../core/models/model';
@@ -23,7 +25,8 @@ export class EditorasPesquisaComponent implements OnInit {
     nome: []
   });
 
-  currentPage = 0;
+  quantidadeItemPagina: number = 5;
+  page?: number = 1;
   totalRegistros = 0;
   totalPages = 0;
 
@@ -46,7 +49,7 @@ export class EditorasPesquisaComponent implements OnInit {
   }
 
   onSearch(page: number = 0) {
-    const filterEditora = new EditoraFilter(page, 5, this.form.value.nome);
+    const filterEditora = new EditoraFilter(page, this.quantidadeItemPagina, this.form.value.nome);
     this.editoraService.findByFilter(filterEditora)
       .subscribe({
         next: (dados) => {
@@ -60,16 +63,29 @@ export class EditorasPesquisaComponent implements OnInit {
       });
   }
 
-  pageChanged(): void {
-    this.onSearch(this.currentPage - 1);
+  pageChanged(event: PageChangedEvent): void {
+    this.page = event.page;
+    this.onSearch(this.page - 1);
   }
 
   confirmDelete(editora: IEditora) {
-    const resultado = this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${editora.nome}`);
-    resultado.then(res => {
-      this.deleteRegister(editora.id);
-    })
-      .catch(erro => {
+
+    const resultado$ =
+      this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${editora.nome}`);
+
+    resultado$.asObservable()
+      .pipe(
+        take(1),
+        switchMap(resultConfirm => resultConfirm ? this.editoraService.remove(editora.id) : EMPTY)
+      )
+      .subscribe({
+        next: () => {
+          this.toastService.showSuccessToast('Editora excluída com sucesso');
+          this.onRefreshPagina();
+        },
+        error: (erro) => {
+          this.errorHandlerService.handle(erro);
+        }
       });
   }
 
@@ -81,24 +97,12 @@ export class EditorasPesquisaComponent implements OnInit {
     this.router.navigate(['edit', editora.id], { relativeTo: this.route });
   }
 
-  private deleteRegister(id: number) {
-    this.editoraService.remove(id)
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccessToast('Editora excluída com sucesso');
-          this.onRefreshPagina();
-        },
-        error: (erro) => {
-          this.errorHandlerService.handle(erro);
-        }
-      });
-
-  }
 
   private onRefreshPagina() {
+    this.page = 1;
+    this.totalRegistros = 0;
+    this.totalPages = 0;
     this.onSearch();
   }
-
-
 
 }

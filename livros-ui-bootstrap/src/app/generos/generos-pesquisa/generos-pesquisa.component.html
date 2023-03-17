@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <h1 class="mt-2">Gêneros Literários</h1>
-  <form [formGroup]="form" autocomplete="off" (ngSubmit)="search()">
+  <form [formGroup]="form" autocomplete="off" (ngSubmit)="onSearch()">
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
@@ -31,12 +31,11 @@
           <tr *ngFor="let genero of generos">
             <td>{{ genero.descricao }}</td>
             <td class="col-acoes">
-              <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(genero)" ngbTooltip="Editar">
+              <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(genero)" >
                 <i class="bi bi-pencil"></i>
               </button>
 
-              <button type="button" class="btn btn-outline-danger mb-1 btn-sm" (click)="confirmDelete(genero)"
-                ngbTooltip="Excluir">
+              <button type="button" class="btn btn-outline-danger mb-1 btn-sm" (click)="confirmDelete(genero)">
                 <i class="bi bi-trash3"></i>
               </button>
             </td>
@@ -48,9 +47,10 @@
   </div>
 
   <div class="row">
-    <div class="col-xs-12">
-      <ngb-pagination [(page)]="currentPage" [pageSize]="5" [collectionSize]="totalRegistros"
-        (pageChange)="pageChanged()"></ngb-pagination>
+    <div class="col-xs-12 col-12">
+      <pagination [totalItems]="totalRegistros" [itemsPerPage]="quantidadeItemPagina" (numPages)="totalPages"
+        [(ngModel)]="page" (pageChanged)="pageChanged($event)"
+        previousText="Anterior" nextText="Próximo"></pagination>
     </div>
   </div>
 

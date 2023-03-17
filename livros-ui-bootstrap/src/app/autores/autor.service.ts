@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, take } from 'rxjs';
+import { map, take, Observable } from 'rxjs';
 
 import { environment } from './../../environments/environment';
 import { Autor } from './../core/models/model';
@@ -31,12 +31,12 @@ export class AutorService {
   listAll() {
     return this.http.get<Autor[]>(this.API)
       .pipe(
-        //delay(2000),
+        take(1),
         map((response: any) => {
           const autores = response['content'];
           return autores;
         }),
-        take(1)
+
       );
   }
 
@@ -51,6 +51,7 @@ export class AutorService {
 
     return this.http.get<Autor[]>(this.API, { params })
       .pipe(
+        take(1),
         map((response: any) => {
           const autores = response['content'];
           const resultado = {
@@ -59,8 +60,7 @@ export class AutorService {
             totalPages: response['totalPages']
           }
           return resultado;
-        }),
-        take(1)
+        })
       );
   }
 

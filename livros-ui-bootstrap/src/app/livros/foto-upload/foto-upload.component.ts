@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EMPTY, switchMap, take } from 'rxjs';
 import { ErrorHandlerService } from 'src/app/core/error-handler.service';
 import { Livro } from 'src/app/core/models/model';
 import { ToastService } from 'src/app/shared/toast.service';
@@ -87,30 +88,30 @@ export class FotoUploadComponent implements OnInit {
   }
 
   private confirmDelete(codigo: number) {
-    const resultado =
-      this.confirmModalService.showConfirm('Confirmação', 'Deseja excluir a foto?');
-    resultado.then(res => {
-      this.removeFoto(codigo);
-    })
-      .catch(erro => {
-      });
-  }
 
-  private removeFoto(codigo: number) {
-    this.livroService.removeFoto(codigo)
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccessToast('Foto excluída com sucesso');
-          this.imagemUrl = this.URL_SEM_IMAGEM;
-          this.form.patchValue({ arquivo: null });
-          this.fileFoto = new File([], '');
-          this.habilitaExcluir = false;
-          this.form.reset();
-        },
-        error: (erro) => {
-          this.errorHandlerService.handle(erro);
+    const resultado$ =
+      this.confirmModalService.showConfirm('Confirmação', 'Deseja excluir a foto?');
+
+    resultado$.asObservable()
+      .pipe(
+        take(1),
+        switchMap(resultConfirm => resultConfirm ? this.livroService.removeFoto(codigo) : EMPTY)
+      )
+      .subscribe(
+        {
+          next: () => {
+            this.toastService.showSuccessToast('Foto excluída com sucesso');
+            this.imagemUrl = this.URL_SEM_IMAGEM;
+            this.form.patchValue({ arquivo: null });
+            this.fileFoto = new File([], '');
+            this.habilitaExcluir = false;
+            this.form.reset();
+          },
+          error: (erro) => {
+            this.errorHandlerService.handle(erro);
+          }
         }
-      });
+      );
   }
 
   private carregarRegistroLivro(codigo: number) {

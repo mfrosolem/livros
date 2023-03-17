@@ -35,11 +35,11 @@
             <td>{{ autor.sobrenome }}</td>
             <td>{{ autor.nomeConhecido }}</td>
             <td class="col-acoes">
-              <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(autor)" ngbTooltip="Editar">
+              <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(autor)">
                 <i class="bi bi-pencil"></i>
               </button>
 
-              <button type="button" class="btn btn-outline-danger mb-1 btn-sm" (click)="confirmDelete(autor)" ngbTooltip="Excluir">
+              <button type="button" class="btn btn-outline-danger mb-1 btn-sm" (click)="confirmDelete(autor)">
                 <i class="bi bi-trash3"></i>
               </button>
             </td>
@@ -51,9 +51,9 @@
   </div>
 
   <div class="row">
-    <div class="col-xs-12">
-      <ngb-pagination [(page)]="currentPage" [pageSize]="5" [collectionSize]="totalRegistros"
-        (pageChange)="pageChanged()"></ngb-pagination>
+    <div class="col-xs-12 col-12">
+      <pagination [totalItems]="totalRegistros" [itemsPerPage]="quantidadeItemPagina" (numPages)="totalPages"
+        [(ngModel)]="page" (pageChanged)="pageChanged($event)" previousText="Anterior" nextText="Próximo"></pagination>
     </div>
   </div>
 
@@ -69,4 +69,3 @@
 
 
 </div>
-

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 import { SharedModule } from '../shared/shared.module';
 import { GeneroCadastroComponent } from './genero-cadastro/genero-cadastro.component';
@@ -18,9 +18,9 @@ import { GenerosRoutingModule } from './generos-routing.module';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    NgbPaginationModule,
+    FormsModule,
+    PaginationModule.forRoot(),
     SharedModule,
-    NgbTooltipModule,
 
     GenerosRoutingModule
   ],
