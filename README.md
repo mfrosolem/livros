@@ -16,7 +16,7 @@ Projeto em desenvolvimento para organização de livros.
 
 ## Tecnologias utilizadas
 - Java 17
-- Spring Boot 2.7.4
+- Spring Boot 3.0.0 (Spring 6)
 - MySQL 8.0
 - JPA
 - Maven
