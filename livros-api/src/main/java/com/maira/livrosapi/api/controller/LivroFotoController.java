@@ -4,15 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,9 +30,10 @@ import com.maira.livrosapi.domain.service.FotoLivroService;
 import com.maira.livrosapi.domain.service.FotoStorageService;
 import com.maira.livrosapi.domain.service.LivroService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/livros/{livroId}/foto")
-@CrossOrigin("http://localhost:4200")
 public class LivroFotoController {
 
 	@Autowired
