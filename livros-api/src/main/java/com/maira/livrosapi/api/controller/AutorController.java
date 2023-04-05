@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,19 +19,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.maira.livrosapi.api.ResourceUriHelper;
 import com.maira.livrosapi.api.assembler.AutorInputDisassembler;
 import com.maira.livrosapi.api.assembler.AutorModelAssembler;
 import com.maira.livrosapi.api.model.AutorModel;
 import com.maira.livrosapi.api.model.input.AutorInput;
+import com.maira.livrosapi.api.openapi.controller.AutorControllerOpenApi;
 import com.maira.livrosapi.domain.model.Autor;
 import com.maira.livrosapi.domain.repository.AutorRepository;
 import com.maira.livrosapi.domain.service.AutorService;
 
 import jakarta.validation.Valid;
 
+
 @RestController
-@RequestMapping(value = "/autores")
-public class AutorController {
+@RequestMapping(value = "/autores", produces = MediaType.APPLICATION_JSON_VALUE)
+public class AutorController implements AutorControllerOpenApi {
 
 	@Autowired
 	private AutorRepository autorRepository;
@@ -52,20 +56,27 @@ public class AutorController {
 		return autoresModelPage;
 	}
 
+	
 	@GetMapping(value = "/{autorId}")
 	public AutorModel buscar(@PathVariable Long autorId) {
 		Autor autor = cadastroAutor.buscarOuFalhar(autorId);
 		return autorModelAssembler.toModel(autor);
 	}
 
+	
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public AutorModel adicionar(@RequestBody @Valid AutorInput autorInput) {
 		Autor autor = autorInputDisassembler.toDomainObject(autorInput);
 		autor = cadastroAutor.salvar(autor);
-		return autorModelAssembler.toModel(autor);
+		AutorModel autorModel = autorModelAssembler.toModel(autor);
+		
+		ResourceUriHelper.addUriInResponseHeader(autorModel.getId());
+		
+		return autorModel;
 	}
-
+	
+	
 	@PutMapping(value = "/{autorId}")
 	public AutorModel atualizar(@PathVariable Long autorId, @RequestBody @Valid AutorInput autorInput) {
 		Autor autorAtual = cadastroAutor.buscarOuFalhar(autorId);
@@ -73,6 +84,7 @@ public class AutorController {
 		autorAtual = cadastroAutor.salvar(autorAtual);
 		return autorModelAssembler.toModel(autorAtual);
 	}
+	
 
 	@DeleteMapping(value = "/{autorId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)

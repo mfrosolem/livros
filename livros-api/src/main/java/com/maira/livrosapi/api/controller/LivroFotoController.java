@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.maira.livrosapi.api.assembler.FotoLivroModelAssembler;
 import com.maira.livrosapi.api.model.FotoLivroModel;
 import com.maira.livrosapi.api.model.input.FotoLivroInput;
+import com.maira.livrosapi.api.openapi.controller.LivroFotoControllerOpenApi;
 import com.maira.livrosapi.domain.exception.EntidadeNaoEncontradaException;
 import com.maira.livrosapi.domain.model.FotoLivro;
 import com.maira.livrosapi.domain.model.Livro;
@@ -32,9 +33,10 @@ import com.maira.livrosapi.domain.service.LivroService;
 
 import jakarta.validation.Valid;
 
+
 @RestController
-@RequestMapping(value = "/livros/{livroId}/foto")
-public class LivroFotoController {
+@RequestMapping(value = "/livros/{livroId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
+public class LivroFotoController implements LivroFotoControllerOpenApi {
 
 	@Autowired
 	private FotoLivroService fotoLivroService;
@@ -48,6 +50,7 @@ public class LivroFotoController {
 	@Autowired
 	private FotoStorageService fotoStorage;
 
+	
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoLivroModel atualizarFoto(@PathVariable Long livroId, @Valid FotoLivroInput fotoLivroInput)
 			throws IOException {
@@ -68,13 +71,15 @@ public class LivroFotoController {
 		return fotoAssembler.toModel(fotoSalva);
 	}
 
+	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoLivroModel buscar(@PathVariable Long livroId) {
 		FotoLivro fotoLivro = fotoLivroService.buscarOuFalhar(livroId);
 		return fotoAssembler.toModel(fotoLivro);
 	}
 
-	@GetMapping
+	
+	@GetMapping(produces = MediaType.ALL_VALUE)
 	public ResponseEntity<InputStreamResource> servir(@PathVariable Long livroId,
 			@RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
 
@@ -88,7 +93,9 @@ public class LivroFotoController {
 
 			InputStream inputStream = fotoStorage.recuperar(fotoLivro.getNomeArquivo());
 
-			return ResponseEntity.ok().contentType(mediaTypeFoto).body(new InputStreamResource(inputStream));
+			return ResponseEntity.ok()
+					.contentType(mediaTypeFoto)
+					.body(new InputStreamResource(inputStream));
 
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
@@ -96,11 +103,16 @@ public class LivroFotoController {
 
 	}
 
+	
 	@DeleteMapping
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long livroId) {
+	public ResponseEntity<Void> remover(@PathVariable Long livroId) {
+		
 		fotoLivroService.excluir(livroId);
+		
+		return ResponseEntity.noContent().build();
 	}
+	
 
 	private void verificarCompatibilidadeMediaType(MediaType mediaTypeFoto, List<MediaType> mediaTypesAceitas)
 			throws HttpMediaTypeNotAcceptableException {
