@@ -10,11 +10,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Autor {
@@ -56,6 +61,7 @@ public class Autor {
 	
 	private String urlWikipedia;
 	
+	@Builder.Default
 	@OneToMany(mappedBy = "autor")
 	private List<Livro> livros = new ArrayList<>();
 
