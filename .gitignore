@@ -6,8 +6,6 @@ livros-api/.factorypath
 livros-api/.project
 livros-api/HELP.md
 livros-api/.mvn
-livros-api/mvnw
-livros-api/mvnw.cmd
 livros-api/.gitignore
 livros-ui/.angular
 livros-ui/.vscode
