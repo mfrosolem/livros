@@ -111,6 +111,9 @@ public class EditoraServiceTest {
 	
 	@Test
 	void Dado_uma_editoraId_valida_Quando_chamar_metodo_excluir_Entao_deve_excluir_editora() {
+		Mockito.doNothing().when(repository).deleteById(Mockito.anyLong());
+		Mockito.doNothing().when(repository).flush();
+		
 		service.excluir(editoraId);
 		
 		Mockito.verify(repository, Mockito.times(1)).deleteById(editoraId);

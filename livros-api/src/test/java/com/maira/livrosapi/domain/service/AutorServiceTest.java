@@ -109,6 +109,9 @@ public class AutorServiceTest {
 	
 	@Test
 	void Dado_um_autorId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_autor() {
+		Mockito.doNothing().when(repository).deleteById(Mockito.anyLong());
+		Mockito.doNothing().when(repository).flush();
+		
 		service.excluir(autorId);
 		
 		Mockito.verify(repository, Mockito.times(1)).deleteById(autorId);

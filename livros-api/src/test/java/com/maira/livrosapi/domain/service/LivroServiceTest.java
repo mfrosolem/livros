@@ -341,8 +341,11 @@ public class LivroServiceTest {
 	
 	@Test
 	void Dado_um_livroId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_livro () {
+		Mockito.doNothing().when(repository).deleteById(Mockito.anyLong());
+		Mockito.doNothing().when(repository).flush();
+
 		service.excluir(livroId);
-		
+
 		Mockito.verify(repository, Mockito.times(1)).deleteById(livroId);
 		Mockito.verify(repository, Mockito.times(1)).flush();
 		Mockito.verifyNoMoreInteractions(repository);

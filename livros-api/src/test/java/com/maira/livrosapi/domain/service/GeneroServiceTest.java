@@ -105,6 +105,9 @@ public class GeneroServiceTest {
 
 	@Test
 	void Dado_um_generoId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_genero() {
+		Mockito.doNothing().when(repository).deleteById(Mockito.anyLong());
+		Mockito.doNothing().when(repository).flush();
+		
 		service.excluir(generoId);
 
 		Mockito.verify(repository, Mockito.times(1)).deleteById(generoId);
