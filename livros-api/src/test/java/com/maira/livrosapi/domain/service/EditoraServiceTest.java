@@ -3,6 +3,10 @@ package com.maira.livrosapi.domain.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -43,7 +47,7 @@ public class EditoraServiceTest {
 	
 	@Test
 	void Dado_uma_editoraId_valida_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_retornar_uma_editora() {
-		Mockito.when(repository.findById(editoraId)).thenAnswer(answer -> {
+		when(repository.findById(anyLong())).thenAnswer(answer -> {
 			Long editoraIdPassada = answer.getArgument(0, Long.class);
 			editora.setId(editoraIdPassada);
 			return Optional.of(editora);
@@ -53,23 +57,23 @@ public class EditoraServiceTest {
 		
 		assertInstanceOf(Editora.class, editoraRetornada);
 		assertEquals(editoraId, editoraRetornada.getId());
-		Mockito.verify(repository, Mockito.times(1)).findById(editoraId);
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).findById(editoraId);
+		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
 	void Dado_uma_editoraId_invalida_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_EditoraNaoEncontradaException() {
-		Mockito.when(repository.findById(editoraId))
+		when(repository.findById(anyLong()))
 			.thenThrow(new EditoraNaoEncontradaException(editoraId));
 		
 		assertThrows(EditoraNaoEncontradaException.class, () -> service.buscarOuFalhar(editoraId));
-		Mockito.verify(repository, Mockito.times(1)).findById(editoraId);
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).findById(editoraId);
+		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
 	void Dado_uma_editora_valida_Quando_salvar_Entao_deve_retornar_uma_editora_com_id() {
-		Mockito.when(repository.save(Mockito.any(Editora.class)))
+		when(repository.save(Mockito.any(Editora.class)))
 			.thenAnswer(answer -> {
 				Editora editoraPassada = answer.getArgument(0, Editora.class);
 				editoraPassada.setId(editoraId);
@@ -84,7 +88,7 @@ public class EditoraServiceTest {
 	
 	@Test
 	void Dado_uma_editora_valida_Quando_salvar_Entao_deve_chamar_metodo_save_do_repository() {
-		Mockito.when(repository.save(Mockito.any(Editora.class)))
+		when(repository.save(Mockito.any(Editora.class)))
 			.thenAnswer(answer -> {
 				Editora editoraPassada = answer.getArgument(0, Editora.class);
 				editoraPassada.setId(editoraId);
@@ -93,20 +97,20 @@ public class EditoraServiceTest {
 		
 		service.salvar(editora);
 		
-		Mockito.verify(repository, Mockito.times(1)).save(editora);
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).save(editora);
+		verifyNoMoreInteractions(repository);
 	}
 	
 
 	@Test
 	void Dado_uma_editora_valida_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException_se_editora_ja_existe() {
-		Mockito.when(repository.save(Mockito.any(Editora.class)))
+		when(repository.save(Mockito.any(Editora.class)))
 			.thenThrow(new EntidadeEmUsoException(
 					String.format("Editora de nome %s já cadastrada", editora.getNome())));
 		
 		assertThrows(EntidadeEmUsoException.class, () -> service.salvar(editora));
-		Mockito.verify(repository, Mockito.times(1)).save(editora);
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).save(editora);
+		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
@@ -116,9 +120,9 @@ public class EditoraServiceTest {
 		
 		service.excluir(editoraId);
 		
-		Mockito.verify(repository, Mockito.times(1)).deleteById(editoraId);
-		Mockito.verify(repository, Mockito.times(1)).flush();
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).deleteById(editoraId);
+		verify(repository, Mockito.times(1)).flush();
+		verifyNoMoreInteractions(repository);
 	}
 	
 	
@@ -128,9 +132,9 @@ public class EditoraServiceTest {
 			.when(repository).deleteById(editoraId);
 		
 		assertThrows(EditoraNaoEncontradaException.class, ()-> service.excluir(editoraId));
-		Mockito.verify(repository, Mockito.times(1)).deleteById(editoraId);
-		Mockito.verify(repository, Mockito.never()).flush();
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).deleteById(editoraId);
+		verify(repository, Mockito.never()).flush();
+		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
@@ -140,9 +144,9 @@ public class EditoraServiceTest {
 			.when(repository).deleteById(editoraId);
 		
 		assertThrows(EntidadeEmUsoException.class, () -> service.excluir(editoraId));
-		Mockito.verify(repository, Mockito.times(1)).deleteById(editoraId);
-		Mockito.verify(repository, Mockito.never()).flush();
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).deleteById(editoraId);
+		verify(repository, Mockito.never()).flush();
+		verifyNoMoreInteractions(repository);
 	}
 	
 	

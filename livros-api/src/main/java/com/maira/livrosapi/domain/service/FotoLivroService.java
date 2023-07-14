@@ -26,7 +26,7 @@ public class FotoLivroService {
 
 		Long livroId = foto.getLivro().getId();
 		String nomeNovoArquivo = fotoStorage.gerarNomeArquivo(foto.getNomeArquivo());
-		String nomeArquivoExistente = null;
+		String nomeArquivoExistente = "";
 
 		Optional<FotoLivro> fotoExistente = livroRepository.findFotoById(livroId);
 

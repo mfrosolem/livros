@@ -3,6 +3,9 @@ package com.maira.livrosapi.domain.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -43,7 +46,7 @@ public class GeneroServiceTest {
 	
 	@Test
 	void Dado_um_generoId_valido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_retornar_um_genero_com_id() {
-		Mockito.when(repository.findById(generoId)).thenAnswer(invocacao -> {
+		when(repository.findById(generoId)).thenAnswer(invocacao -> {
 			Long generoIdPassado = invocacao.getArgument(0, Long.class);
 			genero.setId(generoIdPassado);
 			return Optional.of(genero);			
@@ -53,23 +56,23 @@ public class GeneroServiceTest {
 		
 		assertInstanceOf(Genero.class, generoRetornado);
 		assertEquals(generoId, generoRetornado.getId());
-		Mockito.verify(repository, Mockito.times(1)).findById(generoId);
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).findById(generoId);
+		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
 	void Dado_um_generoId_invalido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_GeneroNaoEncontradoException() {
-		Mockito.when(repository.findById(generoId))
+		when(repository.findById(generoId))
 			.thenThrow(new GeneroNaoEncontradoException(generoId));
 		
 		assertThrows(GeneroNaoEncontradoException.class, () -> service.buscarOuFalhar(generoId));
-		Mockito.verify(repository, Mockito.times(1)).findById(generoId);
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).findById(generoId);
+		verifyNoMoreInteractions(repository);
 	}
 
 	@Test
 	void Dado_um_genero_valido_Quando_salvar_Entao_deve_retornar_um_genero_com_id() {
-		Mockito.when(repository.save(Mockito.any(Genero.class))).thenAnswer(invocacao -> {
+		when(repository.save(Mockito.any(Genero.class))).thenAnswer(invocacao -> {
 			Genero generoPassado = invocacao.getArgument(0, Genero.class);
 			generoPassado.setId(generoId);
 			return generoPassado;
@@ -83,7 +86,7 @@ public class GeneroServiceTest {
 
 	@Test
 	void Dado_um_genero_valido_Quando_salvar_Entao_deve_chamar_metodo_save_do_repository() {
-		Mockito.when(repository.save(Mockito.any(Genero.class))).thenAnswer(invocacao -> {
+		when(repository.save(Mockito.any(Genero.class))).thenAnswer(invocacao -> {
 			Genero generoPassado = invocacao.getArgument(0, Genero.class);
 			generoPassado.setId(generoId);
 			return generoPassado;
@@ -91,13 +94,13 @@ public class GeneroServiceTest {
 
 		service.salvar(genero);
 
-		Mockito.verify(repository, Mockito.times(1)).save(Mockito.eq(genero));
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).save(Mockito.eq(genero));
+		verifyNoMoreInteractions(repository);
 	}
 
 	@Test
 	void Dado_um_genero_valido_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException_se_genero_ja_existe() {
-		Mockito.when(service.salvar(genero)).thenThrow(new EntidadeEmUsoException(
+		when(service.salvar(genero)).thenThrow(new EntidadeEmUsoException(
 				String.format("Genero de descrição %s já cadastrado", genero.getDescricao())));
 		
 		assertThrows(EntidadeEmUsoException.class, () -> service.salvar(genero));
@@ -110,9 +113,9 @@ public class GeneroServiceTest {
 		
 		service.excluir(generoId);
 
-		Mockito.verify(repository, Mockito.times(1)).deleteById(generoId);
-		Mockito.verify(repository, Mockito.times(1)).flush();
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).deleteById(generoId);
+		verify(repository, Mockito.times(1)).flush();
+		verifyNoMoreInteractions(repository);
 	}
 
 	@Test
@@ -121,9 +124,9 @@ public class GeneroServiceTest {
 			.when(repository).deleteById(generoId);
 
 		assertThrows(GeneroNaoEncontradoException.class, () -> service.excluir(generoId));
-		Mockito.verify(repository, Mockito.times(1)).deleteById(generoId);
-		Mockito.verify(repository, Mockito.never()).flush();
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).deleteById(generoId);
+		verify(repository, Mockito.never()).flush();
+		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
@@ -133,9 +136,9 @@ public class GeneroServiceTest {
 			.when(repository).deleteById(generoId);
 		
 		assertThrows(EntidadeEmUsoException.class, () -> service.excluir(generoId));
-		Mockito.verify(repository, Mockito.times(1)).deleteById(generoId);
-		Mockito.verify(repository, Mockito.never()).flush();
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).deleteById(generoId);
+		verify(repository, Mockito.never()).flush();
+		verifyNoMoreInteractions(repository);
 	}  
 
 }

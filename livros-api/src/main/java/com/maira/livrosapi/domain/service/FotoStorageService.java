@@ -3,6 +3,8 @@ package com.maira.livrosapi.domain.service;
 import java.io.InputStream;
 import java.util.UUID;
 
+import org.springframework.util.StringUtils;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,7 +20,7 @@ public interface FotoStorageService {
 
 		this.armazenar(novaFoto);
 
-		if (nomeArquivoAntigo != null) {
+		if (StringUtils.hasText(nomeArquivoAntigo)) {
 			this.remover(nomeArquivoAntigo);
 		}
 

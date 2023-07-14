@@ -3,6 +3,11 @@ package com.maira.livrosapi.domain.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
@@ -45,7 +50,7 @@ public class AutorServiceTest {
 	
 	@Test
 	void Dado_um_autorId_valido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_retornar_um_autor() {
-		Mockito.when(repository.findById(autorId)).thenAnswer(answer -> {
+		when(repository.findById(anyLong())).thenAnswer(answer -> {
 			Long idAutorRetorno = answer.getArgument(0, Long.class);
 			return Optional.of(Autor.builder().
 					id(idAutorRetorno).nome("Elena").sobrenome("Ferrante").
@@ -56,21 +61,21 @@ public class AutorServiceTest {
 		
 		assertInstanceOf(Autor.class, autorRetornado);
 		assertEquals(autorId, autorRetornado.getId());
-		Mockito.verify(repository, Mockito.times(1)).findById(autorId);
+		verify(repository, Mockito.times(1)).findById(autorId);
 	}
 	
 	@Test
 	void Dado_um_autorId_invalido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_AutorNaoEncontradoException() {
-		Mockito.when(repository.findById(autorId))
+		when(repository.findById(anyLong()))
 			.thenThrow(new AutorNaoEncontradoException(autorId));
 		
 		assertThrows(AutorNaoEncontradoException.class, () -> service.buscarOuFalhar(autorId));
-		Mockito.verify(repository, Mockito.times(1)).findById(autorId);
+		verify(repository, Mockito.times(1)).findById(autorId);
 	}
 	
 	@Test
 	void Dado_um_autor_valido_Quando_salvar_Entao_deve_retornar_um_autor_com_id() {
-		Mockito.when(repository.save(Mockito.any(Autor.class))).thenAnswer(answer -> {
+		when(repository.save(any(Autor.class))).thenAnswer(answer -> {
 			Autor autorPassado = answer.getArgument(0, Autor.class);
 			autorPassado.setId(1L);
 			return autorPassado;
@@ -85,7 +90,7 @@ public class AutorServiceTest {
 
 	@Test
 	void Dado_um_autor_valido_Quando_salvar_Entao_deve_chamar_metodo_save_do_repository() {
-		Mockito.when(repository.save(Mockito.any(Autor.class)))
+		when(repository.save(any(Autor.class)))
 			.thenAnswer(answer -> {
 				Autor autorPassado = answer.getArgument(0, Autor.class);
 				autorPassado.setId(1L);
@@ -94,13 +99,13 @@ public class AutorServiceTest {
 		
 		service.salvar(autor);
 		
-		Mockito.verify(repository, Mockito.times(1)).save(autor);
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).save(autor);
+		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
 	void Dado_um_autor_valido_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException_se_autor_ja_existe() {
-		Mockito.when(repository.save(autor))
+		when(repository.save(any(Autor.class)))
 		.thenThrow(new EntidadeEmUsoException(
 				String.format("Autor(a) de nome %s %s já cadastrado(a)", autor.getNome(), autor.getSobrenome())));
 		
@@ -109,13 +114,13 @@ public class AutorServiceTest {
 	
 	@Test
 	void Dado_um_autorId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_autor() {
-		Mockito.doNothing().when(repository).deleteById(Mockito.anyLong());
+		Mockito.doNothing().when(repository).deleteById(anyLong());
 		Mockito.doNothing().when(repository).flush();
 		
 		service.excluir(autorId);
 		
-		Mockito.verify(repository, Mockito.times(1)).deleteById(autorId);
-		Mockito.verify(repository, Mockito.times(1)).flush();
+		verify(repository, Mockito.times(1)).deleteById(autorId);
+		verify(repository, Mockito.times(1)).flush();
 	}
 	
 	@Test
@@ -124,21 +129,21 @@ public class AutorServiceTest {
 			.when(repository).deleteById(autorId);
 		
 		assertThrows(AutorNaoEncontradoException.class, () -> service.excluir(autorId));
-		Mockito.verify(repository, Mockito.times(1)).deleteById(autorId);
-		Mockito.verify(repository, Mockito.never()).flush();
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).deleteById(autorId);
+		verify(repository, Mockito.never()).flush();
+		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
 	void Dado_um_autorId_em_uso_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EntidadeEmUsoException() {
 		Mockito.doThrow(new EntidadeEmUsoException(
 				String.format("Autor(a) de código %d não pode ser removido(a), pois está em uso", autorId)))
-		.when(repository).deleteById(autorId);
+		.when(repository).deleteById(anyLong());
 		
 		assertThrows(EntidadeEmUsoException.class, () -> service.excluir(autorId));
-		Mockito.verify(repository, Mockito.times(1)).deleteById(autorId);
-		Mockito.verify(repository, Mockito.never()).flush();
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).deleteById(autorId);
+		verify(repository, Mockito.never()).flush();
+		verifyNoMoreInteractions(repository);
 	}
 	 
 	 

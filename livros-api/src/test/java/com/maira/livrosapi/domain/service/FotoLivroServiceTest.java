@@ -3,7 +3,12 @@ package com.maira.livrosapi.domain.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 
 import com.maira.livrosapi.domain.exception.FotoLivroNaoEncontradaException;
 import com.maira.livrosapi.domain.model.Autor;
@@ -41,6 +47,8 @@ public class FotoLivroServiceTest {
 	
 	Long livroId;
 	
+	MockMultipartFile fotoFile;
+	
 	
 	@BeforeEach
 	void init() {
@@ -58,17 +66,22 @@ public class FotoLivroServiceTest {
 						.nomeConhecido("Machado de Assis").sexo("M").build())
 				.build();
 		
-		fotoLivro = FotoLivro.builder().id(livroId)
-				.nomeArquivo("759def9-6d60-4d84-ba57-3faad8930330")
-				.descricao("Capa_"+livroId).contentType("image/jpeg")
-				.tamanho(678L).livro(livro)
+		fotoLivro = FotoLivro.builder()
+				.id(livroId)
+				.nomeArquivo("teste")
+				.descricao("Capa_"+livroId)
+				.contentType("image/jpeg")
+				.tamanho(678L)
+				.livro(livro)
 				.build();
+		
+		fotoFile = new MockMultipartFile("foto", "foto", "image/jpeg", "foto".getBytes());
 	}
 	
 	
 	@Test
 	void Dado_um_livroId_valido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_retornar_um_fotoLivro_com_id() {
-		Mockito.when(repository.findFotoById(Mockito.anyLong()))
+		when(repository.findFotoById(anyLong()))
 			.thenAnswer(answer -> {
 				Long livroIdPassado = answer.getArgument(0, Long.class);
 				fotoLivro.setId(livroIdPassado);
@@ -79,14 +92,14 @@ public class FotoLivroServiceTest {
 		
 		assertInstanceOf(FotoLivro.class, fotoLivroRetornado);
 		assertEquals(livroId, fotoLivroRetornado.getId());
-		Mockito.verify(repository, Mockito.times(1)).findFotoById(livroId);
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).findFotoById(livroId);
+		verifyNoMoreInteractions(repository);
 	}
 	
 	
 	@Test
 	void Dado_um_livroId_invalido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_FotoLivroNaoEncontradoException() {
-		Mockito.when(repository.findFotoById(Mockito.anyLong()))
+		when(repository.findFotoById(anyLong()))
 			.thenAnswer(answer -> {
 				Long livroIdPassado = answer.getArgument(0, Long.class);
 				throw new FotoLivroNaoEncontradaException(livroIdPassado);
@@ -96,14 +109,14 @@ public class FotoLivroServiceTest {
 				assertThrows(FotoLivroNaoEncontradaException.class, () -> service.buscarOuFalhar(livroId));
 		
 		assertEquals(e.getMessage(), String.format("Não existe um cadastro de foto para o livro com código %d", livroId));
-		Mockito.verify(repository, Mockito.times(1)).findFotoById(livroId);
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).findFotoById(livroId);
+		verifyNoMoreInteractions(repository);
 	}
 	
 	
 	@Test
 	void Dado_um_livroId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_fotoLivro () {
-		Mockito.when(repository.findFotoById(Mockito.anyLong()))
+		when(repository.findFotoById(anyLong()))
 		.thenAnswer(answer -> {
 			Long livroIdPassado = answer.getArgument(0, Long.class);
 			fotoLivro.setId(livroIdPassado);
@@ -115,18 +128,18 @@ public class FotoLivroServiceTest {
 		
 		service.excluir(livroId);
 		
-		Mockito.verify(repository, Mockito.times(1)).delete(fotoLivro);
-		Mockito.verify(repository, Mockito.times(1)).flush();
-		Mockito.verifyNoMoreInteractions(repository);
+		verify(repository, Mockito.times(1)).delete(fotoLivro);
+		verify(repository, Mockito.times(1)).flush();
+		verifyNoMoreInteractions(repository);
 		
-		Mockito.verify(fotoStorage, Mockito.times(1)).remover(fotoLivro.getNomeArquivo());
-		Mockito.verifyNoMoreInteractions(fotoStorage);
+		verify(fotoStorage, Mockito.times(1)).remover(fotoLivro.getNomeArquivo());
+		verifyNoMoreInteractions(fotoStorage);
 	}
 	
 	
 	@Test
 	void Dado_um_livroId_invalido_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_FotoLivroNaoEncontradoException() {
-		Mockito.when(repository.findFotoById(Mockito.anyLong()))
+		when(repository.findFotoById(anyLong()))
 		.thenAnswer(answer -> {
 			Long livroIdPassado = answer.getArgument(0, Long.class);
 			throw new FotoLivroNaoEncontradaException(livroIdPassado);
@@ -136,14 +149,39 @@ public class FotoLivroServiceTest {
 				assertThrows(FotoLivroNaoEncontradaException.class, () -> service.buscarOuFalhar(livroId));
 		
 		assertEquals(e.getMessage(), String.format("Não existe um cadastro de foto para o livro com código %d", livroId));
-		Mockito.verify(repository, Mockito.times(1)).findFotoById(livroId);
+		verify(repository, Mockito.times(1)).findFotoById(livroId);
 		
-		Mockito.verify(repository, Mockito.never()).delete(fotoLivro);
-		Mockito.verify(repository, Mockito.never()).flush();
+		verify(repository, Mockito.never()).delete(fotoLivro);
+		verify(repository, Mockito.never()).flush();
 		
-		Mockito.verifyNoMoreInteractions(repository);
+		verifyNoMoreInteractions(repository);
 		
-		Mockito.verify(fotoStorage, Mockito.never()).remover(fotoLivro.getNomeArquivo());
+		verify(fotoStorage, Mockito.never()).remover(fotoLivro.getNomeArquivo());
+	}
+	
+	
+	@Test
+	void Dado_um_fotoLivro_e_inputStream_validos_Quando_salvar_Entao_deve_retornar_um_fotoLivro() throws IOException {
+		
+		when(repository.findFotoById(anyLong()))
+		.thenAnswer(answer -> {
+			return Optional.empty();
+		});
+		
+		when(repository.save(Mockito.any(FotoLivro.class)))
+		.thenAnswer(answer -> {
+			return answer.getArgument(0, FotoLivro.class);
+		});
+		
+		FotoLivro fotoLivroSalvo = service.salvar(fotoLivro, fotoFile.getInputStream());
+		
+		assertInstanceOf(FotoLivro.class, fotoLivroSalvo);
+		assertEquals(fotoLivro.getId(), fotoLivroSalvo.getId());
+		
+		verify(repository, Mockito.never()).delete(fotoLivro);
+		verify(repository, Mockito.times(1)).save(fotoLivro);
+		verify(repository, Mockito.times(1)).flush();
+		verifyNoMoreInteractions(repository);
 	}
 	
 }
