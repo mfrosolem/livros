@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,6 +33,7 @@ import com.maira.livrosapi.api.exception.ApiExceptionHandler;
 import com.maira.livrosapi.api.model.AutorModel;
 import com.maira.livrosapi.api.model.input.AutorInput;
 import com.maira.livrosapi.domain.exception.AutorNaoEncontradoException;
+import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.model.Autor;
 import com.maira.livrosapi.domain.repository.AutorRepository;
 import com.maira.livrosapi.domain.service.AutorService;
@@ -139,6 +141,49 @@ public class AutorControllerTest {
 		verifyNoMoreInteractions(service);		
 	}
 	
+	
+	@Test
+	void Dado_um_autor_valido_Quando_chamar_PUT_Entao_deve_retornar_status_200() throws Exception { 
+		
+		Mockito.when(service.buscarOuFalhar(anyLong())).thenReturn(autor);
+		
+		when(service.salvar(Mockito.any(Autor.class))).thenReturn(autor);
+		
+		when(autorModelAssembler.toModel(Mockito.any(Autor.class))).thenReturn(autorModel);
+		
+		var objectMapper = new ObjectMapper();
+		
+		mockMvc.perform(put("/autores/{autorId}", autorId)
+				.contentType("application/json")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(autorInput)))
+		.andExpect(status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(autorId));
+		
+		verify(service, Mockito.times(1)).salvar(Mockito.any(Autor.class));
+		verifyNoMoreInteractions(service);	
+		
+	}
+	
+	@Test
+	void Dado_um_autorId_invalido_Quando_chamar_PUT_Entao_deve_retornar_status_404() throws Exception { 
+		when(service.buscarOuFalhar(autorId)).thenThrow(new AutorNaoEncontradoException(autorId));
+		
+		var objectMapper = new ObjectMapper();
+		
+		mockMvc.perform(put("/autores/{autorId}", autorId)
+				.contentType("application/json")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(autorInput)))
+		.andExpect(status().isNotFound())
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof AutorNaoEncontradoException));
+		
+		verify(service, Mockito.never()).salvar(Mockito.any(Autor.class));
+		verifyNoMoreInteractions(service);	
+		
+	}
+	
 	@Test
 	void Dado_um_autorId_valido_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_204() throws Exception {
 		Mockito.doNothing().when(service).excluir(Mockito.anyLong());
@@ -151,6 +196,34 @@ public class AutorControllerTest {
 		verify(service, Mockito.times(1)).excluir(anyLong());
 		verifyNoMoreInteractions(service);	
 		
+	} 
+	
+	@Test
+	void Dado_um_autorId_invalido_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_404() throws Exception {
+		Mockito.doThrow(AutorNaoEncontradoException.class).when(service).excluir(Mockito.anyLong());
+
+		mockMvc.perform(delete("/autores/{autorId}",autorId)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().isNotFound())
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof AutorNaoEncontradoException))
+		.andReturn();
+
+		verify(service, Mockito.times(1)).excluir(anyLong());
+		verifyNoMoreInteractions(service);	
+	} 
+	
+	@Test
+	void Dado_um_autorId_valido_em_uso_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_409() throws Exception {
+		Mockito.doThrow(EntidadeEmUsoException.class).when(service).excluir(Mockito.anyLong());
+
+		mockMvc.perform(delete("/autores/{autorId}",autorId)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().isConflict())
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof EntidadeEmUsoException))
+		.andReturn();
+
+		verify(service, Mockito.times(1)).excluir(anyLong());
+		verifyNoMoreInteractions(service);	
 	} 
 
 }

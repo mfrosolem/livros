@@ -2,14 +2,18 @@ package com.maira.livrosapi.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -20,6 +24,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -33,6 +39,7 @@ import com.maira.livrosapi.api.assembler.GeneroModelAssembler;
 import com.maira.livrosapi.api.exception.ApiExceptionHandler;
 import com.maira.livrosapi.api.model.GeneroModel;
 import com.maira.livrosapi.api.model.input.GeneroInput;
+import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.GeneroNaoEncontradoException;
 import com.maira.livrosapi.domain.model.Genero;
 import com.maira.livrosapi.domain.repository.GeneroRepository;
@@ -83,6 +90,12 @@ public class GeneroControllerTest {
 		generoModel = GeneroModel.builder().id(1L).descricao("Romance").build();
 	}
 	
+	
+	void Quando_chamar_GET_Entao_deve_retornar_status_200() {
+		
+		when(repository.findByDescricaoContaining(anyString(), Mockito.any(Pageable.class)))
+		.thenReturn(new PageImpl<Genero>(Collections.singletonList(genero)));
+	}
 	
 	
 	@Test
@@ -139,6 +152,50 @@ public class GeneroControllerTest {
 		
 	}
 	
+	
+	@Test
+	void Dado_um_genero_valido_Quando_chamar_PUT_Entao_deve_retornar_status_200() throws Exception { 
+		
+		Mockito.when(service.buscarOuFalhar(anyLong())).thenReturn(genero);
+		
+		when(service.salvar(Mockito.any(Genero.class))).thenReturn(genero);
+		
+		when(generoModelAssembler.toModel(Mockito.any(Genero.class))).thenReturn(generoModel);
+		
+		var objectMapper = new ObjectMapper();
+		
+		mockMvc.perform(put("/generos/{generoId}", generoId)
+				.contentType("application/json")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(generoInput)))
+		.andExpect(status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(generoId));
+		
+		verify(service, Mockito.times(1)).salvar(Mockito.any(Genero.class));
+		verifyNoMoreInteractions(service);	
+		
+	}
+	
+	
+	@Test
+	void Dado_um_generoId_invalido_Quando_chamar_PUT_Entao_deve_retornar_status_404() throws Exception { 
+		when(service.buscarOuFalhar(generoId)).thenThrow(new GeneroNaoEncontradoException(generoId));
+		
+		var objectMapper = new ObjectMapper();
+		
+		mockMvc.perform(put("/generos/{generoId}", generoId)
+				.contentType("application/json")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(generoInput)))
+		.andExpect(status().isNotFound())
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof GeneroNaoEncontradoException));
+		
+		verify(service, Mockito.never()).salvar(Mockito.any(Genero.class));
+		verifyNoMoreInteractions(service);	
+		
+	}
+	
 	@Test
 	void Dado_um_generoId_valido_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_204() throws Exception {
 		Mockito.doNothing().when(service).excluir(Mockito.anyLong());
@@ -151,6 +208,34 @@ public class GeneroControllerTest {
 		verify(service, Mockito.times(1)).excluir(anyLong());
 		verifyNoMoreInteractions(service);	
 		
+	} 
+	
+	@Test
+	void Dado_um_generoId_invalido_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_404() throws Exception {
+		Mockito.doThrow(GeneroNaoEncontradoException.class).when(service).excluir(Mockito.anyLong());
+
+		mockMvc.perform(delete("/generos/{generoId}",generoId)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().isNotFound())
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof GeneroNaoEncontradoException))
+		.andReturn();
+
+		verify(service, Mockito.times(1)).excluir(anyLong());
+		verifyNoMoreInteractions(service);	
+	} 
+	
+	@Test
+	void Dado_um_generoId_valido_em_uso_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_409() throws Exception {
+		Mockito.doThrow(EntidadeEmUsoException.class).when(service).excluir(Mockito.anyLong());
+
+		mockMvc.perform(delete("/generos/{generoId}",generoId)
+				.contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().isConflict())
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof EntidadeEmUsoException))
+		.andReturn();
+
+		verify(service, Mockito.times(1)).excluir(anyLong());
+		verifyNoMoreInteractions(service);	
 	} 
 
 }
