@@ -90,12 +90,7 @@ public class GeneroControllerTest {
 		generoModel = GeneroModel.builder().id(1L).descricao("Romance").build();
 	}
 	
-	
-	void Quando_chamar_GET_Entao_deve_retornar_status_200() {
-		
-		when(repository.findByDescricaoContaining(anyString(), Mockito.any(Pageable.class)))
-		.thenReturn(new PageImpl<Genero>(Collections.singletonList(genero)));
-	}
+
 	
 	
 	@Test
