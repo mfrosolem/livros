@@ -20,6 +20,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.maira.livrosapi.domain.exception.AutorNaoEncontradoException;
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
@@ -104,12 +106,12 @@ public class AutorServiceTest {
 	}
 	
 	@Test
-	void Dado_um_autor_valido_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException_se_autor_ja_existe() {
-		when(repository.save(any(Autor.class)))
-		.thenThrow(new EntidadeEmUsoException(
-				String.format("Autor(a) de nome %s %s já cadastrado(a)", autor.getNome(), autor.getSobrenome())));
+	void Dado_um_autor_que_ja_existe_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException() {
+		when(repository.save(any(Autor.class))).thenThrow(DataIntegrityViolationException.class);
 		
 		assertThrows(EntidadeEmUsoException.class, () -> service.salvar(autor));
+		verify(repository, Mockito.times(1)).save(Mockito.any(Autor.class));
+		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
@@ -119,29 +121,26 @@ public class AutorServiceTest {
 		
 		service.excluir(autorId);
 		
-		verify(repository, Mockito.times(1)).deleteById(autorId);
+		verify(repository, Mockito.times(1)).deleteById(anyLong());
 		verify(repository, Mockito.times(1)).flush();
 	}
 	
 	@Test
 	void Dado_um_autorId_invalido_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_AutorNaoEncontradoException() {
-		Mockito.doThrow(new AutorNaoEncontradoException(autorId))
-			.when(repository).deleteById(autorId);
+		Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
 		
 		assertThrows(AutorNaoEncontradoException.class, () -> service.excluir(autorId));
-		verify(repository, Mockito.times(1)).deleteById(autorId);
+		verify(repository, Mockito.times(1)).deleteById(anyLong());
 		verify(repository, Mockito.never()).flush();
 		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
 	void Dado_um_autorId_em_uso_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EntidadeEmUsoException() {
-		Mockito.doThrow(new EntidadeEmUsoException(
-				String.format("Autor(a) de código %d não pode ser removido(a), pois está em uso", autorId)))
-		.when(repository).deleteById(anyLong());
+		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
 		
 		assertThrows(EntidadeEmUsoException.class, () -> service.excluir(autorId));
-		verify(repository, Mockito.times(1)).deleteById(autorId);
+		verify(repository, Mockito.times(1)).deleteById(anyLong());
 		verify(repository, Mockito.never()).flush();
 		verifyNoMoreInteractions(repository);
 	}

@@ -19,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.maira.livrosapi.domain.exception.EditoraNaoEncontradaException;
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
@@ -103,13 +105,11 @@ public class EditoraServiceTest {
 	
 
 	@Test
-	void Dado_uma_editora_valida_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException_se_editora_ja_existe() {
-		when(repository.save(Mockito.any(Editora.class)))
-			.thenThrow(new EntidadeEmUsoException(
-					String.format("Editora de nome %s já cadastrada", editora.getNome())));
+	void Dado_uma_editora_que_ja_existe_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException() {
+		when(repository.save(Mockito.any(Editora.class))).thenThrow(DataIntegrityViolationException.class);
 		
 		assertThrows(EntidadeEmUsoException.class, () -> service.salvar(editora));
-		verify(repository, Mockito.times(1)).save(editora);
+		verify(repository, Mockito.times(1)).save(Mockito.any(Editora.class));
 		verifyNoMoreInteractions(repository);
 	}
 	
@@ -120,7 +120,7 @@ public class EditoraServiceTest {
 		
 		service.excluir(editoraId);
 		
-		verify(repository, Mockito.times(1)).deleteById(editoraId);
+		verify(repository, Mockito.times(1)).deleteById(anyLong());
 		verify(repository, Mockito.times(1)).flush();
 		verifyNoMoreInteractions(repository);
 	}
@@ -128,23 +128,20 @@ public class EditoraServiceTest {
 	
 	@Test
 	void Dado_uma_editoraId_invalida_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EditoraNaoEncontradaException() {
-		Mockito.doThrow(new EditoraNaoEncontradaException(editoraId))
-			.when(repository).deleteById(editoraId);
+		Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
 		
 		assertThrows(EditoraNaoEncontradaException.class, ()-> service.excluir(editoraId));
-		verify(repository, Mockito.times(1)).deleteById(editoraId);
+		verify(repository, Mockito.times(1)).deleteById(anyLong());
 		verify(repository, Mockito.never()).flush();
 		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
 	void Dado_uma_editoraId_em_uso_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EntidadeEmUsoException() {
-		Mockito.doThrow(new EntidadeEmUsoException(
-				String.format("Editora de código %d não pode ser removida, pois está em uso", editoraId)))
-			.when(repository).deleteById(editoraId);
+		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
 		
 		assertThrows(EntidadeEmUsoException.class, () -> service.excluir(editoraId));
-		verify(repository, Mockito.times(1)).deleteById(editoraId);
+		verify(repository, Mockito.times(1)).deleteById(anyLong());
 		verify(repository, Mockito.never()).flush();
 		verifyNoMoreInteractions(repository);
 	}

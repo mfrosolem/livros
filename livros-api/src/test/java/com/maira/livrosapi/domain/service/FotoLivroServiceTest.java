@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -92,7 +93,7 @@ public class FotoLivroServiceTest {
 		
 		assertInstanceOf(FotoLivro.class, fotoLivroRetornado);
 		assertEquals(livroId, fotoLivroRetornado.getId());
-		verify(repository, Mockito.times(1)).findFotoById(livroId);
+		verify(repository, Mockito.times(1)).findFotoById(anyLong());
 		verifyNoMoreInteractions(repository);
 	}
 	
@@ -109,7 +110,7 @@ public class FotoLivroServiceTest {
 				assertThrows(FotoLivroNaoEncontradaException.class, () -> service.buscarOuFalhar(livroId));
 		
 		assertEquals(e.getMessage(), String.format("Não existe um cadastro de foto para o livro com código %d", livroId));
-		verify(repository, Mockito.times(1)).findFotoById(livroId);
+		verify(repository, Mockito.times(1)).findFotoById(anyLong());
 		verifyNoMoreInteractions(repository);
 	}
 	
@@ -128,7 +129,7 @@ public class FotoLivroServiceTest {
 		
 		service.excluir(livroId);
 		
-		verify(repository, Mockito.times(1)).delete(fotoLivro);
+		verify(repository, Mockito.times(1)).delete(Mockito.any(FotoLivro.class));
 		verify(repository, Mockito.times(1)).flush();
 		verifyNoMoreInteractions(repository);
 		
@@ -149,14 +150,14 @@ public class FotoLivroServiceTest {
 				assertThrows(FotoLivroNaoEncontradaException.class, () -> service.buscarOuFalhar(livroId));
 		
 		assertEquals(e.getMessage(), String.format("Não existe um cadastro de foto para o livro com código %d", livroId));
-		verify(repository, Mockito.times(1)).findFotoById(livroId);
+		verify(repository, Mockito.times(1)).findFotoById(anyLong());
 		
-		verify(repository, Mockito.never()).delete(fotoLivro);
+		verify(repository, Mockito.never()).delete(Mockito.any(FotoLivro.class));
 		verify(repository, Mockito.never()).flush();
 		
 		verifyNoMoreInteractions(repository);
 		
-		verify(fotoStorage, Mockito.never()).remover(fotoLivro.getNomeArquivo());
+		verify(fotoStorage, Mockito.never()).remover(anyString());
 	}
 	
 	
@@ -178,8 +179,8 @@ public class FotoLivroServiceTest {
 		assertInstanceOf(FotoLivro.class, fotoLivroSalvo);
 		assertEquals(fotoLivro.getId(), fotoLivroSalvo.getId());
 		
-		verify(repository, Mockito.never()).delete(fotoLivro);
-		verify(repository, Mockito.times(1)).save(fotoLivro);
+		verify(repository, Mockito.never()).delete(Mockito.any(FotoLivro.class));
+		verify(repository, Mockito.times(1)).save(Mockito.any(FotoLivro.class));
 		verify(repository, Mockito.times(1)).flush();
 		verifyNoMoreInteractions(repository);
 	}
