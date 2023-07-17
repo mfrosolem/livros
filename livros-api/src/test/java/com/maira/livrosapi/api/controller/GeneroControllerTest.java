@@ -1,5 +1,6 @@
 package com.maira.livrosapi.api.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -15,17 +16,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -74,13 +80,13 @@ public class GeneroControllerTest {
 	private Genero generoSemId;
 	private Long generoId;
 	
-	
 	@BeforeEach
 	public void init() {
 		
 		mockMvc = MockMvcBuilders.standaloneSetup(controller)
 				.alwaysDo(print())
 				.setControllerAdvice(ApiExceptionHandler.class)
+				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
 				.build();
 		
 		generoId = 1L;
@@ -88,9 +94,96 @@ public class GeneroControllerTest {
 		generoSemId = Genero.builder().descricao("Romance").build();
 		genero = Genero.builder().id(1L).descricao("Romance").build();
 		generoModel = GeneroModel.builder().id(1L).descricao("Romance").build();
+		
 	}
 	
+	
+	@Test
+	void Quando_chamar_GET_Entao_deve_retornar_status_200() throws Exception {
+		
+		when(repository.findByDescricaoContaining(anyString(), Mockito.any(Pageable.class)))
+		.thenAnswer(answer -> {
+			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
+			Page<Genero> pageGenero = new PageImpl<Genero>(Collections.singletonList(genero), pageableParametro, 1);
+			return pageGenero;
+		});
+		
+		when(generoModelAssembler.toCollectionModel(Mockito.anyList()))
+			.thenReturn(Collections.singletonList(generoModel));
+				
+		mockMvc.perform(get("/generos"))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1)))
+		.andExpect(MockMvcResultMatchers.jsonPath("$['pageable']['paged']").value("true"))
+		.andDo(MockMvcResultHandlers.print());
+		
+		verify(repository, Mockito.times(1)).findByDescricaoContaining(anyString(), Mockito.any(Pageable.class));
+		
+	}
+	
+	@Test
+	void Quando_chamar_GET_passando_descricao_Entao_deve_retornar_status_200() throws Exception {
+		var descricaoFiltro = "Romance";
+		when(repository.findByDescricaoContaining(anyString(), Mockito.any(Pageable.class)))
+		.thenAnswer(answer -> {
+			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
+			Page<Genero> pageGenero = new PageImpl<Genero>(Collections.singletonList(genero), pageableParametro, 1);
+			return pageGenero;
+		});
 
+		when(generoModelAssembler.toCollectionModel(Mockito.anyList()))
+			.thenReturn(Collections.singletonList(generoModel));
+
+		mockMvc.perform(get("/generos")
+				.param("descricao", descricaoFiltro))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1)))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content[0].descricao").value(descricaoFiltro))
+		.andExpect(MockMvcResultMatchers.jsonPath("$['pageable']['paged']").value("true"))
+		.andDo(MockMvcResultHandlers.print());
+		
+		verify(repository, Mockito.times(1)).findByDescricaoContaining(anyString(), Mockito.any(Pageable.class));
+		
+	}
+	
+	@Test
+	void Quando_chamar_GET_passando_pageable_Entao_deve_retornar_status_200() throws Exception {
+
+		when(repository.findByDescricaoContaining(anyString(), Mockito.any(Pageable.class)))
+		.thenAnswer(answer -> {
+			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
+			Page<Genero> pageGenero = new PageImpl<Genero>(Collections.singletonList(genero), pageableParametro, 1);
+			return pageGenero;
+		});
+		
+		when(generoModelAssembler.toCollectionModel(Mockito.anyList()))
+			.thenReturn(Collections.singletonList(generoModel));
+
+		mockMvc.perform(get("/generos")
+				.param("page", "0")
+		        .param("size", "20")
+		        .param("sort", "descricao,asc"))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1)))
+		.andExpect(MockMvcResultMatchers.jsonPath("$['pageable']['paged']").value("true"))
+		.andExpect(MockMvcResultMatchers.jsonPath("$['sort']['sorted']").value("true"))
+		.andDo(MockMvcResultHandlers.print());
+		
+		ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+		
+		verify(repository, Mockito.times(1)).findByDescricaoContaining(anyString(), pageableCaptor.capture());
+		PageRequest pageable = (PageRequest) pageableCaptor.getValue();
+	    
+	    assertEquals(0, pageable.getPageNumber());
+	    assertEquals(20, pageable.getPageSize());
+
+	}
 	
 	
 	@Test

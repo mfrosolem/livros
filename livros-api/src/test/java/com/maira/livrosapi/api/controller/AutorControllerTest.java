@@ -1,7 +1,9 @@
 package com.maira.livrosapi.api.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -12,17 +14,27 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Collections;
+
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -73,6 +85,7 @@ public class AutorControllerTest {
 		mockMvc = MockMvcBuilders.standaloneSetup(controller)
 				.alwaysDo(print())
 				.setControllerAdvice(ApiExceptionHandler.class)
+				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
 				.build();
 		
 		autor = Autor.builder().id(1L).nome("Joaquim Maria").sobrenome("Machado de Assis")
@@ -90,6 +103,95 @@ public class AutorControllerTest {
 		autorId = 1L;
 		
 	}
+	
+	
+	@Test
+	void Quando_chamar_GET_Entao_deve_retornar_status_200() throws Exception {
+		
+		when(repository.findByNomeContaining(anyString(), Mockito.any(Pageable.class)))
+		.thenAnswer(answer -> {
+			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
+			Page<Autor> pageAutor = new PageImpl<Autor>(Collections.singletonList(autor), pageableParametro, 1);
+			return pageAutor;
+		});
+		
+		when(autorModelAssembler.toCollectionModel(Mockito.anyList()))
+			.thenReturn(Collections.singletonList(autorModel));
+				
+		mockMvc.perform(get("/autores"))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1)))
+		.andExpect(MockMvcResultMatchers.jsonPath("$['pageable']['paged']").value("true"))
+		.andDo(MockMvcResultHandlers.print());
+		
+		verify(repository, Mockito.times(1)).findByNomeContaining(anyString(), Mockito.any(Pageable.class));
+		
+	}
+	
+	@Test
+	void Quando_chamar_GET_passando_nome_Entao_deve_retornar_status_200() throws Exception {
+		var nomeFiltro = "Joaquim Maria";
+		when(repository.findByNomeContaining(anyString(), Mockito.any(Pageable.class)))
+		.thenAnswer(answer -> {
+			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
+			Page<Autor> pageAutor = new PageImpl<Autor>(Collections.singletonList(autor), pageableParametro, 1);
+			return pageAutor;
+		});
+
+		when(autorModelAssembler.toCollectionModel(Mockito.anyList()))
+			.thenReturn(Collections.singletonList(autorModel));
+
+		mockMvc.perform(get("/autores")
+				.param("nome", nomeFiltro))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1)))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content[0].nome").value(nomeFiltro))
+		.andExpect(MockMvcResultMatchers.jsonPath("$['pageable']['paged']").value("true"))
+		.andDo(MockMvcResultHandlers.print());
+		
+		verify(repository, Mockito.times(1)).findByNomeContaining(anyString(), Mockito.any(Pageable.class));
+		
+	}
+	
+	@Test
+	void Quando_chamar_GET_passando_pageable_Entao_deve_retornar_status_200() throws Exception {
+
+		when(repository.findByNomeContaining(anyString(), Mockito.any(Pageable.class)))
+		.thenAnswer(answer -> {
+			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
+			Page<Autor> pageAutor = new PageImpl<Autor>(Collections.singletonList(autor), pageableParametro, 1);
+			return pageAutor;
+		});
+		
+		when(autorModelAssembler.toCollectionModel(Mockito.anyList()))
+			.thenReturn(Collections.singletonList(autorModel));
+
+		mockMvc.perform(get("/autores")
+				.param("page", "0")
+		        .param("size", "20")
+		        .param("sort", "nome,asc"))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1)))
+		.andExpect(MockMvcResultMatchers.jsonPath("$['pageable']['paged']").value("true"))
+		.andExpect(MockMvcResultMatchers.jsonPath("$['sort']['sorted']").value("true"))
+		.andDo(MockMvcResultHandlers.print());
+		
+		ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+		
+		verify(repository, Mockito.times(1)).findByNomeContaining(anyString(), pageableCaptor.capture());
+		PageRequest pageable = (PageRequest) pageableCaptor.getValue();
+	    
+	    assertEquals(0, pageable.getPageNumber());
+	    assertEquals(20, pageable.getPageSize());
+
+	}
+	
 	
 	@Test
 	void Dado_um_autorId_valido_Quando_chamar_GET_Entao_deve_retornar_o_autor() throws Exception {
