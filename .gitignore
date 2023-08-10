@@ -16,3 +16,4 @@ livros-ui-bootstrap/.angular
 livros-ui-bootstrap/.vscode
 livros-ui-bootstrap/node_modules
 livros-ui-bootstrap/.browserslistrc
+livros-ui-bootstrap/package-lock.json
