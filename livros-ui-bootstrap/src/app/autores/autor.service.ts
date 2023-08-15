@@ -17,6 +17,55 @@ export class AutorFilter {
   }
 }
 
+class AutorInput {
+  nome?: string;
+  sobrenome?: string;
+  nomeConhecido?: string;
+  sexo?: string;
+  dataNascimento?: Date;
+  dataFalecimento?: Date;
+  paisNascimento?: string;
+  estadoNascimento?: string;
+  cidadeNascimento?: string;
+  biografia?: string;
+  urlSiteOficial?: string;
+  urlFacebook?: string;
+  urlTwitter?: string;
+  urlWikipedia?: string;
+
+  constructor(nome?: string,
+    sobrenome?: string,
+    nomeConhecido?: string,
+    sexo?: string,
+    dataNascimento?: Date,
+    dataFalecimento?: Date,
+    paisNascimento?: string,
+    estadoNascimento?: string,
+    cidadeNascimento?: string,
+    biografia?: string,
+    urlSiteOficial?: string,
+    urlFacebook?: string,
+    urlTwitter?: string,
+    urlWikipedia?: string) {
+
+    this.nome = nome;  
+    this.sobrenome = sobrenome;
+    this.nomeConhecido = nomeConhecido;
+    this.sexo = sexo;
+    this.dataNascimento = dataNascimento;
+    this.dataFalecimento = dataFalecimento;
+    this.paisNascimento = paisNascimento;
+    this.estadoNascimento = estadoNascimento;
+    this.cidadeNascimento = cidadeNascimento;
+    this.biografia = biografia;
+    this.urlSiteOficial = urlSiteOficial;
+    this.urlFacebook = urlFacebook;
+    this.urlTwitter = urlTwitter;
+    this.urlWikipedia = urlWikipedia;
+
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -69,10 +118,11 @@ export class AutorService {
   }
 
   save(record: Partial<Autor>) {
+    const input = this.parseToInput(record);
     if (record.id) {
-      return this.update(record);
+      return this.update(record.id, input);
     } else {
-      return this.create(record);
+      return this.create(input);
     }
   }
 
@@ -81,12 +131,20 @@ export class AutorService {
   }
 
 
-  private create(record: Partial<Autor>) {
+  private create(record: AutorInput) {
     return this.http.post<Autor>(this.API, record).pipe(take(1));
   }
 
-  private update(record: Partial<Autor>) {
-    return this.http.put<Autor>(`${this.API}/${record.id}`, record).pipe(take(1));
+  private update(id: number, record: AutorInput) {
+    return this.http.put<Autor>(`${this.API}/${id}`, record).pipe(take(1));
+  }
+
+  private parseToInput(record: Partial<Autor>) : AutorInput {
+    const input = new AutorInput(record.nome, record.sobrenome, record.nomeConhecido, record.sexo, record.dataNascimento,
+      record.dataFalecimento, record.paisNascimento, record.estadoNascimento, record.cidadeNascimento, record.biografia,
+      record.urlSiteOficial, record.urlFacebook, record.urlTwitter, record.urlWikipedia);
+
+    return input;
   }
 
 

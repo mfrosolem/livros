@@ -31,7 +31,7 @@ export class AutorCadastroComponent implements OnInit {
     biografia: [null],
     urlSiteOficial: [null, [Validators.maxLength(100)]],
     urlFacebook: [null, [Validators.maxLength(100)]],
-    ultTwitter: [null, [Validators.maxLength(100)]],
+    urlTwitter: [null, [Validators.maxLength(100)]],
     urlWikipedia: [null, [Validators.maxLength(100)]]
   });
 
@@ -109,7 +109,7 @@ export class AutorCadastroComponent implements OnInit {
       biografia: autor.biografia,
       urlSiteOficial: autor.urlSiteOficial,
       urlFacebook: autor.urlFacebook,
-      ultTwitter: autor.ultTwitter,
+      urlTwitter: autor.urlTwitter,
       urlWikipedia: autor.urlWikipedia
     });
   }

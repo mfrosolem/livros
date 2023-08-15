@@ -24,7 +24,7 @@ export class EditoraCadastroComponent implements OnInit {
     nome: [null, [Validators.required, Validators.maxLength(60)]],
     urlSiteOficial: [null, [Validators.maxLength(100)]],
     urlFacebook: [null, [Validators.maxLength(100)]],
-    ultTwitter: [null, [Validators.maxLength(100)]],
+    urlTwitter: [null, [Validators.maxLength(100)]],
     urlWikipedia: [null, [Validators.maxLength(100)]]
   });
 
@@ -90,7 +90,7 @@ export class EditoraCadastroComponent implements OnInit {
       nome: editora.nome,
       urlSiteOficial: editora.urlSiteOficial,
       urlFacebook: editora.urlFacebook,
-      ultTwitter: editora.ultTwitter,
+      urlTwitter: editora.urlTwitter,
       urlWikipedia: editora.urlWikipedia
     });
   }

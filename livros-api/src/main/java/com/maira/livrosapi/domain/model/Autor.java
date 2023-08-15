@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Autor {
 
+
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,10 +40,8 @@ public class Autor {
 
 	private String sexo;
 
-	@Column(columnDefinition = "datetime")
 	private LocalDate dataNascimento;
 
-	@Column(columnDefinition = "datetime")
 	private LocalDate dataFalecimento;
 
 	private String paisNascimento;
@@ -57,7 +56,7 @@ public class Autor {
 
 	private String urlFacebook;
 
-	private String ultTwitter;
+	private String urlTwitter;
 	
 	private String urlWikipedia;
 	

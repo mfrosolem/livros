@@ -17,6 +17,13 @@ export class GeneroFilter {
   }
 }
 
+class GeneroInput {
+  descricao?: string;
+  constructor(descricao?: string) {
+    this.descricao = descricao;
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -68,10 +75,11 @@ export class GeneroService {
   }
 
   save(record: Partial<Genero>) {
+    const generoSalvar = new GeneroInput(record.descricao);
     if (record.id) {
-      return this.update(record);
+      return this.update(record.id, generoSalvar);
     } else {
-      return this.create(record);
+      return this.create(generoSalvar);
     }
   }
 
@@ -79,12 +87,13 @@ export class GeneroService {
     return this.http.delete<void>(`${this.API}/${codigo}`).pipe(take(1));
   }
 
-  private create(record: Partial<Genero>) {
-    return this.http.post<Genero>(this.API, record).pipe(take(1));
+  private create(record: GeneroInput) {
+    console.log(record)
+    return this.http.post<GeneroInput>(this.API, record).pipe(take(1));
   }
 
-  private update(record: Partial<Genero>) {
-    return this.http.put<Genero>(`${this.API}/${record.id}`, record).pipe(take(1));
+  private update(id: number, record: GeneroInput) {
+    return this.http.put<GeneroInput>(`${this.API}/${id}`, record).pipe(take(1));
   }
 
 }

@@ -52,7 +52,7 @@ public class AutorInput {
 
 	private String urlFacebook;
 
-	private String ultTwitter;
+	private String urlTwitter;
 	
 	private String urlWikipedia;
 

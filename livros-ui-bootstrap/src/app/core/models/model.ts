@@ -8,7 +8,7 @@ export interface IEditora {
   nome: string;
   urlSiteOficial: string;
   urlFacebook: string;
-  ultTwitter: string;
+  urlTwitter: string;
   urlWikipedia: string;
 }
 
@@ -26,7 +26,7 @@ export interface IAutor {
   biografia: string;
   urlSiteOficial: string;
   urlFacebook: string;
-  ultTwitter: string;
+  urlTwitter: string;
   urlWikipedia: string;
 }
 
@@ -60,7 +60,7 @@ export class Editora {
   nome?: string;
   urlSiteOficial?: string;
   urlFacebook?: string;
-  ultTwitter?: string;
+  urlTwitter?: string;
   urlWikipedia?: string;
 }
 
@@ -70,15 +70,15 @@ export class Autor {
   sobrenome?: string;
   nomeConhecido?: string;
   sexo = 'M';
-  dataNascimento: Date = new Date();
-  dataFalecimento: Date = new Date();
+  dataNascimento?: Date;
+  dataFalecimento?: Date;
   paisNascimento?: string;
   estadoNascimento?: string;
   cidadeNascimento?: string;
   biografia?: string;
   urlSiteOficial?: string;
   urlFacebook?: string;
-  ultTwitter?: string;
+  urlTwitter?: string;
   urlWikipedia?: string;
 }
 

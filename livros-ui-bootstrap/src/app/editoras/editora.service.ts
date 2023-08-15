@@ -17,6 +17,23 @@ export class EditoraFilter {
   }
 }
 
+class EditoraInput {
+
+  nome?: string;
+  urlSiteOficial?: string;
+  urlFacebook?: string;
+  urlTwitter?: string;
+  urlWikipedia?: string;
+  
+  constructor(nome?: string, urlSiteOficial?: string, urlFacebook?: string,
+    urlTwitter?: string, urlWikipedia?: string) {
+      this.nome = nome;
+      this.urlSiteOficial = urlSiteOficial;
+      this.urlFacebook = urlFacebook;
+      this.urlTwitter = urlTwitter;
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -68,10 +85,11 @@ export class EditoraService {
   }
 
   save(record: Partial<Editora>) {
+    const input = this.parseToInput(record);
     if (record.id) {
-      return this.update(record);
+      return this.update(record.id, input);
     } else {
-      return this.create(record);
+      return this.create(input);
     }
   }
 
@@ -79,12 +97,18 @@ export class EditoraService {
     return this.http.delete(`${this.API}/${codigo}`).pipe(take(1));
   }
 
-  private create(record: Partial<Editora>) {
+  private create(record: EditoraInput) {
     return this.http.post(this.API, record).pipe(take(1));
   }
 
-  private update(record: Partial<Editora>) {
-    return this.http.put<Editora>(`${this.API}/${record.id}`, record).pipe(take(1));
+  private update(id: number, record: EditoraInput) {
+    return this.http.put<Editora>(`${this.API}/${id}`, record).pipe(take(1));
+  }
+
+  private parseToInput(editora: Editora) : EditoraInput {
+    const input = new EditoraInput(editora.nome, editora.urlSiteOficial, editora.urlFacebook,
+      editora.urlTwitter, editora.urlWikipedia);
+    return input;
   }
 
 }

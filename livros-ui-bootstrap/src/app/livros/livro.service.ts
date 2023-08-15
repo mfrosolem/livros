@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-import { Livro } from './../core/models/model';
+import { Autor, Editora, Genero, Livro } from './../core/models/model';
 
 export class LivroFilter {
   titulo?: string;
@@ -14,6 +14,78 @@ export class LivroFilter {
     this.pagina = pagina;
     this.itensPorPagina = itensPorPagina;
     this.titulo = titulo;
+  }
+}
+
+class GeneroIdInput {
+  id?: number;
+
+  constructor(id?: number) {
+    this.id = id;
+  }
+}
+
+class EditoraIdInput {
+  id?: number;
+
+  constructor(id?: number) {
+    this.id = id;
+  }
+}
+
+class AutorIdInput {
+  id?: number;
+
+  constructor(id?: number) {
+    this.id = id;
+  }
+}
+
+class LivroInput {
+  isbn?: string;
+  titulo?: string;
+  subtitulo?: string;
+  idioma?: string;
+  serieColecao?: string;
+  volume?: number;
+  tradutor?: string;
+  ano?: number;
+  edicao?: number;
+  paginas?: number;
+  sinopse?: string;
+  editora?: EditoraIdInput;
+  genero?: GeneroIdInput;
+  autor?: AutorIdInput;
+
+  constructor(isbn?: string,
+    titulo?: string,
+    subtitulo?: string,
+    idioma?: string,
+    serieColecao?: string,
+    volume?: number,
+    tradutor?: string,
+    ano?: number,
+    edicao?: number,
+    paginas?: number,
+    sinopse?: string,
+    editora?: EditoraIdInput,
+    genero?: GeneroIdInput,
+    autor?: AutorIdInput) {
+
+    this.isbn = isbn;
+    this.titulo = titulo
+    this.subtitulo = subtitulo;
+    this.idioma = idioma;
+    this.serieColecao = serieColecao;
+    this.volume = volume;
+    this.tradutor = tradutor;
+    this.ano = ano;
+    this.edicao = edicao;
+    this.paginas = paginas;
+    this.sinopse = sinopse
+    this.editora = editora;
+    this.genero = genero;
+    this.autor = autor;
   }
 }
 
@@ -70,11 +142,11 @@ export class LivroService {
   }
 
   save(record: Partial<Livro>) {
-
+    const input = this.parseToInput(record);
     if (record.id) {
-      return this.update(record);
+      return this.update(record.id, input);
     } else {
-      return this.create(record);
+      return this.create(input);
     }
 
   }
@@ -108,12 +180,20 @@ export class LivroService {
     return this.http.delete(url).pipe(take(1));
   }
 
-  private create(record: Partial<Livro>) {
+  private create(record: Partial<LivroInput>) {
     return this.http.post(this.API, record).pipe(take(1));
   }
 
-  private update(record: Partial<Livro>) {
-    return this.http.put<Livro>(`${this.API}/${record.id}`, record).pipe(take(1));
+  private update(id: number, record: Partial<LivroInput>) {
+    return this.http.put<Livro>(`${this.API}/${id}`, record).pipe(take(1));
+  }
+
+  private parseToInput(record: Partial<Livro>) : LivroInput {
+    const input = new LivroInput(record.isbn, record.titulo, record.subtitulo, record.idioma, record.serieColecao,
+      record.volume, record.tradutor, record.ano, record.edicao, record.paginas, record.sinopse,
+      new EditoraIdInput(record.editora?.id), new GeneroIdInput(record.genero?.id), new AutorIdInput(record.autor?.id));
+
+      return input;
   }
 
 

@@ -18,7 +18,7 @@ public class EditoraModel {
 
 	private String urlFacebook;
 
-	private String ultTwitter;
+	private String urlTwitter;
 
 	private String urlWikipedia;
 }

@@ -2,6 +2,10 @@ package com.maira.livrosapi.api.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,9 +35,13 @@ public class AutorModel {
 	@Schema(example = "F")
 	private String sexo;
 
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@Schema(example = "1920-12-10")
 	private LocalDate dataNascimento;
 
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@Schema(example = "1977-12-09")
 	private LocalDate dataFalecimento;
 
@@ -51,7 +59,7 @@ public class AutorModel {
 
 	private String urlFacebook;
 
-	private String ultTwitter;
+	private String urlTwitter;
 
 	private String urlWikipedia;
 }
