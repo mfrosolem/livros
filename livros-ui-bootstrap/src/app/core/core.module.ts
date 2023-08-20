@@ -5,13 +5,16 @@ import { RouterModule } from '@angular/router';
 import { ErrorHandlerService } from './error-handler.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { PaginaNaoEncontradaComponent } from './pagina-nao-encontrada.component';
+import { AuthService } from '../seguranca/auth.service';
+import { PaginaNaoAutorizadaComponent } from './pagina-nao-autorizada.component';
 
 
 
 @NgModule({
   declarations: [
     NavbarComponent,
-    PaginaNaoEncontradaComponent
+    PaginaNaoEncontradaComponent,
+    PaginaNaoAutorizadaComponent
   ],
   imports: [
     CommonModule,
@@ -22,7 +25,8 @@ import { PaginaNaoEncontradaComponent } from './pagina-nao-encontrada.component'
     NavbarComponent
   ],
   providers: [
-    ErrorHandlerService
+    ErrorHandlerService,
+    AuthService
   ]
 })
 export class CoreModule { }

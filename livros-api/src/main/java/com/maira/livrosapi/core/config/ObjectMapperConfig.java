@@ -1,4 +1,4 @@
-package com.maira.livrosapi.core;
+package com.maira.livrosapi.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

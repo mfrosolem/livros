@@ -10,6 +10,7 @@ import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { GeneroFilter, GeneroService } from './../genero.service';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
+import { AuthService } from 'src/app/seguranca/auth.service';
 
 @Component({
   selector: 'app-generos-pesquisa',
@@ -38,7 +39,8 @@ export class GenerosPesquisaComponent implements OnInit {
     private toastService: ToastService,
     private title: Title,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private auth: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -91,6 +93,10 @@ export class GenerosPesquisaComponent implements OnInit {
 
   onEdit(genero: IGenero) {
     this.router.navigate(['edit', genero.id], { relativeTo: this.route });
+  }
+
+  naoTemPermissao(permissao: string) {
+    return !this.auth.hasPermission(permissao);
   }
 
   private onRefreshPagina() {

@@ -10,6 +10,7 @@ import { ILivro } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { LivroFilter, LivroService } from './../livro.service';
+import { AuthService } from 'src/app/seguranca/auth.service';
 
 @Component({
   selector: 'app-livros-pesquisa',
@@ -37,7 +38,8 @@ export class LivrosPesquisaComponent implements OnInit {
     private confirmModalService: ConfirmModalService,
     private router: Router,
     private route: ActivatedRoute,
-    private title: Title
+    private title: Title,
+    private auth: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -96,6 +98,9 @@ export class LivrosPesquisaComponent implements OnInit {
       );
   }
 
+  naoTemPermissao(permissao: string) {
+    return !this.auth.hasPermission(permissao);
+  }
 
   private onRefreshPagina() {
     this.page = 1;

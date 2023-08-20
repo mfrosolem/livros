@@ -10,6 +10,7 @@ import { IAutor } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { AutorFilter, AutorService } from './../autor.service';
+import { AuthService } from 'src/app/seguranca/auth.service';
 
 
 @Component({
@@ -39,7 +40,8 @@ export class AutoresPesquisaComponent implements OnInit {
     private confirmModalService: ConfirmModalService,
     private title: Title,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private auth: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -94,6 +96,10 @@ export class AutoresPesquisaComponent implements OnInit {
             this.errorHandlerService.handle(erro);
           }
         });
+  }
+
+  naoTemPermissao(permissao: string) {
+    return !this.auth.hasPermission(permissao);
   }
 
   private onRefreshPagina() {

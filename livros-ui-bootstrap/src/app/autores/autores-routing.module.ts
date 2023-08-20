@@ -3,11 +3,30 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AutorCadastroComponent } from './autor-cadastro/autor-cadastro.component';
 import { AutoresPesquisaComponent } from './autores-pesquisa/autores-pesquisa.component';
+import { AuthGuard } from '../seguranca/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: AutoresPesquisaComponent },
-  { path: 'new', component: AutorCadastroComponent },
-  { path: 'edit/:codigo', component: AutorCadastroComponent }
+  {
+    path: '',
+    canActivate: [AuthGuard],
+    component: AutoresPesquisaComponent,
+    data: { roles: ['ROLE_AUTOR_PESQUISAR'] }
+  },
+
+  {
+    path: 'new',
+    canActivate: [AuthGuard],
+    component: AutorCadastroComponent,
+    data: { roles: ['ROLE_AUTOR_CADASTRAR'] }
+  },
+
+  {
+    path: 'edit/:codigo',
+    canActivate: [AuthGuard],
+    component: AutorCadastroComponent,
+    data: { roles: ['ROLE_AUTOR_CADASTRAR'] }
+  }
+
 ];
 
 @NgModule({

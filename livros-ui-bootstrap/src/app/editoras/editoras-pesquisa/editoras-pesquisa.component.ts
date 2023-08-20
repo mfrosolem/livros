@@ -10,6 +10,7 @@ import { IEditora } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { EditoraFilter, EditoraService } from './../editora.service';
+import { AuthService } from 'src/app/seguranca/auth.service';
 
 
 @Component({
@@ -38,7 +39,8 @@ export class EditorasPesquisaComponent implements OnInit {
     private toastService: ToastService,
     private title: Title,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private auth: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -97,6 +99,9 @@ export class EditorasPesquisaComponent implements OnInit {
     this.router.navigate(['edit', editora.id], { relativeTo: this.route });
   }
 
+  naoTemPermissao(permissao: string) {
+    return !this.auth.hasPermission(permissao);
+  }
 
   private onRefreshPagina() {
     this.page = 1;

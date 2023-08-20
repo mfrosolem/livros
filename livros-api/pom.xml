@@ -21,6 +21,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<modelmapper.version>3.0.0</modelmapper.version>
 		<springdoc.version>2.0.0</springdoc.version>
+		<springauthserver.version>1.1.1</springauthserver.version>
 	</properties>
 	<dependencies>
 
@@ -113,6 +114,18 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
+		</dependency>
+		
+		<!-- Segurança -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-authorization-server</artifactId>
+			<version>${springauthserver.version}</version>
 		</dependency>
 		
 
