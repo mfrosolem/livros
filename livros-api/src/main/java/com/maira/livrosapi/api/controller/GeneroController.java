@@ -25,6 +25,7 @@ import com.maira.livrosapi.api.assembler.GeneroModelAssembler;
 import com.maira.livrosapi.api.model.GeneroModel;
 import com.maira.livrosapi.api.model.input.GeneroInput;
 import com.maira.livrosapi.api.openapi.controller.GeneroControllerOpenApi;
+import com.maira.livrosapi.core.security.CheckRoleSecurity;
 import com.maira.livrosapi.domain.model.Genero;
 import com.maira.livrosapi.domain.repository.GeneroRepository;
 import com.maira.livrosapi.domain.service.GeneroService;
@@ -49,6 +50,7 @@ public class GeneroController implements GeneroControllerOpenApi {
 	private GeneroInputDisassembler generoInputDisassembler;
 
 	
+	@CheckRoleSecurity.Generos.PodeConsultar
 	@GetMapping
 	public Page<GeneroModel> listar(@RequestParam(required = false, defaultValue = "") String descricao,
 			Pageable pageable) {
@@ -62,13 +64,14 @@ public class GeneroController implements GeneroControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Generos.PodeConsultar
 	@GetMapping(value = "/{generoId}")
 	public GeneroModel buscar(@PathVariable Long generoId) {
 		Genero genero = cadastroGenero.buscarOuFalhar(generoId);
 		return generoModelAssembler.toModel(genero);
 	}
 
-	
+	@CheckRoleSecurity.Generos.PodeCadastrarEditar
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public GeneroModel adicionar(@RequestBody @Valid GeneroInput generoInput) {
@@ -82,6 +85,7 @@ public class GeneroController implements GeneroControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Generos.PodeCadastrarEditar
 	@PutMapping(value = "/{generoId}")
 	public GeneroModel atualizar(@PathVariable Long generoId, @RequestBody @Valid GeneroInput generoInput) {
 		Genero generoAtual = cadastroGenero.buscarOuFalhar(generoId);
@@ -91,6 +95,7 @@ public class GeneroController implements GeneroControllerOpenApi {
 	}
 	
 
+	@CheckRoleSecurity.Generos.PodeRemover
 	@DeleteMapping(value = "/{generoId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long generoId) {

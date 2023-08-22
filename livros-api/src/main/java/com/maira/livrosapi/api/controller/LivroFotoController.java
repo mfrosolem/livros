@@ -24,6 +24,7 @@ import com.maira.livrosapi.api.assembler.FotoLivroModelAssembler;
 import com.maira.livrosapi.api.model.FotoLivroModel;
 import com.maira.livrosapi.api.model.input.FotoLivroInput;
 import com.maira.livrosapi.api.openapi.controller.LivroFotoControllerOpenApi;
+import com.maira.livrosapi.core.security.CheckRoleSecurity;
 import com.maira.livrosapi.domain.exception.EntidadeNaoEncontradaException;
 import com.maira.livrosapi.domain.model.FotoLivro;
 import com.maira.livrosapi.domain.model.Livro;
@@ -51,6 +52,7 @@ public class LivroFotoController implements LivroFotoControllerOpenApi {
 	private FotoStorageService fotoStorage;
 
 	
+	@CheckRoleSecurity.Livros.PodeCadastrarEditar
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoLivroModel atualizarFoto(@PathVariable Long livroId, @Valid FotoLivroInput fotoLivroInput)
 			throws IOException {
@@ -79,6 +81,7 @@ public class LivroFotoController implements LivroFotoControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Livros.PodeCadastrarEditar
 	@GetMapping(produces = MediaType.ALL_VALUE)
 	public ResponseEntity<InputStreamResource> servir(@PathVariable Long livroId,
 			@RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
@@ -104,6 +107,7 @@ public class LivroFotoController implements LivroFotoControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Livros.PodeRemover
 	@DeleteMapping
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> remover(@PathVariable Long livroId) {

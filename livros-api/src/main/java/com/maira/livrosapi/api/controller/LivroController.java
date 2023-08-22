@@ -25,6 +25,7 @@ import com.maira.livrosapi.api.assembler.LivroModelAssembler;
 import com.maira.livrosapi.api.model.LivroModel;
 import com.maira.livrosapi.api.model.input.LivroInput;
 import com.maira.livrosapi.api.openapi.controller.LivroControllerOpenApi;
+import com.maira.livrosapi.core.security.CheckRoleSecurity;
 import com.maira.livrosapi.domain.model.Livro;
 import com.maira.livrosapi.domain.repository.LivroRepository;
 import com.maira.livrosapi.domain.service.LivroService;
@@ -49,6 +50,7 @@ public class LivroController implements LivroControllerOpenApi {
 	private LivroInputDisassembler livroInputDisassembler;
 
 	
+	@CheckRoleSecurity.Livros.PodeConsultar
 	@GetMapping
 	public Page<LivroModel> listar(@RequestParam(required = false, defaultValue = "") String titulo,
 			Pageable pageable) {
@@ -60,6 +62,7 @@ public class LivroController implements LivroControllerOpenApi {
 		return livrosModelPage;
 	}
 
+	@CheckRoleSecurity.Livros.PodeConsultar
 	@GetMapping(value = "/{livroId}")
 	public LivroModel buscar(@PathVariable Long livroId) {
 		
@@ -69,6 +72,7 @@ public class LivroController implements LivroControllerOpenApi {
 	}
 	
 
+	@CheckRoleSecurity.Livros.PodeCadastrarEditar
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public LivroModel adicionar(@RequestBody @Valid LivroInput livroInput) {
@@ -83,6 +87,7 @@ public class LivroController implements LivroControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Livros.PodeCadastrarEditar
 	@PutMapping(value = "/{livroId}")
 	public LivroModel atualizar(@PathVariable Long livroId, @RequestBody @Valid LivroInput livroInput) {
 		
@@ -94,6 +99,7 @@ public class LivroController implements LivroControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Livros.PodeRemover
 	@DeleteMapping(value = "/{livroId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long livroId) {

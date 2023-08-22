@@ -16,7 +16,7 @@ Projeto em desenvolvimento para organização de livros.
 
 ## :computer: Tecnologias utilizadas
 - Java 17
-- Spring Boot 3.0.0 (Spring 6)
+- Spring Boot 3.1.1 (Spring 6)
 - MySQL 8.0
 - JPA
 - Maven
@@ -59,7 +59,7 @@ npm install
 3. Execute o projeto:
 
 ```
-ng serve
+ng serve --port 8000
 ```
 
-4. Abra o seu navegador e acesse **http://localhost:4200** (porta padrão Angular).
+4. Abra o seu navegador e acesse **http://localhost:8000**

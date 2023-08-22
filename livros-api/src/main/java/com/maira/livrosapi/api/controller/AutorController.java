@@ -25,6 +25,7 @@ import com.maira.livrosapi.api.assembler.AutorModelAssembler;
 import com.maira.livrosapi.api.model.AutorModel;
 import com.maira.livrosapi.api.model.input.AutorInput;
 import com.maira.livrosapi.api.openapi.controller.AutorControllerOpenApi;
+import com.maira.livrosapi.core.security.CheckRoleSecurity;
 import com.maira.livrosapi.domain.model.Autor;
 import com.maira.livrosapi.domain.repository.AutorRepository;
 import com.maira.livrosapi.domain.service.AutorService;
@@ -48,6 +49,7 @@ public class AutorController implements AutorControllerOpenApi {
 	@Autowired
 	private AutorInputDisassembler autorInputDisassembler;
 
+	@CheckRoleSecurity.Autores.PodeConsultar
 	@GetMapping
 	public Page<AutorModel> listar(@RequestParam(required = false, defaultValue = "") String nome, Pageable pageable) {
 		Page<Autor> autoresPage = autorRepository.findByNomeContaining(nome, pageable);
@@ -57,6 +59,7 @@ public class AutorController implements AutorControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Autores.PodeConsultar
 	@GetMapping(value = "/{autorId}")
 	public AutorModel buscar(@PathVariable Long autorId) {
 		Autor autor = cadastroAutor.buscarOuFalhar(autorId);
@@ -64,6 +67,7 @@ public class AutorController implements AutorControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Autores.PodeCadastrarEditar
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public AutorModel adicionar(@RequestBody @Valid AutorInput autorInput) {
@@ -77,6 +81,7 @@ public class AutorController implements AutorControllerOpenApi {
 	}
 	
 	
+	@CheckRoleSecurity.Autores.PodeCadastrarEditar
 	@PutMapping(value = "/{autorId}")
 	public AutorModel atualizar(@PathVariable Long autorId, @RequestBody @Valid AutorInput autorInput) {
 		Autor autorAtual = cadastroAutor.buscarOuFalhar(autorId);
@@ -86,6 +91,7 @@ public class AutorController implements AutorControllerOpenApi {
 	}
 	
 
+	@CheckRoleSecurity.Autores.PodeRemover
 	@DeleteMapping(value = "/{autorId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long autorId) {

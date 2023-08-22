@@ -25,6 +25,7 @@ import com.maira.livrosapi.api.assembler.EditoraModelAssembler;
 import com.maira.livrosapi.api.model.EditoraModel;
 import com.maira.livrosapi.api.model.input.EditoraInput;
 import com.maira.livrosapi.api.openapi.controller.EditoraControllerOpenApi;
+import com.maira.livrosapi.core.security.CheckRoleSecurity;
 import com.maira.livrosapi.domain.model.Editora;
 import com.maira.livrosapi.domain.repository.EditoraRepository;
 import com.maira.livrosapi.domain.service.EditoraService;
@@ -47,7 +48,9 @@ public class EditoraController implements EditoraControllerOpenApi {
 
 	@Autowired
 	private EditoraInputDisassembler editoraInputDisassembler;
+	
 
+	@CheckRoleSecurity.Editoras.PodeConsultar
 	@GetMapping
 	public Page<EditoraModel> listar(@RequestParam(required = false, defaultValue = "") String nome,
 			Pageable pageable) {
@@ -60,6 +63,7 @@ public class EditoraController implements EditoraControllerOpenApi {
 	}
 	
 	
+	@CheckRoleSecurity.Editoras.PodeConsultar
 	@GetMapping("/{editoraId}")
 	public EditoraModel buscar(@PathVariable Long editoraId) {
 		
@@ -69,6 +73,7 @@ public class EditoraController implements EditoraControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Editoras.PodeCadastrarEditar
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public EditoraModel adicionar(@RequestBody @Valid EditoraInput editoraInput) {
@@ -82,7 +87,7 @@ public class EditoraController implements EditoraControllerOpenApi {
 		return editoraModel;
 	}
 
-	
+	@CheckRoleSecurity.Editoras.PodeCadastrarEditar
 	@PutMapping("/{editoraId}")
 	public EditoraModel atualizar(@PathVariable Long editoraId, @RequestBody @Valid EditoraInput editoraInput) {
 		
@@ -94,6 +99,7 @@ public class EditoraController implements EditoraControllerOpenApi {
 	}
 
 	
+	@CheckRoleSecurity.Editoras.PodeRemover
 	@DeleteMapping("/{editoraId}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long editoraId) {
