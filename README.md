@@ -43,7 +43,7 @@ mvn dependency:resolve
 
 4. Execute o projeto como Spring Boot application.
 
-5. Para conhecer a documentação feita com SpringDoc, abra o navegador e acesse **http://localhost:8080/swagger-ui/index.html**
+5. Para conhecer a documentação feita com SpringDoc, abra o navegador e acesse **http://local-livros.com:8080/swagger-ui/index.html**
 
 ### Executando o front-end
 

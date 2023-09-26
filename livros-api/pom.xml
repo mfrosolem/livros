@@ -87,11 +87,6 @@
 			<version>${modelmapper.version}</version>
 		</dependency>
 
-		<!--<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<scope>test</scope>
-		</dependency>-->
 		
 		<dependency>
 			<groupId>org.apache.commons</groupId>

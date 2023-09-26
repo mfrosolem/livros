@@ -76,6 +76,7 @@ public class AuthorizationServerConfig {
 						.build())
 				.build();
 		
+		//Fluxo Authorization Code para Front-end e Documentação Swagger
 		RegisteredClient livrosWeb = RegisteredClient
 				.withId("2")
 				.clientId("livros-frontend")
@@ -93,7 +94,7 @@ public class AuthorizationServerConfig {
 						.refreshTokenTimeToLive(Duration.ofDays(30))
 						.build())
 				.redirectUri("http://local-livros.com:8000/authorized")
-				.redirectUri("http://local-livros:8080/swagger-ui/oauth2-redirect.html")
+				.redirectUri("http://local-livros.com:8080/swagger-ui/oauth2-redirect.html")
 				.clientSettings(ClientSettings.builder()
 						.requireAuthorizationConsent(false)
 						.build())
