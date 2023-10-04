@@ -2,7 +2,6 @@ package com.maira.livrosapi.api.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,23 +30,21 @@ import com.maira.livrosapi.domain.repository.LivroRepository;
 import com.maira.livrosapi.domain.service.LivroService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping(value = "/livros", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class LivroController implements LivroControllerOpenApi {
 
-	@Autowired
-	private LivroRepository livroRepository;
+	private final LivroRepository livroRepository;
 
-	@Autowired
-	private LivroService cadastroLivro;
+	private final LivroService cadastroLivro;
 
-	@Autowired
-	private LivroModelAssembler livroModelAssembler;
+	private final LivroModelAssembler livroModelAssembler;
 
-	@Autowired
-	private LivroInputDisassembler livroInputDisassembler;
+	private final LivroInputDisassembler livroInputDisassembler;
 
 	
 	@CheckRoleSecurity.Livros.PodeConsultar

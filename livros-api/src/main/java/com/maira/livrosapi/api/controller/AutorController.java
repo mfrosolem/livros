@@ -2,7 +2,6 @@ package com.maira.livrosapi.api.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,23 +30,21 @@ import com.maira.livrosapi.domain.repository.AutorRepository;
 import com.maira.livrosapi.domain.service.AutorService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping(value = "/autores", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class AutorController implements AutorControllerOpenApi {
 
-	@Autowired
-	private AutorRepository autorRepository;
+	private final AutorRepository autorRepository;
 
-	@Autowired
-	private AutorService cadastroAutor;
+	private final AutorService cadastroAutor;
 
-	@Autowired
-	private AutorModelAssembler autorModelAssembler;
+	private final AutorModelAssembler autorModelAssembler;
 
-	@Autowired
-	private AutorInputDisassembler autorInputDisassembler;
+	private final AutorInputDisassembler autorInputDisassembler;
 
 	@CheckRoleSecurity.Autores.PodeConsultar
 	@GetMapping

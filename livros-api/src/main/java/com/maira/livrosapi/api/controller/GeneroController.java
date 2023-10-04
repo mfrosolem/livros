@@ -2,7 +2,6 @@ package com.maira.livrosapi.api.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,23 +30,21 @@ import com.maira.livrosapi.domain.repository.GeneroRepository;
 import com.maira.livrosapi.domain.service.GeneroService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping(value = "/generos", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class GeneroController implements GeneroControllerOpenApi {
 
-	@Autowired
-	private GeneroRepository generoRepository;
+	private final GeneroRepository generoRepository;
 
-	@Autowired
-	private GeneroService cadastroGenero;
+	private final GeneroService cadastroGenero;
 
-	@Autowired
-	private GeneroModelAssembler generoModelAssembler;
+	private final GeneroModelAssembler generoModelAssembler;
 
-	@Autowired
-	private GeneroInputDisassembler generoInputDisassembler;
+	private final GeneroInputDisassembler generoInputDisassembler;
 
 	
 	@CheckRoleSecurity.Generos.PodeConsultar

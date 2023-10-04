@@ -1,7 +1,6 @@
 package com.maira.livrosapi.api.assembler;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.maira.livrosapi.api.model.input.LivroInput;
@@ -10,11 +9,13 @@ import com.maira.livrosapi.domain.model.Editora;
 import com.maira.livrosapi.domain.model.Genero;
 import com.maira.livrosapi.domain.model.Livro;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class LivroInputDisassembler {
 
-	@Autowired
-	private ModelMapper modelMapper;
+	private final ModelMapper modelMapper;
 
 	public Livro toDomainObject(LivroInput livroInput) {
 		return modelMapper.map(livroInput, Livro.class);

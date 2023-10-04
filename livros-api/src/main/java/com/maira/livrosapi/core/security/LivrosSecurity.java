@@ -28,6 +28,11 @@ public class LivrosSecurity {
 		return Long.valueOf(usuarioId.toString());
 	}
 	
+	public boolean usuarioAutenticadoIgual(Long usuarioId) {
+		return getUsuarioId() != null && usuarioId != null 
+				&& getUsuarioId().equals(usuarioId);
+	}
+	
 	public boolean hasAuthority(String authorityName) {
 		return getAuthentication().getAuthorities().stream()
 				.anyMatch(authority -> authority.getAuthority().equals(authorityName));

@@ -62,19 +62,7 @@ public class AuthorizationServerConfig {
 	
 	@Bean
 	public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
-		
-		RegisteredClient livrosbackend = RegisteredClient
-				.withId("1")
-				.clientId("livros-backend")
-				.clientSecret(passwordEncoder.encode("backend123"))
-				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-				.scope("READ")
-				.tokenSettings(TokenSettings.builder()
-						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-						.accessTokenTimeToLive(Duration.ofMinutes(30))
-						.build())
-				.build();
+
 		
 		//Fluxo Authorization Code para Front-end e Documentação Swagger
 		RegisteredClient livrosWeb = RegisteredClient
@@ -100,16 +88,8 @@ public class AuthorizationServerConfig {
 						.build())
 				.build();
 		
-		return new InMemoryRegisteredClientRepository(Arrays.asList(livrosbackend, livrosWeb));
+		return new InMemoryRegisteredClientRepository(Arrays.asList(livrosWeb));
 	}
-	
-//	@Bean
-//	OAuth2AuthorizationService oAuth2AuthorizationService(JdbcOperations jdbcOperations, 
-//			RegisteredClientRepository registeredClientRepository) {
-//		
-//		return new JdbcOAuth2AuthorizationService(jdbcOperations, 
-//				registeredClientRepository);
-//	}
 	
 	
 	/*Configuracao de bean de assinatura JWT*/

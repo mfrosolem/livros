@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,23 +32,21 @@ import com.maira.livrosapi.domain.service.FotoStorageService;
 import com.maira.livrosapi.domain.service.LivroService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping(value = "/livros/{livroId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class LivroFotoController implements LivroFotoControllerOpenApi {
 
-	@Autowired
-	private FotoLivroService fotoLivroService;
+	private final FotoLivroService fotoLivroService;
 
-	@Autowired
-	private FotoLivroModelAssembler fotoAssembler;
+	private final FotoLivroModelAssembler fotoAssembler;
 
-	@Autowired
-	private LivroService livroService;
+	private final LivroService livroService;
 
-	@Autowired
-	private FotoStorageService fotoStorage;
+	private final FotoStorageService fotoStorage;
 
 	
 	@CheckRoleSecurity.Livros.PodeCadastrarEditar

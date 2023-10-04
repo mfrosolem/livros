@@ -2,7 +2,6 @@ package com.maira.livrosapi.api.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,23 +30,21 @@ import com.maira.livrosapi.domain.repository.EditoraRepository;
 import com.maira.livrosapi.domain.service.EditoraService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping(value = "/editoras", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class EditoraController implements EditoraControllerOpenApi {
 
-	@Autowired
-	private EditoraRepository editoraRepository;
+	private final EditoraRepository editoraRepository;
 
-	@Autowired
-	private EditoraService cadastroEditora;
+	private final EditoraService cadastroEditora;
 
-	@Autowired
-	private EditoraModelAssembler editoraModelAssembler;
+	private final EditoraModelAssembler editoraModelAssembler;
 
-	@Autowired
-	private EditoraInputDisassembler editoraInputDisassembler;
+	private final EditoraInputDisassembler editoraInputDisassembler;
 	
 
 	@CheckRoleSecurity.Editoras.PodeConsultar
