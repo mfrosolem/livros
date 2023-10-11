@@ -10,12 +10,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class PermissaoService {
 	
 	private final PermissaoRepository permissaoRepository;
-	
-	
+
+	public PermissaoService(PermissaoRepository permissaoRepository) {
+		this.permissaoRepository = permissaoRepository;
+	}
+
 	public Permissao buscarOuFalhar(Long permissaoId) {
 		return permissaoRepository.findById(permissaoId)
 				.orElseThrow(() -> new PermissaoNaoEncontradaException(permissaoId));

@@ -10,21 +10,21 @@ const routes: Routes = [
     path: '',
     canActivate: [AuthGuard],
     component: AutoresPesquisaComponent,
-    data: { roles: ['ROLE_AUTOR_PESQUISAR'] }
+    data: { roles: ['CONSULTAR_AUTOR'] }
   },
 
   {
     path: 'new',
     canActivate: [AuthGuard],
     component: AutorCadastroComponent,
-    data: { roles: ['ROLE_AUTOR_CADASTRAR'] }
+    data: { roles: ['CADASTRAR_AUTOR'] }
   },
 
   {
     path: 'edit/:codigo',
     canActivate: [AuthGuard],
     component: AutorCadastroComponent,
-    data: { roles: ['ROLE_AUTOR_CADASTRAR'] }
+    data: { roles: ['CADASTRAR_AUTOR'] }
   }
 
 ];

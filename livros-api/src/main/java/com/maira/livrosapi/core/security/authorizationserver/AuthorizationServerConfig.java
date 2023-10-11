@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.server.authorization.client.InMemoryR
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
@@ -39,6 +40,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 public class AuthorizationServerConfig {
@@ -53,9 +55,9 @@ public class AuthorizationServerConfig {
 	
 	
 	@Bean
-	public AuthorizationServerSettings providerSettings(LivrosSecurityProperties properties) {
+	public AuthorizationServerSettings providerSettings(/*LivrosSecurityProperties properties*/) {
 		return AuthorizationServerSettings.builder()
-				.issuer(properties.getProviderUrl())
+				/*.issuer(properties.getProviderUrl())*/
 				.build();
 	}
 	

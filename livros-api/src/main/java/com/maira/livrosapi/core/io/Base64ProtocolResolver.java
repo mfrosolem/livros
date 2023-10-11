@@ -1,20 +1,21 @@
 package com.maira.livrosapi.core.io;
 
-import java.util.Base64;
-
-import org.springframework.boot.context.event.ApplicationContextInitializedEvent;
-import org.springframework.context.ApplicationListener;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ProtocolResolver;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-public class Base64ProtocolResolver implements ProtocolResolver, ApplicationListener<ApplicationContextInitializedEvent> {
+import java.util.Base64;
+
+public class Base64ProtocolResolver implements ProtocolResolver,
+		ApplicationContextInitializer<ConfigurableApplicationContext> {
+
 
 	@Override
-	public void onApplicationEvent(ApplicationContextInitializedEvent event) {
-		event.getApplicationContext().addProtocolResolver(this);
-		
+	public void initialize(ConfigurableApplicationContext applicationContext) {
+		applicationContext.addProtocolResolver(this);
 	}
 
 	@Override
@@ -23,7 +24,7 @@ public class Base64ProtocolResolver implements ProtocolResolver, ApplicationList
 			byte[] decodedResource = Base64.getDecoder().decode(location.substring(7));
 			return new ByteArrayResource(decodedResource);
 		}
-		
+
 		return null;
 	}
 

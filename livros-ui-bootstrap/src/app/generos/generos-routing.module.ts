@@ -10,21 +10,21 @@ const routes: Routes = [
     path: '',
     canActivate: [AuthGuard],
     component: GenerosPesquisaComponent,
-    data: { roles: ['ROLE_GENERO_PESQUISAR'] }
+    data: { roles: ['CONSULTAR_GENERO'] }
   },
 
   {
     path: 'new',
     canActivate: [AuthGuard],
     component: GeneroCadastroComponent,
-    data: { roles: ['ROLE_GENERO_CADASTRAR'] }
+    data: { roles: ['CADASTRAR_GENERO'] }
   },
 
   {
     path: 'edit/:codigo',
     canActivate: [AuthGuard],
     component: GeneroCadastroComponent,
-    data: { roles: ['ROLE_GENERO_CADASTRAR'] }
+    data: { roles: ['CADASTRAR_GENERO'] }
   }
 ];
 

@@ -1,16 +1,18 @@
 set foreign_key_checks = 0;
 
-lock tables genero write, editora write, autor write, livro write, foto_livro write, usuario_permissao write, 
-permissao write, usuario write;
+lock tables genero write, editora write, autor write, livro write, foto_livro write, usuario_grupo write,
+grupo_permissao write, permissao write, usuario write, grupo write;
 
 delete from foto_livro;
 delete from livro;
 delete from autor;
 delete from genero;
 delete from editora;
-delete from usuario_permissao;
+delete from usuario_grupo;
+delete from grupo_permissao;
 delete from permissao;
 delete from usuario;
+delete from grupo;
 
 
 set foreign_key_checks = 1;
@@ -22,6 +24,7 @@ alter table genero auto_increment = 1;
 alter table livro auto_increment = 1;
 alter table permissao auto_increment = 1;
 alter table usuario auto_increment = 1;
+alter table grupo auto_increment = 1;
 
 
 INSERT INTO genero (id, descricao) VALUES (1,'Romance');
@@ -67,43 +70,47 @@ INSERT INTO livro (id, isbn, titulo, subtitulo, idioma, serie_colecao, volume, t
 INSERT INTO livro (id, isbn, titulo, subtitulo, idioma, serie_colecao, volume, tradutor, editora_id, ano, edicao, paginas, genero_id, autor_id, sinopse) VALUES (8,'9788535904116','A Sangue Frio','','Português',NULL,NULL,NULL,3,2017,1,432,3,5,NULL);
 
 
+INSERT INTO permissao (id, nome, descricao) values (1, 'CONSULTAR_GENERO', 'Pode pesquisar genero');
+INSERT INTO permissao (id, nome, descricao) values (2, 'CADASTRAR_GENERO', 'Pode cadastrar e editar genero');
+INSERT INTO permissao (id, nome, descricao) values (3, 'REMOVER_GENERO', 'Pode remover genero');
+INSERT INTO permissao (id, nome, descricao) values (4, 'CONSULTAR_EDITORA', 'Pode pesquisar editora');
+INSERT INTO permissao (id, nome, descricao) values (5, 'CADASTRAR_EDITORA', 'Pode cadastrar e editar editora');
+INSERT INTO permissao (id, nome, descricao) values (6, 'REMOVER_EDITORA', 'Pode remover editora');
+INSERT INTO permissao (id, nome, descricao) values (7, 'CONSULTAR_AUTOR', 'Pode pesquisar autor');
+INSERT INTO permissao (id, nome, descricao) values (8, 'CADASTRAR_AUTOR', 'Pode cadastrar e editar autor');
+INSERT INTO permissao (id, nome, descricao) values (9, 'REMOVER_AUTOR', 'Pode remover autor');
+INSERT INTO permissao (id, nome, descricao) values (10, 'CONSULTAR_LIVRO', 'Pode pesquisar livros');
+INSERT INTO permissao (id, nome, descricao) values (11, 'CADASTRAR_LIVRO', 'Pode cadastrar e editar livro');
+INSERT INTO permissao (id, nome, descricao) values (12, 'REMOVER_LIVRO', 'Pode remover livro');
+INSERT INTO permissao (id, nome, descricao) values (13, 'CONSULTAR_USUARIOS_GRUPOS_PERMISSOES', 'Permite consultar usuários, grupos e permissões');
+INSERT INTO permissao (id, nome, descricao) values (14, 'CADASTRAR_USUARIOS_GRUPOS_PERMISSOES', 'Permite criar ou editar usuários, grupos e permissões');
+
+
+INSERT INTO grupo (id, nome) values (1, 'Admin'), (2, 'Usuário'), (3, 'Visitante');
+
+
+-- Adiciona todas as permissoes no grupo do admin
+insert into grupo_permissao (grupo_id, permissao_id)
+select 1, id from permissao;
+
+-- Adiciona permissoes no grupo do usuario
+insert into grupo_permissao (grupo_id, permissao_id)
+select 2, id from permissao where nome like 'CONSULTAR_%' or nome like 'CADASTRAR_%';
+
+-- Adiciona permissoes no grupo do visitante
+insert into grupo_permissao (grupo_id, permissao_id)
+select 3, id from permissao where nome like 'CONSULTAR_%';
+
+
 INSERT INTO usuario (id, nome, email, senha, data_cadastro) values (1, 'Administrador', 'admin@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
 INSERT INTO usuario (id, nome, email, senha, data_cadastro) values (2, 'Maira', 'maira@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
 
-
-INSERT INTO permissao (id, nome, descricao) values (1, 'ROLE_GENERO_PESQUISAR', 'Pode pesquisar genero');
-INSERT INTO permissao (id, nome, descricao) values (2, 'ROLE_GENERO_CADASTRAR', 'Pode cadastrar e alterar genero');
-INSERT INTO permissao (id, nome, descricao) values (3, 'ROLE_GENERO_REMOVER', 'Pode remover genero');
-INSERT INTO permissao (id, nome, descricao) values (4, 'ROLE_EDITORA_PESQUISAR', 'Pode pesquisar editora');
-INSERT INTO permissao (id, nome, descricao) values (5, 'ROLE_EDITORA_CADASTRAR', 'Pode cadastrar e alterar editora');
-INSERT INTO permissao (id, nome, descricao) values (6, 'ROLE_EDITORA_REMOVER', 'Pode remover editora');
-INSERT INTO permissao (id, nome, descricao) values (7, 'ROLE_AUTOR_PESQUISAR', 'Pode pesquisar autor');
-INSERT INTO permissao (id, nome, descricao) values (8, 'ROLE_AUTOR_CADASTRAR', 'Pode cadastrar e alterar autor');
-INSERT INTO permissao (id, nome, descricao) values (9, 'ROLE_AUTOR_REMOVER', 'Pode remover autor');
-INSERT INTO permissao (id, nome, descricao) values (10, 'ROLE_LIVRO_PESQUISAR', 'Pode pesquisar livros');
-INSERT INTO permissao (id, nome, descricao) values (11, 'ROLE_LIVRO_CADASTRAR', 'Pode cadastrar e alterar livro');
-INSERT INTO permissao (id, nome, descricao) values (12, 'ROLE_LIVRO_REMOVER', 'Pode remover livro');
-
-
 -- admin
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 1);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 2);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 3);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 4);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 5);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 6);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 7);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 8);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 9);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 10);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 11);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (1, 12);
+INSERT INTO usuario_grupo (usuario_id, grupo_id) values (1, 1);
 
 -- maira
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 1);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 4);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 7);
-INSERT INTO usuario_permissao (usuario_id, permissao_id) values (2, 10);
+INSERT INTO usuario_grupo (usuario_id, grupo_id) values (2, 2);
+
 
 
 

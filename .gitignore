@@ -1,5 +1,6 @@
 .metadata
 livros-api/.settings
+livros-api/.idea
 livros-api/target
 livros-api/.classpath
 livros-api/.factorypath

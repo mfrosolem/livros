@@ -39,53 +39,59 @@ public class LivrosSecurity {
 	}
 	
 	public boolean podeConsultarGeneros() {
-		return isAuthenticated() && hasAuthority("ROLE_GENERO_PESQUISAR");
+		return isAuthenticated() && hasAuthority("CONSULTAR_GENERO");
 	}
 	
 	public boolean podeCadastrarEditarGenero() {
-		return isAuthenticated() && hasAuthority("ROLE_GENERO_CADASTRAR");
+		return isAuthenticated() && hasAuthority("CADASTRAR_GENERO");
 	}
 	
 	public boolean podeRemoverGenero() {
-		return isAuthenticated() && hasAuthority("ROLE_GENERO_REMOVER");
+		return isAuthenticated() && hasAuthority("REMOVER_GENERO");
 	}
 	
 	public boolean podeConsultarEditoras() {
-		return isAuthenticated() && hasAuthority("ROLE_EDITORA_PESQUISAR");
+		return isAuthenticated() && hasAuthority("CONSULTAR_EDITORA");
 	}
 	
 	public boolean podeCadastrarEditarEditora() {
-		return isAuthenticated() && hasAuthority("ROLE_EDITORA_CADASTRAR");
+		return isAuthenticated() && hasAuthority("CADASTRAR_EDITORA");
 	}
 	
 	public boolean podeRemoverEditora() {
-		return isAuthenticated() && hasAuthority("ROLE_EDITORA_REMOVER");
+		return isAuthenticated() && hasAuthority("REMOVER_EDITORA");
 	}
 	
 	public boolean podeConsultarAutores() {
-		return isAuthenticated() && hasAuthority("ROLE_AUTOR_PESQUISAR");
+		return isAuthenticated() && hasAuthority("CONSULTAR_AUTOR");
 	}
 	
 	public boolean podeCadastrarEditarAutor() {
-		return isAuthenticated() && hasAuthority("ROLE_AUTOR_CADASTRAR");
+		return isAuthenticated() && hasAuthority("CADASTRAR_AUTOR");
 	}
 	
 	public boolean podeRemoverAutor() {
-		return isAuthenticated() && hasAuthority("ROLE_AUTOR_REMOVER");
+		return isAuthenticated() && hasAuthority("REMOVER_AUTOR");
 	}
 	
 	public boolean podeConsultarLivros() {
-		return isAuthenticated() && hasAuthority("ROLE_LIVRO_PESQUISAR");
+		return isAuthenticated() && hasAuthority("CONSULTAR_LIVRO");
 	}
 	
 	public boolean podeCadastrarEditarLivro() {
-		return isAuthenticated() && hasAuthority("ROLE_LIVRO_CADASTRAR");
+		return isAuthenticated() && hasAuthority("CADASTRAR_LIVRO");
 	}
 	
 	public boolean podeRemoverLivro() {
-		return isAuthenticated() && hasAuthority("ROLE_LIVRO_REMOVER");
+		return isAuthenticated() && hasAuthority("REMOVER_LIVRO");
 	}
-	
-	
+
+	public boolean podeConsultarUsuariosGruposPermissoes() {
+		return isAuthenticated() && hasAuthority("CONSULTAR_USUARIOS_GRUPOS_PERMISSOES");
+	}
+
+	public boolean podeEditarUsuariosGruposPermissoes() {
+		return isAuthenticated() && hasAuthority("CADASTRAR_USUARIOS_GRUPOS_PERMISSOES");
+	}
 
 }

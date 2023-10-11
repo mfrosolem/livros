@@ -93,4 +93,19 @@ public @interface CheckRoleSecurity {
 		}
 	}
 
+	public @interface UsuariosGruposPermissoes {
+
+		@PreAuthorize("@livrosSecurity.podeConsultarUsuariosGruposPermissoes()")
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target(ElementType.METHOD)
+		public @interface PodeConsultar {
+		}
+
+		@PreAuthorize("@livrosSecurity.podeEditarUsuariosGruposPermissoes()")
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target(ElementType.METHOD)
+		public @interface PodeCadastrarEditar {
+		}
+	}
+
 }

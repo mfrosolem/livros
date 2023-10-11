@@ -11,28 +11,28 @@ const routes: Routes = [
     path: '',
     canActivate: [AuthGuard],
     component: LivrosPesquisaComponent,
-    data: { roles: ['ROLE_LIVRO_PESQUISAR'] }
+    data: { roles: ['CONSULTAR_LIVRO'] }
   },
 
   {
     path: 'new',
     canActivate: [AuthGuard],
     component: LivroCadastroComponent,
-    data: { roles: ['ROLE_LIVRO_CADASTRAR'] }
+    data: { roles: ['CADASTRAR_LIVRO'] }
   },
 
   {
     path: 'edit/:codigo',
     canActivate: [AuthGuard],
     component: LivroCadastroComponent,
-    data: { roles: ['ROLE_LIVRO_CADASTRAR'] }
+    data: { roles: ['CADASTRAR_LIVRO'] }
   },
 
   {
     path: 'edit/:codigo/foto',
     canActivate: [AuthGuard],
     component: FotoUploadComponent,
-    data: { roles: ['ROLE_LIVRO_CADASTRAR'] }
+    data: { roles: ['CADASTRAR_LIVRO'] }
   }
 ];
 

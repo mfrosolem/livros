@@ -1,21 +1,19 @@
 package com.maira.livrosapi.domain.service;
 
-import java.util.Optional;
-
+import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
+import com.maira.livrosapi.domain.exception.NegocioException;
+import com.maira.livrosapi.domain.exception.UsuarioNaoEncontradoException;
+import com.maira.livrosapi.domain.model.Grupo;
+import com.maira.livrosapi.domain.model.Usuario;
+import com.maira.livrosapi.domain.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
-import com.maira.livrosapi.domain.exception.NegocioException;
-import com.maira.livrosapi.domain.exception.UsuarioNaoEncontradoException;
-import com.maira.livrosapi.domain.model.Permissao;
-import com.maira.livrosapi.domain.model.Usuario;
-import com.maira.livrosapi.domain.repository.UsuarioRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +23,12 @@ public class UsuarioService {
 	
 	private final UsuarioRepository usuarioRepository;
 	
-	private final PermissaoService permissaoService;
+	private final GrupoService grupoService;
 	
 	private final PasswordEncoder passwordEncoder;
-	
-	
+
+
+
 	public Usuario buscarOuFalhar(Long usuarioId) {
 		return usuarioRepository.findById(usuarioId)
 				.orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
@@ -78,17 +77,17 @@ public class UsuarioService {
 	}
 	
 	@Transactional
-	public void associarPermissao(Long usuarioId, Long permissaoId) {
+	public void associarGrupo(Long usuarioId, Long grupoId) {
 		Usuario usuario = buscarOuFalhar(usuarioId);
-		Permissao permissao = permissaoService.buscarOuFalhar(permissaoId);
-		usuario.adicionarPermissao(permissao);
+		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
+		usuario.adicionarGrupo(grupo);
 	}
 	
 	@Transactional
-	public void desassociarPermissao(Long usuarioId, Long permissaoId) {
+	public void desassociarGrupo(Long usuarioId, Long grupoId) {
 		Usuario usuario = buscarOuFalhar(usuarioId);
-		Permissao permissao = permissaoService.buscarOuFalhar(permissaoId);
-		usuario.removerPermissao(permissao);
+		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
+		usuario.removerGrupo(grupo);
 	}
 	
 

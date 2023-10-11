@@ -7,10 +7,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -29,16 +31,18 @@ import com.nimbusds.jose.proc.SecurityContext;
 public class ResourceServerConfig {
 	
 	@Bean
+	@Order(2)
 	public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
 		
-		http.authorizeHttpRequests(authorizeConfig -> {
+		http.formLogin(Customizer.withDefaults()).
+				authorizeHttpRequests(authorizeConfig -> {
 			authorizeConfig.anyRequest().authenticated();
 
 		})
-		.csrf(csrf -> csrf.disable())
-		//.cors().and()
+		.csrf(AbstractHttpConfigurer::disable)
+		//.cors(AbstractHttpConfigurer::disable)
 		.oauth2ResourceServer(configJwt -> {
-			configJwt.jwt(conv -> { 
+			configJwt.jwt((conv) -> {
 				conv.jwtAuthenticationConverter(jwtAuthenticationConverter());
 				});
 		});
@@ -57,7 +61,7 @@ public class ResourceServerConfig {
 		});
 	
         
-     return http.formLogin(Customizer.withDefaults()).build();
+     return http.build();
 	}
 	
 	@Bean
