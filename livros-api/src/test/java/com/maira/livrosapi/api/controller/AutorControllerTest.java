@@ -53,7 +53,7 @@ import com.maira.livrosapi.domain.service.AutorService;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
-public class                                                                            AutorControllerTest {
+public class AutorControllerTest {
 	
 	@InjectMocks
 	AutorController controller;
@@ -288,7 +288,7 @@ public class                                                                    
 	
 	@Test
 	void Dado_um_autorId_valido_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_204() throws Exception {
-		Mockito.doNothing().when(service).excluir(Mockito.anyLong());
+		//Mockito.doNothing().when(service).excluir(Mockito.anyLong());
 
 		mockMvc.perform(delete("/autores/{autorId}",autorId)
 				.contentType(MediaType.APPLICATION_JSON))

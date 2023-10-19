@@ -2,6 +2,7 @@ package com.maira.livrosapi.api.controller;
 
 import java.util.List;
 
+import com.maira.livrosapi.core.security.CheckRoleSecurity;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class PermissaoController implements PermissaoControllerOpenApi{
 	private final PermissaoModelAssembler permissaoModelAssembler;
 	
 
+	@CheckRoleSecurity.UsuariosGruposPermissoes.PodeConsultar
 	@GetMapping
 	@Override
 	public List<PermissaoModel> listar() {		

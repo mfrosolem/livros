@@ -1,13 +1,10 @@
 package com.maira.livrosapi.domain.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.maira.livrosapi.domain.exception.PermissaoNaoEncontradaException;
 import com.maira.livrosapi.domain.model.Permissao;
 import com.maira.livrosapi.domain.repository.PermissaoRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+import static org.junit.jupiter.api.Assertions.*;
+
+
 @ExtendWith(MockitoExtension.class)
 class PermissaoServiceTest {
 
@@ -42,6 +41,7 @@ class PermissaoServiceTest {
     }
 
     @Test
+    @DisplayName("Dado uma permissaoId valida Quando chamar metodo buscarOuFalhar Entao deve retornar uma permissao com id")
     void Dado_uma_permissaoId_valida_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_retornar_uma_permissao_com_id() {
 
         Mockito.when(repository.findById(Mockito.anyLong())).thenAnswer(answer -> {
@@ -57,6 +57,7 @@ class PermissaoServiceTest {
     }
 
     @Test
+    @DisplayName("Dado uma permissaoId invalida Quando chamar metodo buscarOuFalhar Entao deve lancar exception PermissaoNaoEncontradaException")
     void Dado_uma_permissaoId_invalida_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_PermissaoNaoEncontradaException() {
         Mockito.when(repository.findById(permissaoId))
                 .thenThrow(new PermissaoNaoEncontradaException(permissaoId));
@@ -65,6 +66,7 @@ class PermissaoServiceTest {
     }
 
     @Test
+    @DisplayName("Dado uma permissao valida Quando salvar Entao deve retornar uma permissao com id")
     void Dado_uma_permissao_valida_Quando_salvar_Entao_deve_retornar_uma_permissao_com_id() {
         Mockito.when(repository.save(Mockito.any(Permissao.class)))
                 .thenAnswer(invocation -> {

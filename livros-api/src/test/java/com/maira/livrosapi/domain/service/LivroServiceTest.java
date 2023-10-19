@@ -1,19 +1,13 @@
 package com.maira.livrosapi.domain.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
+import com.maira.livrosapi.domain.exception.*;
+import com.maira.livrosapi.domain.model.Autor;
+import com.maira.livrosapi.domain.model.Editora;
+import com.maira.livrosapi.domain.model.Genero;
+import com.maira.livrosapi.domain.model.Livro;
+import com.maira.livrosapi.domain.repository.LivroRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,18 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-import com.maira.livrosapi.domain.exception.AutorNaoEncontradoException;
-import com.maira.livrosapi.domain.exception.EditoraNaoEncontradaException;
-import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
-import com.maira.livrosapi.domain.exception.GeneroNaoEncontradoException;
-import com.maira.livrosapi.domain.exception.LivroNaoEncontradoException;
-import com.maira.livrosapi.domain.model.Autor;
-import com.maira.livrosapi.domain.model.Editora;
-import com.maira.livrosapi.domain.model.Genero;
-import com.maira.livrosapi.domain.model.Livro;
-import com.maira.livrosapi.domain.repository.LivroRepository;
+import java.util.Optional;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+
+
 @ExtendWith(MockitoExtension.class)
 public class LivroServiceTest {
 	
@@ -54,19 +43,12 @@ public class LivroServiceTest {
 	EditoraService editoraService;
 	
 	Livro livro;
-	
 	Long livroId;
-	
 	Autor autor;
-	
 	Long autorId;
-	
 	Genero genero;
-	
 	Long generoId;
-	
 	Editora editora;
-	
 	Long editoraId;
 	
 	@BeforeEach
@@ -89,6 +71,7 @@ public class LivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livroId valido Quando chamar metodo buscarOuFalhar Entao deve retornar um livro com id")
 	void Dado_um_livroId_valido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_retornar_um_livro_com_id() {
 		when(repository.findById(anyLong()))
 		.thenAnswer(answer -> {
@@ -107,6 +90,7 @@ public class LivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livroId invalido Quando chamar metodo buscarOuFalhar Entao deve lancar exception LivroNaoEncontradoException")
 	void Dado_um_livroId_invalido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_LivroNaoEncontradoException() {
 		when(repository.findById(anyLong()))
 			.thenThrow(new LivroNaoEncontradoException(livroId));
@@ -121,6 +105,7 @@ public class LivroServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Dado um livro valido Quando salvar Entao deve retornar um livro com id")
 	void Dado_um_livro_valido_Quando_salvar_Entao_deve_retornar_um_livro_com_id() {
 		
 		when(autorService.buscarOuFalhar(anyLong()))
@@ -178,6 +163,7 @@ public class LivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livro com autorId invalido Quando salvar Entao deve retornar exception AutorNaoEncontradoException")
 	void Dado_um_livro_com_autorId_invalido_Quando_salvar_Entao_deve_retornar_exception_AutorNaoEncontradoException() {
 
 		when(autorService.buscarOuFalhar(anyLong()))
@@ -206,6 +192,7 @@ public class LivroServiceTest {
 	
 
 	@Test
+	@DisplayName("Dado um livro com generoId invalido Quando salvar Entao deve retornar exception GeneroNaoEncontradoException")
 	void Dado_um_livro_com_generoId_invalido_Quando_salvar_Entao_deve_retornar_exception_GeneroNaoEncontradoException () { 
 		
 		when(autorService.buscarOuFalhar(anyLong()))
@@ -243,6 +230,7 @@ public class LivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livro com editoraId invalida Quando salvar Entao deve retornar exception EditoraNaoEncontradaException")
 	void Dado_um_livro_com_editoraId_invalida_Quando_salvar_Entao_deve_retornar_exception_EditoraNaoEncontradaException () {
 		
 		when(autorService.buscarOuFalhar(anyLong()))
@@ -290,6 +278,7 @@ public class LivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livro com ISBN ja cadastrado Quando salvar Entao deve retornar exception EntidadeEmUsoException")
 	void Dado_um_livro_com_ISBN_ja_cadastrado_Quando_salvar_Entao_deve_retornar_exception_EntidadeEmUsoException() {
 		
 		when(autorService.buscarOuFalhar(anyLong()))
@@ -342,9 +331,10 @@ public class LivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livroId valido Quando chamar metodo excluir Entao deve excluir livro")
 	void Dado_um_livroId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_livro () {
-		Mockito.doNothing().when(repository).deleteById(Mockito.anyLong());
-		Mockito.doNothing().when(repository).flush();
+//		Mockito.doNothing().when(repository).deleteById(Mockito.anyLong());
+//		Mockito.doNothing().when(repository).flush();
 
 		service.excluir(livroId);
 
@@ -354,6 +344,7 @@ public class LivroServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Dado um livroId invalido Quando chamar metodo excluir Entao deve lancar exception LivroNaoEncontradoException")
 	void Dado_um_livroId_invalido_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_LivroNaoEncontradoException() {
 		Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
 		
@@ -368,6 +359,7 @@ public class LivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livroId em uso Quando chamar metodo excluir Entao deve lancar exception EntidadeEmUsoException")
 	void Dado_um_livroId_em_uso_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EntidadeEmUsoException() {
 		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
 		

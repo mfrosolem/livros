@@ -286,7 +286,7 @@ public class GeneroControllerTest {
 	
 	@Test
 	void Dado_um_generoId_valido_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_204() throws Exception {
-		Mockito.doNothing().when(service).excluir(Mockito.anyLong());
+		//Mockito.doNothing().when(service).excluir(Mockito.anyLong());
 
 		mockMvc.perform(delete("/generos/{generoId}",generoId)
 				.contentType(MediaType.APPLICATION_JSON))

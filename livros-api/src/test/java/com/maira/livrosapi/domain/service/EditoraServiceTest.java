@@ -1,18 +1,11 @@
 package com.maira.livrosapi.domain.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
+import com.maira.livrosapi.domain.exception.EditoraNaoEncontradaException;
+import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
+import com.maira.livrosapi.domain.model.Editora;
+import com.maira.livrosapi.domain.repository.EditoraRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,12 +15,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-import com.maira.livrosapi.domain.exception.EditoraNaoEncontradaException;
-import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
-import com.maira.livrosapi.domain.model.Editora;
-import com.maira.livrosapi.domain.repository.EditoraRepository;
+import java.util.Optional;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+
+
 @ExtendWith(MockitoExtension.class)
 public class EditoraServiceTest {
 	
@@ -48,6 +42,7 @@ public class EditoraServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Dado uma editoraId valida Quando chamar metodo buscarOuFalhar Entao deve retornar uma editora")
 	void Dado_uma_editoraId_valida_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_retornar_uma_editora() {
 		when(repository.findById(anyLong())).thenAnswer(answer -> {
 			Long editoraIdPassada = answer.getArgument(0, Long.class);
@@ -64,6 +59,7 @@ public class EditoraServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Dado uma editoraId invalida Quando chamar metodo buscarOuFalhar Entao deve lancar exception EditoraNaoEncontradaException")
 	void Dado_uma_editoraId_invalida_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_EditoraNaoEncontradaException() {
 		when(repository.findById(anyLong()))
 			.thenThrow(new EditoraNaoEncontradaException(editoraId));
@@ -74,6 +70,7 @@ public class EditoraServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Dado uma editora valida Quando salvar Entao deve retornar uma editora com id")
 	void Dado_uma_editora_valida_Quando_salvar_Entao_deve_retornar_uma_editora_com_id() {
 		when(repository.save(Mockito.any(Editora.class)))
 			.thenAnswer(answer -> {
@@ -89,6 +86,7 @@ public class EditoraServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Dado uma editora valida Quando salvar Entao deve chamar metodo save do repository")
 	void Dado_uma_editora_valida_Quando_salvar_Entao_deve_chamar_metodo_save_do_repository() {
 		when(repository.save(Mockito.any(Editora.class)))
 			.thenAnswer(answer -> {
@@ -105,6 +103,7 @@ public class EditoraServiceTest {
 	
 
 	@Test
+	@DisplayName("Dado uma editora que ja existe Quando salvar Entao deve lancar exception EntidadeEmUsoException")
 	void Dado_uma_editora_que_ja_existe_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException() {
 		when(repository.save(Mockito.any(Editora.class))).thenThrow(DataIntegrityViolationException.class);
 		
@@ -114,6 +113,7 @@ public class EditoraServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Dado uma editoraId valida Quando chamar metodo excluir Entao deve excluir editora")
 	void Dado_uma_editoraId_valida_Quando_chamar_metodo_excluir_Entao_deve_excluir_editora() {
 		Mockito.doNothing().when(repository).deleteById(Mockito.anyLong());
 		Mockito.doNothing().when(repository).flush();
@@ -127,6 +127,7 @@ public class EditoraServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado uma editoraId invalida Quando chamar metodo excluir Entao deve lancar exception EditoraNaoEncontradaException")
 	void Dado_uma_editoraId_invalida_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EditoraNaoEncontradaException() {
 		Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
 		
@@ -137,6 +138,7 @@ public class EditoraServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Dado uma editoraId em uso Quando chamar metodo excluir Entao deve lancar exception EntidadeEmUsoException")
 	void Dado_uma_editoraId_em_uso_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EntidadeEmUsoException() {
 		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
 		

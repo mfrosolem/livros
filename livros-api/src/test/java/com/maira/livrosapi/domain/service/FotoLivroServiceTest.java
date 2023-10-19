@@ -1,20 +1,10 @@
 package com.maira.livrosapi.domain.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.Optional;
-
+import com.maira.livrosapi.domain.exception.FotoLivroNaoEncontradaException;
+import com.maira.livrosapi.domain.model.*;
+import com.maira.livrosapi.domain.repository.LivroRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,15 +13,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.maira.livrosapi.domain.exception.FotoLivroNaoEncontradaException;
-import com.maira.livrosapi.domain.model.Autor;
-import com.maira.livrosapi.domain.model.Editora;
-import com.maira.livrosapi.domain.model.FotoLivro;
-import com.maira.livrosapi.domain.model.Genero;
-import com.maira.livrosapi.domain.model.Livro;
-import com.maira.livrosapi.domain.repository.LivroRepository;
+import java.io.IOException;
+import java.util.Optional;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+
 @ExtendWith(MockitoExtension.class)
 public class FotoLivroServiceTest {
 	
@@ -81,6 +71,7 @@ public class FotoLivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livroId valido Quando chamar metodo buscarOuFalhar Entao deve retornar um fotoLivro com id")
 	void Dado_um_livroId_valido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_retornar_um_fotoLivro_com_id() {
 		when(repository.findFotoById(anyLong()))
 			.thenAnswer(answer -> {
@@ -99,6 +90,7 @@ public class FotoLivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livroId invalido Quando chamar metodo buscarOuFalhar Entao deve lancar exception FotoLivroNaoEncontradoException")
 	void Dado_um_livroId_invalido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_FotoLivroNaoEncontradoException() {
 		when(repository.findFotoById(anyLong()))
 			.thenAnswer(answer -> {
@@ -116,6 +108,7 @@ public class FotoLivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livroId valido Quando chamar metodo excluir Entao deve excluir fotoLivro")
 	void Dado_um_livroId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_fotoLivro () {
 		when(repository.findFotoById(anyLong()))
 		.thenAnswer(answer -> {
@@ -139,6 +132,7 @@ public class FotoLivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um livroId invalido Quando chamar metodo excluir Entao deve lancar exception FotoLivroNaoEncontradoException")
 	void Dado_um_livroId_invalido_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_FotoLivroNaoEncontradoException() {
 		when(repository.findFotoById(anyLong()))
 		.thenAnswer(answer -> {
@@ -162,6 +156,7 @@ public class FotoLivroServiceTest {
 	
 	
 	@Test
+	@DisplayName("Dado um fotoLivro e inputStream validos Quando salvar Entao deve retornar um fotoLivro")
 	void Dado_um_fotoLivro_e_inputStream_validos_Quando_salvar_Entao_deve_retornar_um_fotoLivro() throws IOException {
 		
 		when(repository.findFotoById(anyLong()))
