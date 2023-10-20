@@ -101,7 +101,7 @@ public class FotoLivroServiceTest {
 		final FotoLivroNaoEncontradaException e = 
 				assertThrows(FotoLivroNaoEncontradaException.class, () -> service.buscarOuFalhar(livroId));
 		
-		assertEquals(e.getMessage(), String.format("Não existe um cadastro de foto para o livro com código %d", livroId));
+		assertEquals(String.format("Não existe um cadastro de foto para o livro com código %d", livroId), e.getMessage());
 		verify(repository, Mockito.times(1)).findFotoById(anyLong());
 		verifyNoMoreInteractions(repository);
 	}
@@ -143,7 +143,7 @@ public class FotoLivroServiceTest {
 		final FotoLivroNaoEncontradaException e = 
 				assertThrows(FotoLivroNaoEncontradaException.class, () -> service.buscarOuFalhar(livroId));
 		
-		assertEquals(e.getMessage(), String.format("Não existe um cadastro de foto para o livro com código %d", livroId));
+		assertEquals(String.format("Não existe um cadastro de foto para o livro com código %d", livroId), e.getMessage());
 		verify(repository, Mockito.times(1)).findFotoById(anyLong());
 		
 		verify(repository, Mockito.never()).delete(Mockito.any(FotoLivro.class));
