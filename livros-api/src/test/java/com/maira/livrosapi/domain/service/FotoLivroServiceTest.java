@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class FotoLivroServiceTest {
+class FotoLivroServiceTest {
 	
 	@InjectMocks
 	FotoLivroService service;

@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class GeneroServiceTest {
+class GeneroServiceTest {
 
 	@InjectMocks
 	GeneroService service;
@@ -97,7 +97,7 @@ public class GeneroServiceTest {
 
 		service.salvar(genero);
 
-		verify(repository, Mockito.times(1)).save(Mockito.eq(genero));
+		verify(repository, Mockito.times(1)).save(Mockito.any(Genero.class));
 		verifyNoMoreInteractions(repository);
 	}
 

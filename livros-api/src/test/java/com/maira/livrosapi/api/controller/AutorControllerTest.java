@@ -53,7 +53,7 @@ import com.maira.livrosapi.domain.service.AutorService;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
-public class AutorControllerTest {
+class AutorControllerTest {
 	
 	@InjectMocks
 	AutorController controller;

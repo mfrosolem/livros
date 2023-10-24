@@ -55,7 +55,7 @@ import com.maira.livrosapi.domain.service.GeneroService;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 //@AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class GeneroControllerTest {
+class GeneroControllerTest {
 	
 	@InjectMocks
 	GeneroController controller;

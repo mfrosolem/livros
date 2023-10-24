@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class AutorServiceTest {
+class AutorServiceTest {
 
 	@InjectMocks
 	AutorService service;

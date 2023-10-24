@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class LivroServiceTest {
+class LivroServiceTest {
 	
 	@InjectMocks
 	LivroService service;

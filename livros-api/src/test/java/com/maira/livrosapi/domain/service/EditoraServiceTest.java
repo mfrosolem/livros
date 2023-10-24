@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class EditoraServiceTest {
+class EditoraServiceTest {
 	
 	@InjectMocks
 	EditoraService service;
