@@ -1,5 +1,8 @@
 package com.maira.livrosapi.domain.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.GrupoNaoEncontradoException;
 import com.maira.livrosapi.domain.exception.NegocioException;
@@ -14,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,8 +27,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioServiceTest {
@@ -79,10 +79,11 @@ class UsuarioServiceTest {
     void Dado_um_usuarioId_valido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_retornar_um_usuario_com_id() {
         this.buscarUsuarioPorIdComSucesso();
 
-        Usuario usuarioRetornado = service.buscarOuFalhar(usuarioId);
+        Usuario sut = service.buscarOuFalhar(usuarioId);
 
-        assertInstanceOf(Usuario.class, usuarioRetornado);
-        assertEquals(usuarioId, usuarioRetornado.getId());
+        assertThat(sut.getId()).isNotNull();
+        assertThat(sut).isInstanceOf(Usuario.class);
+        assertThat(sut.getId()).isEqualTo(usuarioId);
     }
 
     @Test
@@ -90,11 +91,11 @@ class UsuarioServiceTest {
     void Dado_um_usuarioId_invalido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_UsuarioNaoEncontradoException() {
         this.buscarUsuarioPorIdComFalha();
 
-        UsuarioNaoEncontradoException exception =
-                assertThrows(UsuarioNaoEncontradoException.class, () -> service.buscarOuFalhar(usuarioId));
+        assertThatThrownBy(() -> service.buscarOuFalhar(usuarioId))
+                .isInstanceOf(UsuarioNaoEncontradoException.class)
+                .hasMessage(String.format("Não existe cadastro de usuário com o código %d", usuarioId));
 
-        assertEquals(String.format("Não existe cadastro de usuário com o código %d", usuarioId), exception.getMessage());
-        verify(repository, Mockito.times(1)).findById(anyLong());
+        verify(repository, times(1)).findById(anyLong());
         verifyNoMoreInteractions(repository);
     }
 
@@ -105,7 +106,7 @@ class UsuarioServiceTest {
         when(repository.findByEmail(anyString()))
                 .thenReturn(Optional.empty());
 
-        when(repository.save(Mockito.any(Usuario.class)))
+        when(repository.save(any(Usuario.class)))
                 .thenAnswer(invocation -> {
                    Usuario usuarioParametro =  invocation.getArgument(0, Usuario.class);
                    usuarioParametro.setId(usuarioId);
@@ -114,11 +115,12 @@ class UsuarioServiceTest {
 
         this.mockPasswordEncoderSucesso();
 
-        Usuario usuarioSalvo = service.salvar(usuario);
+        Usuario sut = service.salvar(usuario);
 
-        assertInstanceOf(Usuario.class, usuarioSalvo);
-        assertNotNull(usuarioSalvo.getId());
-        assertEquals(usuarioId, usuarioSalvo.getId());
+        assertThat(sut).isInstanceOf(Usuario.class);
+        assertThat(sut.getId()).isNotNull();
+        assertThat(sut.getId()).isEqualTo(usuarioId);
+
     }
 
     @Test
@@ -127,7 +129,7 @@ class UsuarioServiceTest {
         when(repository.findByEmail(anyString()))
                 .thenReturn(Optional.empty());
 
-        when(repository.save(Mockito.any(Usuario.class)))
+        when(repository.save(any(Usuario.class)))
                 .thenAnswer(invocation -> {
                     Usuario usuarioParametro =  invocation.getArgument(0, Usuario.class);
                     usuarioParametro.setId(usuarioId);
@@ -136,11 +138,11 @@ class UsuarioServiceTest {
 
         this.mockPasswordEncoderSucesso();
 
-        Usuario usuarioSalvo = service.salvar(usuario);
+        Usuario sut = service.salvar(usuario);
 
-        assertInstanceOf(Usuario.class, usuarioSalvo);
-        assertNotNull(usuarioSalvo.getId());
-        verify(passwordEncoder, Mockito.times(1)).encode(any());
+        assertThat(sut).isInstanceOf(Usuario.class);
+        assertThat(sut.getId()).isNotNull();
+        verify(passwordEncoder, times(1)).encode(any());
     }
 
     @Test
@@ -158,11 +160,9 @@ class UsuarioServiceTest {
                     return Optional.of(usuarioEncontrado);
                 });
 
-        NegocioException negocioException =
-                assertThrows(NegocioException.class, () -> service.salvar(usuario));
-
-        assertEquals(String.format("Já existe um usuário cadastrado com o e-mail %s", usuario.getEmail()),
-                negocioException.getMessage());
+        assertThatThrownBy(() -> service.salvar(usuario))
+                .isInstanceOf(NegocioException.class)
+                .hasMessage(String.format("Já existe um usuário cadastrado com o e-mail %s", usuario.getEmail()));
     }
 
     @Test
@@ -180,7 +180,7 @@ class UsuarioServiceTest {
                     return Optional.of(usuarioEncontrado);
                 });
 
-        when(repository.save(Mockito.any(Usuario.class)))
+        when(repository.save(any(Usuario.class)))
                 .thenAnswer(invocation -> {
                     Usuario usuarioParametro =  invocation.getArgument(0, Usuario.class);
                     return usuarioParametro;
@@ -188,11 +188,10 @@ class UsuarioServiceTest {
 
         usuario.setId(usuarioId);
 
-        Usuario usuarioEditado = service.salvar(usuario);
+        Usuario sut = service.salvar(usuario);
 
-        assertEquals(usuario.getId(), usuarioEditado.getId());
+        assertThat(sut.getId()).isEqualTo(usuario.getId());
         verifyNoInteractions(passwordEncoder);
-
     }
 
     @Test
@@ -201,11 +200,9 @@ class UsuarioServiceTest {
         when(repository.findById(anyLong()))
                 .thenThrow(new UsuarioNaoEncontradoException(usuarioId));
 
-        UsuarioNaoEncontradoException exception =
-                assertThrows(UsuarioNaoEncontradoException.class,
-                        () -> service.alterarSenha(usuarioId, "123", "321"));
-
-        assertEquals(String.format("Não existe cadastro de usuário com o código %d", usuarioId), exception.getMessage());
+        assertThatThrownBy(() -> service.alterarSenha(usuarioId, "123", "321"))
+                .isInstanceOf(UsuarioNaoEncontradoException.class)
+                .hasMessage(String.format("Não existe cadastro de usuário com o código %d", usuarioId));
     }
 
     @Test
@@ -213,20 +210,18 @@ class UsuarioServiceTest {
     void alterarSenhaFalhaSenhaAtualUsuario() {
         this.buscarUsuarioPorIdComSucesso();
 
-        NegocioException exception =
-                assertThrows(NegocioException.class,
-                        () -> service.alterarSenha(usuarioId, "124", "321"));
-
-        assertEquals("Senha atual informada não coincide com a senha do usuário.", exception.getMessage());
+        assertThatThrownBy(() -> service.alterarSenha(usuarioId, "124", "321"))
+                .isInstanceOf(NegocioException.class)
+                .hasMessage("Senha atual informada não coincide com a senha do usuário.");
     }
 
     @Test
     @DisplayName("Dado um usuarioId valido Quando chamar metodo excluir Entao deve excluir usuario")
     void Dado_um_usuarioId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_usuario() {
-        service.excluir(usuarioId);
+        assertThatCode(() -> service.excluir(usuarioId)).doesNotThrowAnyException();
 
-        verify(repository, Mockito.times(1)).deleteById(anyLong());
-        verify(repository, Mockito.times(1)).flush();
+        verify(repository, times(1)).deleteById(anyLong());
+        verify(repository, times(1)).flush();
         verifyNoMoreInteractions(repository);
     }
 
@@ -235,10 +230,9 @@ class UsuarioServiceTest {
     void Dado_um_usuarioId_invalido_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_UsuarioNaoEncontradoException() {
         doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
 
-        UsuarioNaoEncontradoException exception =
-                assertThrows(UsuarioNaoEncontradoException.class, () -> service.excluir(usuarioId));
-
-        assertEquals(String.format("Não existe cadastro de usuário com o código %d", usuarioId), exception.getMessage());
+        assertThatThrownBy(() -> service.excluir(usuarioId))
+                .isInstanceOf(UsuarioNaoEncontradoException.class)
+                .hasMessage(String.format("Não existe cadastro de usuário com o código %d", usuarioId));
     }
 
 
@@ -247,8 +241,7 @@ class UsuarioServiceTest {
     void Dado_um_usuarioId_em_uso_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EntidadeEmUsoException() {
         doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
 
-        EntidadeEmUsoException exception =
-                assertThrows(EntidadeEmUsoException.class, () -> service.excluir(usuarioId));
+        assertThatThrownBy(() -> service.excluir(usuarioId)).isInstanceOf(EntidadeEmUsoException.class);
     }
 
     @Test
@@ -256,10 +249,9 @@ class UsuarioServiceTest {
     void Dado_um_usuarioId_invalido_e_um_grupoId_valido_Quando_chamar_metodo_associarGrupo_Entao_deve_lancar_exception_UsuarioNaoEncontradoException() {
         this.buscarUsuarioPorIdComFalha();
 
-        UsuarioNaoEncontradoException exception =
-                assertThrows(UsuarioNaoEncontradoException.class, () -> service.associarGrupo(usuarioId, grupoId));
-
-        assertEquals(String.format("Não existe cadastro de usuário com o código %d", usuarioId), exception.getMessage());
+        assertThatThrownBy(() -> service.associarGrupo(usuarioId, grupoId))
+                .isInstanceOf(UsuarioNaoEncontradoException.class)
+                .hasMessage(String.format("Não existe cadastro de usuário com o código %d", usuarioId));
     }
 
     @Test
@@ -268,10 +260,9 @@ class UsuarioServiceTest {
         this.buscarUsuarioPorIdComSucesso();
         this.buscarGrupoPorIdComFalha();
 
-        GrupoNaoEncontradoException exception =
-                assertThrows(GrupoNaoEncontradoException.class, () -> service.associarGrupo(usuarioId, grupoId));
-
-        assertEquals(String.format("Não existe cadastro de grupo com o código %d", grupoId), exception.getMessage());
+        assertThatThrownBy(() -> service.associarGrupo(usuarioId, grupoId))
+                .isInstanceOf(GrupoNaoEncontradoException.class)
+                .hasMessage(String.format("Não existe cadastro de grupo com o código %d", grupoId));
     }
 
     @Test
@@ -279,10 +270,9 @@ class UsuarioServiceTest {
     void Dado_um_usuarioId_invalido_e_um_grupoId_valido_Quando_chamar_metodo_desassociarGrupo_Entao_deve_lancar_exception_UsuarioNaoEncontradoException() {
         this.buscarUsuarioPorIdComFalha();
 
-        UsuarioNaoEncontradoException exception =
-                assertThrows(UsuarioNaoEncontradoException.class, () -> service.desassociarGrupo(usuarioId, grupoId));
-
-        assertEquals(String.format("Não existe cadastro de usuário com o código %d", usuarioId), exception.getMessage());
+        assertThatThrownBy(() -> service.desassociarGrupo(usuarioId, grupoId))
+                .isInstanceOf(UsuarioNaoEncontradoException.class)
+                .hasMessage(String.format("Não existe cadastro de usuário com o código %d", usuarioId));
     }
 
     @Test
@@ -291,10 +281,9 @@ class UsuarioServiceTest {
         this.buscarUsuarioPorIdComSucesso();
         this.buscarGrupoPorIdComFalha();
 
-        GrupoNaoEncontradoException exception =
-                assertThrows(GrupoNaoEncontradoException.class, () -> service.desassociarGrupo(usuarioId, grupoId));
-
-        assertEquals(String.format("Não existe cadastro de grupo com o código %d", grupoId), exception.getMessage());
+        assertThatThrownBy(() -> service.desassociarGrupo(usuarioId, grupoId))
+                .isInstanceOf(GrupoNaoEncontradoException.class)
+                .hasMessage(String.format("Não existe cadastro de grupo com o código %d", grupoId));
     }
 
 
@@ -304,7 +293,7 @@ class UsuarioServiceTest {
     }
 
     private void buscarUsuarioPorIdComSucesso() {
-        when(repository.findById(Mockito.anyLong())).thenAnswer(invocation -> {
+        when(repository.findById(anyLong())).thenAnswer(invocation -> {
             Long idLivroPassado = invocation.getArgument(0, Long.class);
             usuario.setId(idLivroPassado);
             usuario.setGrupos(Set.of(grupo));
@@ -314,7 +303,7 @@ class UsuarioServiceTest {
 
     private void buscarUsuarioPorIdComFalha() {
         when(repository.findById(anyLong()))
-                .thenThrow(new UsuarioNaoEncontradoException(usuarioId));
+                .thenReturn(Optional.empty());
     }
 
     private void buscarGrupoPorIdComFalha() {

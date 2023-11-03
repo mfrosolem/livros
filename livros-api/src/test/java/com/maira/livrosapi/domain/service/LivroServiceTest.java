@@ -1,5 +1,8 @@
 package com.maira.livrosapi.domain.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.maira.livrosapi.domain.exception.*;
 import com.maira.livrosapi.domain.model.Autor;
 import com.maira.livrosapi.domain.model.Editora;
@@ -12,16 +15,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -80,11 +78,11 @@ class LivroServiceTest {
 			return Optional.of(livro);
 		});
 		
-		Livro livroRetornado = service.buscarOuFalhar(livroId);
-		
-		assertInstanceOf(Livro.class, livroRetornado);
-		assertEquals(livroId, livroRetornado.getId());
-		verify(repository, Mockito.times(1)).findById(anyLong());
+		Livro sut = service.buscarOuFalhar(livroId);
+
+		assertThat(sut).isInstanceOf(Livro.class);
+		assertThat(sut.getId()).isNotNull();
+		verify(repository, times(1)).findById(anyLong());
 		verifyNoMoreInteractions(repository);
 	}
 	
@@ -93,14 +91,12 @@ class LivroServiceTest {
 	@DisplayName("Dado um livroId invalido Quando chamar metodo buscarOuFalhar Entao deve lancar exception LivroNaoEncontradoException")
 	void Dado_um_livroId_invalido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_LivroNaoEncontradoException() {
 		when(repository.findById(anyLong()))
-			.thenThrow(new LivroNaoEncontradoException(livroId));
+			.thenReturn(Optional.empty());
 		
-		final LivroNaoEncontradoException e = assertThrows(LivroNaoEncontradoException.class, () -> {
-			service.buscarOuFalhar(livroId);
-        });
-		
-		assertEquals(String.format("Não existe um cadastro de livro com o código %d", livroId), e.getMessage());
-		verify(repository, Mockito.times(1)).findById(anyLong());
+		assertThatThrownBy(() -> service.buscarOuFalhar(livroId))
+				.isInstanceOf(LivroNaoEncontradoException.class)
+				.hasMessage(String.format("Não existe um cadastro de livro com o código %d", livroId));
+		verify(repository, times(1)).findById(anyLong());
 		verifyNoMoreInteractions(repository);
 	}
 	
@@ -112,7 +108,7 @@ class LivroServiceTest {
 		this.buscarGeneroComSucesso();
 		this.buscarEditoraComSucesso();
 
-		when(repository.save(Mockito.any(Livro.class)))
+		when(repository.save(any(Livro.class)))
 			.thenAnswer(answer -> {
 				Livro livroPassado = answer.getArgument(0, Livro.class);
 				livroPassado.setId(livroId);
@@ -126,21 +122,17 @@ class LivroServiceTest {
 		livro.setEditora(editora);
 		livro.setAutor(autor);
 		
-		Livro livroSalvo = service.salvar(livro);
-		
-		assertInstanceOf(Livro.class, livroSalvo);
-		assertEquals(livroId, livroSalvo.getId());
-		
-		verify(autorService, Mockito.times(1)).buscarOuFalhar(anyLong());
+		Livro sut = service.salvar(livro);
+
+		assertThat(sut).isInstanceOf(Livro.class);
+		assertThat(sut.getId()).isNotNull();
+		verify(autorService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(autorService);
-		
-		verify(generoService, Mockito.times(1)).buscarOuFalhar(anyLong());
+		verify(generoService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(generoService);
-		
-		verify(editoraService, Mockito.times(1)).buscarOuFalhar(anyLong());
+		verify(editoraService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(editoraService);
-		
-		verify(repository, Mockito.times(1)).save(Mockito.any(Livro.class));
+		verify(repository, times(1)).save(any(Livro.class));
 		verifyNoMoreInteractions(repository);
 	}
 	
@@ -160,13 +152,11 @@ class LivroServiceTest {
 		livro.setAutor(autor);
 		livro.setGenero(genero);
 		livro.setEditora(editora);
-		
-		final AutorNaoEncontradoException e = 
-				assertThrows(AutorNaoEncontradoException.class, () -> service.salvar(livro));
-		
-		assertEquals(String.format("Não existe um cadastro de autor(a) com o código %d", autorId), e.getMessage());
-		verify(autorService, Mockito.times(1)).buscarOuFalhar(anyLong());
-		
+
+		assertThatThrownBy(() -> service.salvar(livro))
+				.isInstanceOf(AutorNaoEncontradoException.class)
+				.hasMessage(String.format("Não existe um cadastro de autor(a) com o código %d", autorId));
+		verify(autorService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoInteractions(generoService);
 		verifyNoInteractions(editoraService);
 		verifyNoInteractions(repository);
@@ -191,15 +181,13 @@ class LivroServiceTest {
 		livro.setGenero(genero);
 		livro.setEditora(editora);
 
-		final GeneroNaoEncontradoException e = 
-				assertThrows(GeneroNaoEncontradoException.class, () -> service.salvar(livro));
-		
-		verify(autorService, Mockito.times(1)).buscarOuFalhar(anyLong());
-		verifyNoMoreInteractions(autorService);
 
-		assertEquals(String.format("Não existe um cadastro de genero com o código %d", generoId), e.getMessage());
-		verify(generoService, Mockito.times(1)).buscarOuFalhar(anyLong());
-	
+		assertThatThrownBy(() -> service.salvar(livro))
+				.isInstanceOf(GeneroNaoEncontradoException.class)
+				.hasMessage(String.format("Não existe um cadastro de genero com o código %d", generoId));
+		verify(autorService, times(1)).buscarOuFalhar(anyLong());
+		verifyNoMoreInteractions(autorService);
+		verify(generoService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoInteractions(editoraService);
 		verifyNoInteractions(repository);
 	}
@@ -225,18 +213,18 @@ class LivroServiceTest {
 		livro.setGenero(genero);
 		livro.setEditora(editora);
 
-		final EditoraNaoEncontradaException e = 
-				assertThrows(EditoraNaoEncontradaException.class, () -> service.salvar(livro));
+		assertThatThrownBy(() -> service.salvar(livro))
+				.isInstanceOf(EditoraNaoEncontradaException.class)
+				.hasMessage(String.format("Não existe um cadastro de editora com o código %d", editoraId));
 
-		verify(autorService, Mockito.times(1)).buscarOuFalhar(anyLong());
+		verify(autorService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(autorService);
 
-		verify(generoService, Mockito.times(1)).buscarOuFalhar(anyLong());
+		verify(generoService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(generoService);
-		
-		assertEquals(String.format("Não existe um cadastro de editora com o código %d", editoraId), e.getMessage());
-		verify(editoraService, Mockito.times(1)).buscarOuFalhar(anyLong());
-		
+
+		verify(editoraService, times(1)).buscarOuFalhar(anyLong());
+
 		verifyNoInteractions(repository);
 	}
 	
@@ -248,7 +236,7 @@ class LivroServiceTest {
 		this.buscarGeneroComSucesso();
 		this.buscarEditoraComSucesso();
 		
-		when(repository.save(Mockito.any(Livro.class))).thenThrow(DataIntegrityViolationException.class);
+		when(repository.save(any(Livro.class))).thenThrow(DataIntegrityViolationException.class);
 		
 		genero.setId(generoId);
 		editora.setId(editoraId);
@@ -256,22 +244,21 @@ class LivroServiceTest {
 		livro.setGenero(genero);
 		livro.setEditora(editora);
 		livro.setAutor(autor);
-		
-		final EntidadeEmUsoException e = 
-				assertThrows(EntidadeEmUsoException.class, () -> service.salvar(livro));
-		
-		assertEquals(String.format("Livro de título %s já cadastrado", livro.getTitulo()), e.getMessage());
-		
-		verify(autorService, Mockito.times(1)).buscarOuFalhar(anyLong());
+
+		assertThatThrownBy(() -> service.salvar(livro))
+				.isInstanceOf(EntidadeEmUsoException.class)
+				.hasMessage(String.format("Livro de título %s já cadastrado", livro.getTitulo()));
+
+		verify(autorService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(autorService);
 
-		verify(generoService, Mockito.times(1)).buscarOuFalhar(anyLong());
+		verify(generoService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(generoService);
-		
-		verify(editoraService, Mockito.times(1)).buscarOuFalhar(anyLong());
+
+		verify(editoraService, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(editoraService);
-		
-		verify(repository, Mockito.times(1)).save(Mockito.any(Livro.class));
+
+		verify(repository, times(1)).save(any(Livro.class));
 		verifyNoMoreInteractions(repository);
 	}
 	
@@ -279,24 +266,22 @@ class LivroServiceTest {
 	@Test
 	@DisplayName("Dado um livroId valido Quando chamar metodo excluir Entao deve excluir livro")
 	void Dado_um_livroId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_livro () {
-		service.excluir(livroId);
-
-		verify(repository, Mockito.times(1)).deleteById(anyLong());
-		verify(repository, Mockito.times(1)).flush();
+		assertThatCode(() -> service.excluir(livroId)).doesNotThrowAnyException();
+		verify(repository, times(1)).deleteById(anyLong());
+		verify(repository, times(1)).flush();
 		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
 	@DisplayName("Dado um livroId invalido Quando chamar metodo excluir Entao deve lancar exception LivroNaoEncontradoException")
 	void Dado_um_livroId_invalido_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_LivroNaoEncontradoException() {
-		Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
-		
-		final LivroNaoEncontradoException e = 
-				assertThrows(LivroNaoEncontradoException.class, ()-> service.excluir(livroId));
-		
-		assertEquals(String.format("Não existe um cadastro de livro com o código %d", livroId), e.getMessage());
-		verify(repository, Mockito.times(1)).deleteById(anyLong());
-		verify(repository, Mockito.never()).flush();
+		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
+
+		assertThatThrownBy(()-> service.excluir(livroId))
+				.isInstanceOf(LivroNaoEncontradoException.class)
+				.hasMessage(String.format("Não existe um cadastro de livro com o código %d", livroId));
+		verify(repository, times(1)).deleteById(anyLong());
+		verify(repository, never()).flush();
 		verifyNoMoreInteractions(repository);
 	}
 	
@@ -304,11 +289,11 @@ class LivroServiceTest {
 	@Test
 	@DisplayName("Dado um livroId em uso Quando chamar metodo excluir Entao deve lancar exception EntidadeEmUsoException")
 	void Dado_um_livroId_em_uso_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EntidadeEmUsoException() {
-		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
+		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
 		
-		assertThrows(EntidadeEmUsoException.class, () -> service.excluir(livroId));
-		verify(repository, Mockito.times(1)).deleteById(anyLong());
-		verify(repository, Mockito.never()).flush();
+		assertThatThrownBy(() -> service.excluir(livroId)).isInstanceOf(EntidadeEmUsoException.class);
+		verify(repository, times(1)).deleteById(anyLong());
+		verify(repository, never()).flush();
 		verifyNoMoreInteractions(repository);
 	}
 

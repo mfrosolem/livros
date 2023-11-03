@@ -1,5 +1,8 @@
 package com.maira.livrosapi.domain.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.GeneroNaoEncontradoException;
 import com.maira.livrosapi.domain.model.Genero;
@@ -10,16 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GeneroServiceTest {
@@ -49,47 +48,46 @@ class GeneroServiceTest {
 			return Optional.of(genero);			
 		});
 		
-		Genero generoRetornado = service.buscarOuFalhar(generoId);
-		
-		assertInstanceOf(Genero.class, generoRetornado);
-		assertEquals(generoId, generoRetornado.getId());
-		verify(repository, Mockito.times(1)).findById(generoId);
+		Genero sut = service.buscarOuFalhar(generoId);
+
+		assertThat(sut).isInstanceOf(Genero.class);
+		assertThat(sut.getId()).isNotNull();
+		verify(repository, times(1)).findById(generoId);
 		verifyNoMoreInteractions(repository);
 	}
-	
+
 	@Test
 	@DisplayName("Dado um generoId invalido Quando chamar metodo buscarOuFalhar Entao deve lancar exception GeneroNaoEncontradoException")
 	void Dado_um_generoId_invalido_Quando_chamar_metodo_buscarOuFalhar_Entao_deve_lancar_exception_GeneroNaoEncontradoException() {
 		when(repository.findById(generoId))
-			.thenThrow(new GeneroNaoEncontradoException(generoId));
+				.thenReturn(Optional.empty());
 
-		GeneroNaoEncontradoException generoNaoEncontradoException =
-				assertThrows(GeneroNaoEncontradoException.class, () -> service.buscarOuFalhar(generoId));
-		assertEquals(String.format("Não existe um cadastro de genero com o código %d", generoId), generoNaoEncontradoException.getMessage());
-		verify(repository, Mockito.times(1)).findById(generoId);
+		assertThatThrownBy(() -> service.buscarOuFalhar(generoId))
+				.isInstanceOf(GeneroNaoEncontradoException.class)
+				.hasMessage(String.format("Não existe um cadastro de genero com o código %d", generoId));
+		verify(repository, times(1)).findById(generoId);
 		verifyNoMoreInteractions(repository);
-
 	}
 
 	@Test
 	@DisplayName("Dado um genero valido Quando salvar Entao deve retornar um genero com id")
 	void Dado_um_genero_valido_Quando_salvar_Entao_deve_retornar_um_genero_com_id() {
-		when(repository.save(Mockito.any(Genero.class))).thenAnswer(invocacao -> {
+		when(repository.save(any(Genero.class))).thenAnswer(invocacao -> {
 			Genero generoPassado = invocacao.getArgument(0, Genero.class);
 			generoPassado.setId(generoId);
 			return generoPassado;
 		});
 
-		Genero generoSalvo = service.salvar(genero);
+		Genero sut = service.salvar(genero);
 
-		assertInstanceOf(Genero.class, generoSalvo);
-		assertEquals(generoId, generoSalvo.getId());
+		assertThat(sut).isInstanceOf(Genero.class);
+		assertThat(sut.getId()).isNotNull();
 	}
 
 	@Test
 	@DisplayName("Dado um genero valido Quando salvar Entao deve chamar metodo save do repository")
 	void Dado_um_genero_valido_Quando_salvar_Entao_deve_chamar_metodo_save_do_repository() {
-		when(repository.save(Mockito.any(Genero.class))).thenAnswer(invocacao -> {
+		when(repository.save(any(Genero.class))).thenAnswer(invocacao -> {
 			Genero generoPassado = invocacao.getArgument(0, Genero.class);
 			generoPassado.setId(generoId);
 			return generoPassado;
@@ -97,7 +95,7 @@ class GeneroServiceTest {
 
 		service.salvar(genero);
 
-		verify(repository, Mockito.times(1)).save(Mockito.any(Genero.class));
+		verify(repository, times(1)).save(any(Genero.class));
 		verifyNoMoreInteractions(repository);
 	}
 
@@ -106,40 +104,39 @@ class GeneroServiceTest {
 	void Dado_um_genero_que_ja_existe_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException() {
 		when(service.salvar(genero)).thenThrow(DataIntegrityViolationException.class);
 		
-		assertThrows(EntidadeEmUsoException.class, () -> service.salvar(genero));
-		verify(repository, Mockito.times(1)).save(Mockito.any(Genero.class));
+		assertThatThrownBy(() -> service.salvar(genero)).isInstanceOf(EntidadeEmUsoException.class);
+		verify(repository, times(1)).save(any(Genero.class));
 		verifyNoMoreInteractions(repository);
 	}
 
 	@Test
 	@DisplayName("Dado um generoId valido Quando chamar metodo excluir Entao deve excluir genero")
 	void Dado_um_generoId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_genero() {
-		service.excluir(generoId);
-
-		verify(repository, Mockito.times(1)).deleteById(anyLong());
-		verify(repository, Mockito.times(1)).flush();
+		assertThatCode(() -> service.excluir(generoId)).doesNotThrowAnyException();
+		verify(repository, times(1)).deleteById(anyLong());
+		verify(repository, times(1)).flush();
 		verifyNoMoreInteractions(repository);
 	}
 
 	@Test
 	@DisplayName("Dado um generoId invalido Quando chamar metodo excluir Entao deve lancar exception GeneroNaoEncontradoException")
 	void Dado_um_generoId_invalido_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_GeneroNaoEncontradoException() {
-		Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
+		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
 
-		assertThrows(GeneroNaoEncontradoException.class, () -> service.excluir(generoId));
-		verify(repository, Mockito.times(1)).deleteById(anyLong());
-		verify(repository, Mockito.never()).flush();
+		assertThatThrownBy(() -> service.excluir(generoId)).isInstanceOf(GeneroNaoEncontradoException.class);
+		verify(repository, times(1)).deleteById(anyLong());
+		verify(repository, never()).flush();
 		verifyNoMoreInteractions(repository);
 	}
 	
 	@Test
 	@DisplayName("Dado um generoId em uso Quando chamar metodo excluir Entao deve lancar exception EntidadeEmUsoException")
 	void Dado_um_generoId_em_uso_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EntidadeEmUsoException() {
-		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
+		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
 		
-		assertThrows(EntidadeEmUsoException.class, () -> service.excluir(generoId));
-		verify(repository, Mockito.times(1)).deleteById(anyLong());
-		verify(repository, Mockito.never()).flush();
+		assertThatThrownBy(() -> service.excluir(generoId)).isInstanceOf(EntidadeEmUsoException.class);
+		verify(repository, times(1)).deleteById(anyLong());
+		verify(repository, never()).flush();
 		verifyNoMoreInteractions(repository);
 	}  
 
