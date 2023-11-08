@@ -8,4 +8,4 @@ create table editora (
 	primary key (id)
 ) engine=InnoDB default charset=utf8;
 
-alter table editora add constraint uc_editora_nome unique (nome);
+alter table editora add constraint uq_editora_nome unique (nome);

@@ -4,3 +4,5 @@ create table grupo (
 
 	primary key (id)
 ) engine=InnoDB default charset=utf8;
+
+alter table grupo add constraint uq_grupo_nome unique (nome);

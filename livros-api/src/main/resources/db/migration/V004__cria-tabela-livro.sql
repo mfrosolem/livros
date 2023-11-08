@@ -27,4 +27,4 @@ foreign key (genero_id) references genero (id);
 alter table livro add constraint fk_livro_editora
 foreign key (editora_id) references editora (id);
 
-alter table livro add constraint uc_livro_isbn unique (isbn);
+alter table livro add constraint uq_livro_isbn unique (isbn);

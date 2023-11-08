@@ -7,3 +7,5 @@ CREATE TABLE usuario (
 	
 	primary key (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+alter table usuario add constraint uq_usuario_email unique (email);

@@ -4,4 +4,4 @@ create table genero (
 	primary key (id)
 ) engine=InnoDB default charset=utf8;
 
-alter table genero add constraint uc_genero_descricao unique (descricao);
+alter table genero add constraint uq_genero_descricao unique (descricao);

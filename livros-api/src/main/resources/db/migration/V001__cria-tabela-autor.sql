@@ -17,4 +17,4 @@ create table autor (
 	primary key (id)
 ) engine=InnoDB default charset=utf8;
 
-alter table autor add constraint uc_autor_nome_sobrenome unique (nome, sobrenome);
+alter table autor add constraint uq_autor_nome_sobrenome unique (nome, sobrenome);
