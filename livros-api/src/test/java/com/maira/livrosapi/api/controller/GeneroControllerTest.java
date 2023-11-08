@@ -1,44 +1,5 @@
 package com.maira.livrosapi.api.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Collections;
-
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maira.livrosapi.api.assembler.GeneroInputDisassembler;
 import com.maira.livrosapi.api.assembler.GeneroModelAssembler;
@@ -48,31 +9,51 @@ import com.maira.livrosapi.api.model.input.GeneroInput;
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.GeneroNaoEncontradoException;
 import com.maira.livrosapi.domain.model.Genero;
-import com.maira.livrosapi.domain.repository.GeneroRepository;
 import com.maira.livrosapi.domain.service.GeneroService;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-//@AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(MockitoExtension.class)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest
+@ContextConfiguration(classes = {GeneroController.class, ApiExceptionHandler.class})
+@AutoConfigureMockMvc(addFilters = false)
 class GeneroControllerTest {
-	
-	@InjectMocks
-	GeneroController controller;
-	
-	@Mock
+
+	@MockBean
 	GeneroService service;
 	
-	@Mock
-	GeneroRepository repository;
-	
-	@Mock
+	@MockBean
 	GeneroModelAssembler generoModelAssembler;
 
-	@Mock
+	@MockBean
 	GeneroInputDisassembler generoInputDisassembler;
-	
+
+	@Autowired
 	MockMvc mockMvc;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 	
 	private Genero genero;
 	private GeneroModel generoModel;
@@ -82,12 +63,6 @@ class GeneroControllerTest {
 	
 	@BeforeEach
 	public void init() {
-		
-		mockMvc = MockMvcBuilders.standaloneSetup(controller)
-				.alwaysDo(print())
-				.setControllerAdvice(ApiExceptionHandler.class)
-				.setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-				.build();
 		
 		generoId = 1L;
 		generoInput = GeneroInput.builder().descricao("Romance").build();
@@ -99,230 +74,242 @@ class GeneroControllerTest {
 	
 	
 	@Test
-	void Quando_chamar_GET_Entao_deve_retornar_status_200() throws Exception {
+	@DisplayName("Quando chamar GET Entao deve retornar status 200")
+	void listarGernero_RetornaOK() throws Exception {
 		
-		when(repository.findByDescricaoContaining(anyString(), Mockito.any(Pageable.class)))
+		when(service.listByDescricaoContaining(anyString(), any(Pageable.class)))
 		.thenAnswer(answer -> {
 			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 			Page<Genero> pageGenero = new PageImpl<Genero>(Collections.singletonList(genero), pageableParametro, 1);
 			return pageGenero;
 		});
 		
-		when(generoModelAssembler.toCollectionModel(Mockito.anyList()))
+		when(generoModelAssembler.toCollectionModel(anyList()))
 			.thenReturn(Collections.singletonList(generoModel));
 				
 		mockMvc.perform(get("/generos"))
-		.andExpect(MockMvcResultMatchers.status().isOk())
-		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
-		.andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1)))
-		.andExpect(MockMvcResultMatchers.jsonPath("$['pageable']['paged']").value("true"))
-		.andDo(MockMvcResultHandlers.print());
-		
-		verify(repository, Mockito.times(1)).findByDescricaoContaining(anyString(), Mockito.any(Pageable.class));
-		
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.content").isArray())
+		.andExpect(jsonPath("$.content", Matchers.hasSize(1)))
+		.andExpect(jsonPath("$['pageable']['paged']").value("true"))
+		.andDo(print());
 	}
 	
 	@Test
-	void Quando_chamar_GET_passando_descricao_Entao_deve_retornar_status_200() throws Exception {
-		var descricaoFiltro = "Romance";
-		when(repository.findByDescricaoContaining(anyString(), Mockito.any(Pageable.class)))
+	@DisplayName("Quando chamar GET passando descricao Entao deve retornar status 200")
+	void listarGenero_PorDescricao_RetornaListaFiltradaEStatusOK() throws Exception {
+		when(service.listByDescricaoContaining(anyString(), any(Pageable.class)))
 		.thenAnswer(answer -> {
 			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 			Page<Genero> pageGenero = new PageImpl<Genero>(Collections.singletonList(genero), pageableParametro, 1);
 			return pageGenero;
 		});
 
-		when(generoModelAssembler.toCollectionModel(Mockito.anyList()))
+		when(generoModelAssembler.toCollectionModel(anyList()))
 			.thenReturn(Collections.singletonList(generoModel));
 
 		mockMvc.perform(get("/generos")
-				.param("descricao", descricaoFiltro))
-		.andExpect(MockMvcResultMatchers.status().isOk())
-		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
-		.andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1)))
-		.andExpect(MockMvcResultMatchers.jsonPath("$.content[0].descricao").value(descricaoFiltro))
-		.andExpect(MockMvcResultMatchers.jsonPath("$['pageable']['paged']").value("true"))
-		.andDo(MockMvcResultHandlers.print());
-		
-		verify(repository, Mockito.times(1)).findByDescricaoContaining(anyString(), Mockito.any(Pageable.class));
-		
+				.param("descricao", genero.getDescricao()))
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.content").isArray())
+		.andExpect(jsonPath("$.content", Matchers.hasSize(1)))
+		.andExpect(jsonPath("$.content[0].descricao").value(genero.getDescricao()))
+		.andExpect(jsonPath("$['pageable']['paged']").value("true"))
+		.andDo(print());
+	}
+
+	@Test
+	@DisplayName("Quando chamar GET passando descricao inexistente Entao deve retornar lista vazia")
+	void listarGenero_PorDescricaoInexistente_RetornaListaVaziaStatusOK() throws Exception {
+		when(service.listByDescricaoContaining(anyString(), any(Pageable.class)))
+				.thenAnswer(answer -> {
+					Pageable pageableParametro = answer.getArgument(1, Pageable.class);
+					Page<Genero> pageGenero = new PageImpl<Genero>(Collections.emptyList(), pageableParametro, 1);
+					return pageGenero;
+				});
+
+		when(generoModelAssembler.toCollectionModel(anyList()))
+				.thenReturn(Collections.emptyList());
+
+		mockMvc.perform(get("/generos")
+						.param("descricao", genero.getDescricao()))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", Matchers.empty()))
+				.andExpect(jsonPath("$['pageable']['paged']").value("true"))
+				.andDo(print());
 	}
 	
 	@Test
-	void Quando_chamar_GET_passando_pageable_Entao_deve_retornar_status_200() throws Exception {
+	@DisplayName("Quando chamar GET passando pageable Entao deve retornar status 200")
+	void listarGenero_PassandoPageable_RetornaListaEStatusOK() throws Exception {
 
-		when(repository.findByDescricaoContaining(anyString(), Mockito.any(Pageable.class)))
+		when(service.listByDescricaoContaining(anyString(), any(Pageable.class)))
 		.thenAnswer(answer -> {
 			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 			Page<Genero> pageGenero = new PageImpl<Genero>(Collections.singletonList(genero), pageableParametro, 1);
 			return pageGenero;
 		});
 		
-		when(generoModelAssembler.toCollectionModel(Mockito.anyList()))
+		when(generoModelAssembler.toCollectionModel(anyList()))
 			.thenReturn(Collections.singletonList(generoModel));
 
 		mockMvc.perform(get("/generos")
 				.param("page", "0")
 		        .param("size", "20")
 		        .param("sort", "descricao,asc"))
-		.andExpect(MockMvcResultMatchers.status().isOk())
-		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())
-		.andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1)))
-		.andExpect(MockMvcResultMatchers.jsonPath("$['pageable']['paged']").value("true"))
-		.andExpect(MockMvcResultMatchers.jsonPath("$['sort']['sorted']").value("true"))
-		.andDo(MockMvcResultHandlers.print());
-		
-		ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-		
-		verify(repository, Mockito.times(1)).findByDescricaoContaining(anyString(), pageableCaptor.capture());
-		PageRequest pageable = (PageRequest) pageableCaptor.getValue();
-	    
-	    assertEquals(0, pageable.getPageNumber());
-	    assertEquals(20, pageable.getPageSize());
-
+		.andExpect(status().isOk())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.content").isArray())
+		.andExpect(jsonPath("$.content", Matchers.hasSize(1)))
+		.andExpect(jsonPath("$['pageable']['paged']").value("true"))
+		.andExpect(jsonPath("$['sort']['sorted']").value("true"))
+		.andDo(print());
 	}
 	
 	
 	@Test
-	void Dado_um_generoId_valido_Quando_chamar_GET_Entao_deve_retornar_o_genero() throws Exception {
-		Mockito.when(service.buscarOuFalhar(anyLong())).thenReturn(genero);
+	@DisplayName("Dado um generoId valido Quando chamar GET Entao deve retornar o genero")
+	void buscarGenero_ComGeneroIdValido_RetornaGenero() throws Exception {
+		when(service.buscarOuFalhar(anyLong())).thenReturn(genero);
 		
-		Mockito.when(generoModelAssembler.toModel(Mockito.any(Genero.class)))
+		when(generoModelAssembler.toModel(any(Genero.class)))
 		.thenAnswer(answer -> {
 			return generoModel;
 		});
 		
-		mockMvc.perform(MockMvcRequestBuilders.get("/generos/{generoId}",generoId))
-		.andExpect(MockMvcResultMatchers.status().isOk())
-		.andDo(MockMvcResultHandlers.print());
+		mockMvc.perform(get("/generos/{generoId}",generoId))
+		.andExpect(status().isOk())
+		.andDo(print());
 		
-	
-		verify(service, Mockito.times(1)).buscarOuFalhar(anyLong());
+		verify(service, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(service);		
 	}
 	
 	@Test
-	void Dado_um_generoId_invalido_Quando_chamar_GET_Entao_deve_retornar_status_404() throws Exception {
+	@DisplayName("Dado um generoId invalido Quando chamar GET Entao deve retornar status 404")
+	void buscarGenero_ComGeneroIdInValido_RetornaNotFound() throws Exception {
 		when(service.buscarOuFalhar(generoId)).thenThrow(new GeneroNaoEncontradoException(generoId));
 
 		mockMvc.perform(get("/generos/{generoId}",generoId)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
-				.andExpect(result -> assertTrue(result.getResolvedException() instanceof GeneroNaoEncontradoException));
+				.andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(GeneroNaoEncontradoException.class));
 		
-		verify(service, Mockito.times(1)).buscarOuFalhar(anyLong());
+		verify(service, times(1)).buscarOuFalhar(anyLong());
 		verifyNoMoreInteractions(service);
 	}
 	
 	
 	@Test
-	void Dado_um_genero_valido_Quando_chamar_POST_Entao_deve_retornar_status_201() throws Exception { 
-		when(generoInputDisassembler.toDomainObject(Mockito.any(GeneroInput.class))).thenReturn(generoSemId);
-		
-		when(service.salvar(Mockito.any(Genero.class))).thenReturn(genero);
-		
-		when(generoModelAssembler.toModel(Mockito.any(Genero.class))).thenReturn(generoModel);
-		
-		var objectMapper = new ObjectMapper();
+	@DisplayName("Dado um genero valido Quando chamar POST Entao deve retornar status 201")
+	void adicionarGenero_ComDadosValidos_RetornaCreated() throws Exception {
+		when(generoInputDisassembler.toDomainObject(any(GeneroInput.class))).thenReturn(generoSemId);
+		when(service.salvar(any(Genero.class))).thenReturn(genero);
+		when(generoModelAssembler.toModel(any(Genero.class))).thenReturn(generoModel);
 		
 		mockMvc.perform(post("/generos")
 				.contentType("application/json")
 				.accept(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(generoInput)))
 		.andExpect(status().isCreated())
-		.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+		.andExpect(jsonPath("$.id").exists());
 		
-		verify(service, Mockito.times(1)).salvar(Mockito.any(Genero.class));
+		verify(service, times(1)).salvar(any(Genero.class));
 		verifyNoMoreInteractions(service);	
-		
+	}
+
+	@Test
+	@DisplayName("Dado um genero com descricao existente Quando chamar POST Entao deve retornar status 409")
+	void adicionarGenero_ComDescricaoGeneroExistente_RetornaConflict() throws Exception {
+		when(generoInputDisassembler.toDomainObject(Mockito.any(GeneroInput.class))).thenReturn(generoSemId);
+		when(service.salvar(Mockito.any(Genero.class)))
+				.thenThrow(new EntidadeEmUsoException(String.format("Genero de descrição %s já cadastrado",
+						generoSemId.getDescricao())));
+
+		mockMvc.perform(post("/generos")
+						.contentType("application/json")
+						.accept(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(generoInput)))
+				.andExpect(status().isConflict())
+				.andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(EntidadeEmUsoException.class));
+
+		verify(service, Mockito.times(1)).salvar(Mockito.any(Genero.class));
+		verifyNoMoreInteractions(service);
 	}
 	
 	
 	@Test
-	void Dado_um_genero_valido_Quando_chamar_PUT_Entao_deve_retornar_status_200() throws Exception { 
-		
-		Mockito.when(service.buscarOuFalhar(anyLong())).thenReturn(genero);
-		
-		when(service.salvar(Mockito.any(Genero.class))).thenReturn(genero);
-		
-		when(generoModelAssembler.toModel(Mockito.any(Genero.class))).thenReturn(generoModel);
-		
-		var objectMapper = new ObjectMapper();
+	@DisplayName("Dado um genero valido Quando chamar PUT Entao deve retornar status 200")
+	void atualizarGenero_ComGeneroValido_RetornarOK() throws Exception {
+		when(service.buscarOuFalhar(anyLong())).thenReturn(genero);
+		when(service.salvar(any(Genero.class))).thenReturn(genero);
+		when(generoModelAssembler.toModel(any(Genero.class))).thenReturn(generoModel);
 		
 		mockMvc.perform(put("/generos/{generoId}", generoId)
 				.contentType("application/json")
 				.accept(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(generoInput)))
 		.andExpect(status().isOk())
-		.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
-		.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(generoId));
+		.andExpect(jsonPath("$.id").exists())
+		.andExpect(jsonPath("$.id").value(generoId));
 		
-		verify(service, Mockito.times(1)).salvar(Mockito.any(Genero.class));
-		verifyNoMoreInteractions(service);	
-		
+		verify(service, times(1)).salvar(any(Genero.class));
 	}
 	
 	
 	@Test
-	void Dado_um_generoId_invalido_Quando_chamar_PUT_Entao_deve_retornar_status_404() throws Exception { 
+	@DisplayName("Dado um generoId invalido Quando chamar PUT Entao deve retornar status 404")
+	void atualizarGenero_ComGeneroIdInvalido_RetornarNotFound() throws Exception {
 		when(service.buscarOuFalhar(generoId)).thenThrow(new GeneroNaoEncontradoException(generoId));
-		
-		var objectMapper = new ObjectMapper();
 		
 		mockMvc.perform(put("/generos/{generoId}", generoId)
 				.contentType("application/json")
 				.accept(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(generoInput)))
 		.andExpect(status().isNotFound())
-		.andExpect(result -> assertTrue(result.getResolvedException() instanceof GeneroNaoEncontradoException));
+		.andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(GeneroNaoEncontradoException.class));
 		
-		verify(service, Mockito.never()).salvar(Mockito.any(Genero.class));
-		verifyNoMoreInteractions(service);	
-		
+		verify(service, never()).salvar(any(Genero.class));
 	}
 	
 	@Test
-	void Dado_um_generoId_valido_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_204() throws Exception {
-		//Mockito.doNothing().when(service).excluir(Mockito.anyLong());
-
+	@DisplayName("Dado um generoId valido Quando chamar metodo excluir Entao deve retornar status 204")
+	void removerGenero_ComGeneroIdValido_RetornarNoContent() throws Exception {
 		mockMvc.perform(delete("/generos/{generoId}",generoId)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.status().isNoContent())
+		.andExpect(status().isNoContent())
 		.andReturn();
 
-		verify(service, Mockito.times(1)).excluir(anyLong());
+		verify(service, times(1)).excluir(anyLong());
 		verifyNoMoreInteractions(service);	
-		
-	} 
+	}
 	
 	@Test
-	void Dado_um_generoId_invalido_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_404() throws Exception {
-		Mockito.doThrow(GeneroNaoEncontradoException.class).when(service).excluir(Mockito.anyLong());
+	@DisplayName("Dado um generoId invalido Quando chamar metodo excluir Entao deve retornar status 404")
+	void removerGenero_ComGeneroIdInvalido_RetornarNotFound() throws Exception {
+		doThrow(new GeneroNaoEncontradoException(generoId)).when(service).excluir(generoId);
 
 		mockMvc.perform(delete("/generos/{generoId}",generoId)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.status().isNotFound())
-		.andExpect(result -> assertTrue(result.getResolvedException() instanceof GeneroNaoEncontradoException))
-		.andReturn();
-
-		verify(service, Mockito.times(1)).excluir(anyLong());
-		verifyNoMoreInteractions(service);	
-	} 
+		.andExpect(status().isNotFound());
+	}
 	
 	@Test
-	void Dado_um_generoId_valido_em_uso_Quando_chamar_metodo_excluir_Entao_deve_retornar_status_409() throws Exception {
-		Mockito.doThrow(EntidadeEmUsoException.class).when(service).excluir(Mockito.anyLong());
+	@DisplayName("Dado um generoId valido em uso Quando chamar metodo excluir Entao deve retornar status 409")
+	void removerGenero_ComGeneroIdEmUso_RetornarConfict() throws Exception {
+		doThrow(EntidadeEmUsoException.class).when(service).excluir(anyLong());
 
 		mockMvc.perform(delete("/generos/{generoId}",generoId)
 				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.status().isConflict())
-		.andExpect(result -> assertTrue(result.getResolvedException() instanceof EntidadeEmUsoException))
+		.andExpect(status().isConflict())
+		.andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(EntidadeEmUsoException.class))
 		.andReturn();
 
-		verify(service, Mockito.times(1)).excluir(anyLong());
+		verify(service, times(1)).excluir(anyLong());
 		verifyNoMoreInteractions(service);	
 	} 
 
