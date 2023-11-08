@@ -1,25 +1,25 @@
 package com.maira.livrosapi.domain.service;
 
-import java.io.InputStream;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.maira.livrosapi.domain.exception.FotoLivroNaoEncontradaException;
 import com.maira.livrosapi.domain.model.FotoLivro;
 import com.maira.livrosapi.domain.repository.LivroRepository;
 import com.maira.livrosapi.domain.service.FotoStorageService.NovaFoto;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.InputStream;
+import java.util.Optional;
 
 @Service
 public class FotoLivroService {
 
-	@Autowired
-	private LivroRepository livroRepository;
+	private final LivroRepository livroRepository;
+	private final FotoStorageService fotoStorage;
 
-	@Autowired
-	private FotoStorageService fotoStorage;
+	public FotoLivroService(LivroRepository livroRepository, FotoStorageService fotoStorage) {
+		this.livroRepository = livroRepository;
+		this.fotoStorage = fotoStorage;
+	}
 
 	@Transactional
 	public FotoLivro salvar(FotoLivro foto, InputStream dadosArquivos) {

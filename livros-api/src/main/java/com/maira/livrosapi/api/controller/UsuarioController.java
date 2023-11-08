@@ -53,8 +53,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 	public Page<UsuarioModel> listar(@RequestParam(required = false, defaultValue = "") String nome, Pageable pageable) {
 		Page<Usuario> usuariosPage = usuarioRepository.findByNomeContaining(nome, pageable);
 		List<UsuarioModel> usuariosModel = usuarioModelAssembler.toCollectionModel(usuariosPage.getContent());
-		Page<UsuarioModel> usuariosModelPage = new PageImpl<>(usuariosModel, pageable, usuariosPage.getTotalElements());
-		return usuariosModelPage;
+		return new PageImpl<>(usuariosModel, pageable, usuariosPage.getTotalElements());
 	}
 
 	@GetMapping(path = "/{usuarioId}")

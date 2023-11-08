@@ -1,23 +1,5 @@
 package com.maira.livrosapi.api.controller;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.maira.livrosapi.api.ResourceUriHelper;
 import com.maira.livrosapi.api.assembler.EditoraInputDisassembler;
 import com.maira.livrosapi.api.assembler.EditoraModelAssembler;
@@ -26,11 +8,17 @@ import com.maira.livrosapi.api.model.input.EditoraInput;
 import com.maira.livrosapi.api.openapi.controller.EditoraControllerOpenApi;
 import com.maira.livrosapi.core.security.CheckRoleSecurity;
 import com.maira.livrosapi.domain.model.Editora;
-import com.maira.livrosapi.domain.repository.EditoraRepository;
 import com.maira.livrosapi.domain.service.EditoraService;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -38,12 +26,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EditoraController implements EditoraControllerOpenApi {
 
-	private final EditoraRepository editoraRepository;
-
 	private final EditoraService cadastroEditora;
-
 	private final EditoraModelAssembler editoraModelAssembler;
-
 	private final EditoraInputDisassembler editoraInputDisassembler;
 	
 
@@ -52,11 +36,9 @@ public class EditoraController implements EditoraControllerOpenApi {
 	public Page<EditoraModel> listar(@RequestParam(required = false, defaultValue = "") String nome,
 			Pageable pageable) {
 		
-		Page<Editora> editorasPage = editoraRepository.findByNomeContaining(nome, pageable);
+		Page<Editora> editorasPage = cadastroEditora.listByNameContaining(nome, pageable);
 		List<EditoraModel> editorasModel = editoraModelAssembler.toCollectionModel(editorasPage.getContent());
-		Page<EditoraModel> editorasModelPage = new PageImpl<>(editorasModel, pageable, editorasPage.getTotalElements());
-		
-		return editorasModelPage;
+		return new PageImpl<>(editorasModel, pageable, editorasPage.getTotalElements());
 	}
 	
 	

@@ -8,41 +8,40 @@ import com.maira.livrosapi.api.model.input.GrupoInput;
 import com.maira.livrosapi.api.openapi.controller.GrupoControllerOpenApi;
 import com.maira.livrosapi.core.security.CheckRoleSecurity;
 import com.maira.livrosapi.domain.model.Grupo;
-import com.maira.livrosapi.domain.repository.GrupoRepository;
 import com.maira.livrosapi.domain.service.GrupoService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/grupos", produces = MediaType.APPLICATION_JSON_VALUE)
-@RequiredArgsConstructor
+
 public class GrupoController implements GrupoControllerOpenApi {
 
-    private final GrupoRepository grupoRepository;
-
     private final GrupoService cadastroGrupo;
-
     private final GrupoInputDisassembler grupoInputDisassembler;
-
     private final GrupoModelAssembler grupoModelAssembler;
+
+    public GrupoController(GrupoService cadastroGrupo, GrupoInputDisassembler grupoInputDisassembler,
+                           GrupoModelAssembler grupoModelAssembler) {
+        this.cadastroGrupo = cadastroGrupo;
+        this.grupoModelAssembler = grupoModelAssembler;
+        this.grupoInputDisassembler = grupoInputDisassembler;
+    }
 
     @Override
     @CheckRoleSecurity.UsuariosGruposPermissoes.PodeConsultar
     @GetMapping
     public Page<GrupoModel> listar(@RequestParam(required = false, defaultValue = "") String nome, Pageable pageable) {
-        Page<Grupo> gruposPage = grupoRepository.findByNomeContaining(nome, pageable);
+        Page<Grupo> gruposPage = cadastroGrupo.listyByNameContaining(nome, pageable);
         List<GrupoModel> gruposModel = grupoModelAssembler.toCollectionModel(gruposPage.getContent());
-        Page<GrupoModel> gruposModelPage = new PageImpl<>(gruposModel, pageable, gruposPage.getTotalElements());
-        return gruposModelPage;
+        return new PageImpl<>(gruposModel, pageable, gruposPage.getTotalElements());
     }
 
     @Override

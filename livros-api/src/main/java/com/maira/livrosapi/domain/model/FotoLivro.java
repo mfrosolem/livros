@@ -29,8 +29,14 @@ public class FotoLivro {
 	@MapsId
 	private Livro livro;
 
+	@Column(nullable = false)
 	private String nomeArquivo;
+
 	private String descricao;
+
+	@Column(nullable = false)
 	private String contentType;
+
+	@Column(nullable = false)
 	private Long tamanho;
 }

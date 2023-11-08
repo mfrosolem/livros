@@ -3,14 +3,16 @@ package com.maira.livrosapi.api.assembler;
 import com.maira.livrosapi.api.model.input.GrupoInput;
 import com.maira.livrosapi.domain.model.Grupo;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GrupoInputDisassembler {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public GrupoInputDisassembler(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     public Grupo toDomainObject(GrupoInput grupoInput) {
         return modelMapper.map(grupoInput, Grupo.class);

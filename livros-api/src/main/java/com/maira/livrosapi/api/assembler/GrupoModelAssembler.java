@@ -12,8 +12,10 @@ import java.util.stream.Collectors;
 @Component
 public class GrupoModelAssembler {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+    public GrupoModelAssembler(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     public GrupoModel toModel(Grupo grupo) {
         return modelMapper.map(grupo, GrupoModel.class);

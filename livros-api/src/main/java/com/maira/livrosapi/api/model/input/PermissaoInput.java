@@ -9,9 +9,13 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GrupoInput {
+public class PermissaoInput {
 
-    @Schema(example = "Visitante")
+    @Schema(example = "ROLE_LIVRO_PESQUISAR")
     @NotBlank
     private String nome;
+
+    @Schema(example = "Permite pesquisar livros")
+    @NotBlank
+    private String descricao;
 }
