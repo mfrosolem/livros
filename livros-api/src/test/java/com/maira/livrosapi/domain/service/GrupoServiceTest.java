@@ -54,7 +54,7 @@ class GrupoServiceTest {
         grupo = Grupo.builder().id(grupoId).nome("Usuario Comum").permissoes(Set.of(permissao)).build();
         grupoSemId = Grupo.builder().nome("Usuario Comum").permissoes(Set.of(permissao)).build();
 
-        L
+        
     }
 
     @Test
