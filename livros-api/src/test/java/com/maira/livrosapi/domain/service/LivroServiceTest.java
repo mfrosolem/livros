@@ -18,7 +18,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -295,6 +301,46 @@ class LivroServiceTest {
 		verify(repository, times(1)).deleteById(anyLong());
 		verify(repository, never()).flush();
 		verifyNoMoreInteractions(repository);
+	}
+
+	@Test
+	@DisplayName("Quando chamar metodo listByTituloContaining Entao deve retornar todos os livros")
+	void listByTituloContaining_RetornaTodosAutores() {
+
+		var livroUm = Livro.builder().id(1L).isbn("9788582850350").titulo("Dom Casmurro").idioma("Português")
+				.paginas(390L).ano(2016L).build();
+
+		var livroDois = Livro.builder().id(2L).isbn("9788582850350").titulo("Dom Casmurro").idioma("Português")
+				.paginas(390L).ano(2016L).build();
+
+		var livroTres = Livro.builder().id(3L).isbn("9788582850350").titulo("Dom Casmurro").idioma("Português")
+				.paginas(390L).ano(2016L).build();
+		List<Livro> livros = new ArrayList<>() {
+			{
+				add(livroUm);
+				add(livroDois);
+				add(livroTres);
+			}
+		};
+		Pageable pageable = PageRequest.of(0,20);
+		Page<Livro> page = new PageImpl<>(livros,pageable, livros.size());
+		when(repository.findByTituloContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+		Page<Livro> sut = service.listByTituloContaining("", pageable);
+
+		assertThat(sut).isNotEmpty().hasSize(3);
+	}
+
+	@Test
+	@DisplayName("Quando chamar metodo listByTituloContaining filtrando por titulo inexistente Entao deve retornar lista vazia")
+	void listByTituloContaining_Filtrando_RetornaListaVazia() {
+		List<Livro> livros = new ArrayList<>();
+		Pageable pageable = PageRequest.of(0,20);
+		Page<Livro> page = new PageImpl<>(livros,pageable, livros.size());
+		when(repository.findByTituloContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+		Page<Livro> sut = service.listByTituloContaining("A Sangue Frio", pageable);
+		assertThat(sut).isEmpty();
 	}
 
 	private void buscarAutorComSucesso() {

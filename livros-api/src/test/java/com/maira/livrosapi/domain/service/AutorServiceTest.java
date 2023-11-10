@@ -1,8 +1,5 @@
 package com.maira.livrosapi.domain.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.maira.livrosapi.domain.exception.AutorNaoEncontradoException;
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.model.Autor;
@@ -16,8 +13,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
 
@@ -138,6 +144,40 @@ class AutorServiceTest {
 		verify(repository, times(1)).deleteById(anyLong());
 		verify(repository, never()).flush();
 		verifyNoMoreInteractions(repository);
+	}
+
+	@Test
+	@DisplayName("Quando chamar metodo listByNomeContaining Entao deve retornar todos os autores")
+	void listByNomeContaining_RetornaTodosAutores() {
+		List<Autor> autores = new ArrayList<>() {
+			{
+				add(Autor.builder().id(1L).nome("Joaquim Maria").sobrenome("Machado de Assis")
+						.nomeConhecido("Machado de Assis").sexo("M").build());
+				add(Autor.builder().id(2L).nome("jose").nome("Joaquim Maria").sobrenome("Machado de Assis")
+						.nomeConhecido("Machado de Assis").sexo("M").build());
+				add(Autor.builder().id(3L).nome("Joaquim Maria").sobrenome("Machado de Assis")
+						.nomeConhecido("Machado de Assis").sexo("M").build());
+			}
+		};
+		Pageable pageable = PageRequest.of(0,20);
+		Page<Autor> page = new PageImpl<>(autores,pageable, autores.size());
+		when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+		Page<Autor> sut = service.listByNameContaining("", pageable);
+
+		assertThat(sut).isNotEmpty().hasSize(3);
+	}
+
+	@Test
+	@DisplayName("Quando chamar metodo listByNomeContaining filtrando por nome inexistente Entao deve retornar lista vazia")
+	void listByNomeContaining_Filtrando_RetornaListaVazia() {
+		List<Autor> autores = new ArrayList<>();
+		Pageable pageable = PageRequest.of(0,20);
+		Page<Autor> page = new PageImpl<>(autores,pageable, autores.size());
+		when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+		Page<Autor> sut = service.listByNameContaining("Edgar Allan", pageable);
+		assertThat(sut).isEmpty();
 	}
 	 
 	 

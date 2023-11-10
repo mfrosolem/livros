@@ -1,8 +1,5 @@
 package com.maira.livrosapi.domain.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.GeneroNaoEncontradoException;
 import com.maira.livrosapi.domain.model.Genero;
@@ -16,8 +13,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -82,19 +88,6 @@ class GeneroServiceTest {
 
 		assertThat(sut).isInstanceOf(Genero.class);
 		assertThat(sut.getId()).isNotNull();
-	}
-
-	@Test
-	@DisplayName("Dado um genero valido Quando salvar Entao deve chamar metodo save do repository")
-	void Dado_um_genero_valido_Quando_salvar_Entao_deve_chamar_metodo_save_do_repository() {
-		when(repository.save(any(Genero.class))).thenAnswer(invocacao -> {
-			Genero generoPassado = invocacao.getArgument(0, Genero.class);
-			generoPassado.setId(generoId);
-			return generoPassado;
-		});
-
-		service.salvar(genero);
-
 		verify(repository, times(1)).save(any(Genero.class));
 		verifyNoMoreInteractions(repository);
 	}
@@ -102,7 +95,7 @@ class GeneroServiceTest {
 	@Test
 	@DisplayName("Dado um genero que ja existe Quando salvar Entao deve lancar exception EntidadeEmUsoException")
 	void Dado_um_genero_que_ja_existe_Quando_salvar_Entao_deve_lancar_exception_EntidadeEmUsoException() {
-		when(service.salvar(genero)).thenThrow(DataIntegrityViolationException.class);
+		when(repository.save(genero)).thenThrow(DataIntegrityViolationException.class);
 		
 		assertThatThrownBy(() -> service.salvar(genero)).isInstanceOf(EntidadeEmUsoException.class);
 		verify(repository, times(1)).save(any(Genero.class));
@@ -138,6 +131,37 @@ class GeneroServiceTest {
 		verify(repository, times(1)).deleteById(anyLong());
 		verify(repository, never()).flush();
 		verifyNoMoreInteractions(repository);
-	}  
+	}
+
+	@Test
+	@DisplayName("Quando chamar metodo listByDescricaoContaining Entao deve retornar todos os generos")
+	void listByDescricaoContaining_RetornaTodosGeneros() {
+		List<Genero> generos = new ArrayList<>() {
+			{
+				add(Genero.builder().id(1L).descricao("Romance").build());
+				add(Genero.builder().id(2L).descricao("Terror").build());
+				add(Genero.builder().id(3L).descricao("Biografia").build());
+			}
+		};
+		Pageable pageable = PageRequest.of(0,20);
+		Page<Genero> page = new PageImpl<>(generos,pageable, generos.size());
+		when(repository.findByDescricaoContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+		Page<Genero> sut = service.listByDescricaoContaining("", pageable);
+
+		assertThat(sut).isNotEmpty().hasSize(3);
+	}
+
+	@Test
+	@DisplayName("Quando chamar metodo listByDescricaoContaining filtrando por descricao inexistente Entao deve retornar lista vazia")
+	void listByDescricaoContaining_Filtrando_RetornaListaVazia() {
+		List<Genero> generos = new ArrayList<>();
+		Pageable pageable = PageRequest.of(0,20);
+		Page<Genero> page = new PageImpl<>(generos,pageable, generos.size());
+		when(repository.findByDescricaoContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+		Page<Genero> sut = service.listByDescricaoContaining("Romance", pageable);
+		assertThat(sut).isEmpty();
+	}
 
 }

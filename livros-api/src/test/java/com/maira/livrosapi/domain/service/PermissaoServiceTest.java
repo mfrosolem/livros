@@ -1,8 +1,5 @@
 package com.maira.livrosapi.domain.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.maira.livrosapi.domain.exception.PermissaoNaoEncontradaException;
 import com.maira.livrosapi.domain.model.Permissao;
 import com.maira.livrosapi.domain.repository.PermissaoRepository;
@@ -13,8 +10,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -83,6 +90,38 @@ class PermissaoServiceTest {
        assertThat(sut.getId()).isNotNull();
 
     }
+
+    @Test
+    @DisplayName("Quando chamar metodo listByNameContaining Entao deve retornar todas as permissoes")
+    void listByNameContaining_RetornaTodasPermissoes() {
+        List<Permissao> permissoes = new ArrayList<>() {
+            {
+                add(Permissao.builder().id(1L).nome("VISITANTE").descricao("Visitante").build());
+                add(Permissao.builder().id(2L).nome("ADMIN").descricao("Administrador").build());
+                add(Permissao.builder().id(3L).nome("DIGITADOR").descricao("Digitador").build());
+            }
+        };
+        Pageable pageable = PageRequest.of(0,20);
+        Page<Permissao> page = new PageImpl<>(permissoes,pageable, permissoes.size());
+        when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+        Page<Permissao> sut = service.listByNameContaining("", pageable);
+
+        assertThat(sut).isNotEmpty().hasSize(3);
+    }
+
+    @Test
+    @DisplayName("Quando chamar metodo listByNameContaining filtrando por nome inexistente Entao deve retornar lista vazia")
+    void listByNameContaining_Filtrando_RetornaListaVazia() {
+        List<Permissao> permissoes = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0,20);
+        Page<Permissao> page = new PageImpl<>(permissoes,pageable, permissoes.size());
+        when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+        Page<Permissao> sut = service.listByNameContaining("Visitante", pageable);
+        assertThat(sut).isEmpty();
+    }
+
 
 
 }

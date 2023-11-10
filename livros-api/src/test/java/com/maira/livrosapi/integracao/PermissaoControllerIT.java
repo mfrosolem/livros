@@ -1,4 +1,4 @@
-package com.maira.livrosapi.api.controller;
+package com.maira.livrosapi.integracao;
 
 import com.maira.livrosapi.domain.model.Grupo;
 import com.maira.livrosapi.domain.model.Permissao;
@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PermissaoControllerTest {
+class PermissaoControllerIT {
 
     private MockMvc mvc;
 

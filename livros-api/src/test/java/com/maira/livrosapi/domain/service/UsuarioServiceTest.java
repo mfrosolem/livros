@@ -1,8 +1,5 @@
 package com.maira.livrosapi.domain.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.GrupoNaoEncontradoException;
 import com.maira.livrosapi.domain.exception.NegocioException;
@@ -20,12 +17,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -286,6 +288,37 @@ class UsuarioServiceTest {
                 .hasMessage(String.format("Não existe cadastro de grupo com o código %d", grupoId));
     }
 
+    @Test
+    @DisplayName("Quando chamar metodo listByNomeContaining Entao deve retornar todos os usuarios")
+    void listByNomeContaining_RetornaTodosUsuarios() {
+        List<Usuario> usuarios = new ArrayList<>() {
+            {
+                add(Usuario.builder().id(1L).nome("joao").email("joao@livros").senha("123").dataCadastro(OffsetDateTime.now()).build());
+                add(Usuario.builder().id(2L).nome("jose").email("jose@livros").senha("123").dataCadastro(OffsetDateTime.now()).build());
+                add(Usuario.builder().id(3L).nome("maria").email("maria@livros").senha("123").dataCadastro(OffsetDateTime.now()).build());
+            }
+        };
+        Pageable pageable = PageRequest.of(0,20);
+        Page<Usuario> page = new PageImpl<>(usuarios,pageable, usuarios.size());
+        when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+        Page<Usuario> sut = service.listByNomeContaining("", pageable);
+
+        assertThat(sut).isNotEmpty().hasSize(3);
+    }
+
+    @Test
+    @DisplayName("Quando chamar metodo listByNomeContaining filtrando por descricao inexistente Entao deve retornar lista vazia")
+    void listByNomeContaining_Filtrando_RetornaListaVazia() {
+        List<Usuario> usuarios = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0,20);
+        Page<Usuario> page = new PageImpl<>(usuarios,pageable, usuarios.size());
+        when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
+
+        Page<Usuario> sut = service.listByNomeContaining("Romance", pageable);
+        assertThat(sut).isEmpty();
+    }
+
 
     private void mockPasswordEncoderSucesso() {
         when(passwordEncoder.encode(any(CharSequence.class)))
@@ -310,6 +343,5 @@ class UsuarioServiceTest {
         when(grupoService.buscarOuFalhar(anyLong()))
                 .thenThrow(new GrupoNaoEncontradoException(grupoId));
     }
-
 
 }
