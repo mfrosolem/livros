@@ -22,7 +22,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/livros", produces = MediaType.APPLICATION_JSON_VALUE)
-
 public class LivroController implements LivroControllerOpenApi {
 
 	private final LivroService cadastroLivro;
