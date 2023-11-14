@@ -62,10 +62,12 @@ class UsuarioServiceTest {
                 .descricao("Permite criar ou editar usuários, grupos e permissões")
                 .build();
 
+        Set<Permissao> permissoes = new HashSet<>(){{ add(permissao); }};
+
         grupo = Grupo.builder()
                 .id(grupoId)
                 .nome("Visitante")
-                .permissoes(Set.of(permissao))
+                .permissoes(permissoes)
                 .build();
 
         usuario = Usuario.builder()
@@ -197,6 +199,18 @@ class UsuarioServiceTest {
     }
 
     @Test
+    @DisplayName("Quando chamar alterarSenha Entao deve chamar encode")
+    void alterarSenhaSucesso() {
+        this.buscarUsuarioPorIdComSucesso();
+        this.mockPasswordEncoderSucesso();
+        when(passwordEncoder.matches(any(CharSequence.class), anyString())).thenReturn(Boolean.TRUE);
+
+        assertThatCode(() -> service.alterarSenha(usuarioId, "123", "123456")).doesNotThrowAnyException();
+
+        verify(passwordEncoder, times(1)).encode(any(CharSequence.class));
+    }
+
+    @Test
     @DisplayName("Quando chamar alterarSenha se usuario nao encontrado Entao deve retornar exception UsuarioNaoEncontradoException")
     void alterarSenhaFalhaUsuarioNaoExiste() {
         when(repository.findById(anyLong()))
@@ -211,6 +225,7 @@ class UsuarioServiceTest {
     @DisplayName("Quando chamar alterarSenha se usuario informar senha atual incorreta Entao deve retornar exception NegocioException")
     void alterarSenhaFalhaSenhaAtualUsuario() {
         this.buscarUsuarioPorIdComSucesso();
+        when(passwordEncoder.matches(any(CharSequence.class), anyString())).thenReturn(Boolean.FALSE);
 
         assertThatThrownBy(() -> service.alterarSenha(usuarioId, "124", "321"))
                 .isInstanceOf(NegocioException.class)
@@ -247,8 +262,21 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Dado um usuarioId invalido e um grupoId valido Quando chamar metodo associarGrupo Entao deve lancar exception UsuarioNaoEncontradoException")
-    void Dado_um_usuarioId_invalido_e_um_grupoId_valido_Quando_chamar_metodo_associarGrupo_Entao_deve_lancar_exception_UsuarioNaoEncontradoException() {
+    @DisplayName("Dado um usuario valido e um grupo valido Quando chamar metodo associarGrupo Entao deve fazer a associação")
+    void Dado_um_usuario_valido_e_grupo_valido_Quando_chamar_metodo_associarGrupo_Entao_deve_fazer_associacao() {
+        var grupo2 = Grupo.builder().id(2L).nome("ADMIN").build();
+        usuario.setId(usuarioId);
+        Set<Grupo> grupos = new HashSet<>(){ { add(grupo); } };
+        usuario.setGrupos(grupos);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(usuario));
+        when(grupoService.buscarOuFalhar(anyLong())).thenReturn(grupo2);
+
+        assertThatCode(() -> service.associarGrupo(usuario.getId(), grupo2.getId())).doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("Dado um usuarioId invalido e grupoId valido Quando chamar metodo associarGrupo Entao deve lancar exception UsuarioNaoEncontradoException")
+    void Dado_um_usuarioId_invalido_e_grupoId_valido_Quando_chamar_metodo_associarGrupo_Entao_deve_lancar_exception_UsuarioNaoEncontradoException() {
         this.buscarUsuarioPorIdComFalha();
 
         assertThatThrownBy(() -> service.associarGrupo(usuarioId, grupoId))
@@ -265,6 +293,19 @@ class UsuarioServiceTest {
         assertThatThrownBy(() -> service.associarGrupo(usuarioId, grupoId))
                 .isInstanceOf(GrupoNaoEncontradoException.class)
                 .hasMessage(String.format("Não existe cadastro de grupo com o código %d", grupoId));
+    }
+
+    @Test
+    @DisplayName("Dado um usuario valido e uma grupo valido Quando chamar metodo desassociarGrupo Entao deve fazer a desassociação")
+    void Dado_um_usuario_valido_e_grupo_valido_Quando_chamar_metodo_desassociarGrupo_Entao_deve_fazer_desassociacao() {
+
+        usuario.setId(usuarioId);
+        Set<Grupo> grupos = new HashSet<>(){ { add(grupo); } };
+        usuario.setGrupos(grupos);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(usuario));
+        when(grupoService.buscarOuFalhar(anyLong())).thenReturn(grupo);
+
+        assertThatCode(() -> service.desassociarGrupo(usuario.getId(), grupo.getId())).doesNotThrowAnyException();
     }
 
     @Test
@@ -327,8 +368,8 @@ class UsuarioServiceTest {
 
     private void buscarUsuarioPorIdComSucesso() {
         when(repository.findById(anyLong())).thenAnswer(invocation -> {
-            Long idLivroPassado = invocation.getArgument(0, Long.class);
-            usuario.setId(idLivroPassado);
+            Long idUsuarioPassado = invocation.getArgument(0, Long.class);
+            usuario.setId(idUsuarioPassado);
             usuario.setGrupos(Set.of(grupo));
             return Optional.of(usuario);
         });

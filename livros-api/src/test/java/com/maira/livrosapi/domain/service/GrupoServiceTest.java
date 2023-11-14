@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -21,10 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -50,11 +48,13 @@ class GrupoServiceTest {
 
     @BeforeEach
     void init(){
-        permissao = Permissao.builder().id(1L).nome("VISITANTE").descricao("Visitante").build();
-        grupo = Grupo.builder().id(grupoId).nome("Usuario Comum").permissoes(Set.of(permissao)).build();
-        grupoSemId = Grupo.builder().nome("Usuario Comum").permissoes(Set.of(permissao)).build();
 
-        
+        permissao = Permissao.builder().id(1L).nome("VISITANTE").descricao("Visitante").build();
+
+        Set<Permissao> permissoes = new HashSet<>() {{add(permissao);}};
+
+        grupo = Grupo.builder().id(grupoId).nome("Usuario Comum").permissoes(permissoes).build();
+        grupoSemId = Grupo.builder().nome("Usuario Comum").permissoes(permissoes).build();
     }
 
     @Test
@@ -100,7 +100,6 @@ class GrupoServiceTest {
         assertThat(sut.getId()).isEqualTo(grupoId);
     }
 
-
     @Test
     @DisplayName("Dado um grupo novo com nome existente Quando salvar Entao deve retornar exception NegocioException")
     void Dado_um_grupo_novo_com_nome_existente_Quando_salvar_Entao_deve_retornar_exception_NegocioException() {
@@ -145,6 +144,17 @@ class GrupoServiceTest {
     }
 
     @Test
+    @DisplayName("Dado um grupo valido e uma permissao valida Quando chamar metodo associarGrupo Entao deve fazer a associação")
+    void Dado_um_grupo_valido_e_uma_permissao_valida_Quando_chamar_metodo_associarGrupo_Entao_deve_fazer_associacao() {
+        var permissao2 = Permissao.builder().id(2L).nome("CONSULTAR").descricao("Consultar").build();
+        when(repository.findById(anyLong())).thenReturn(Optional.of(grupo));
+        when(permissaoService.buscarOuFalhar(anyLong())).thenReturn(permissao2);
+
+        assertThatCode(() -> service.associarPermissao(grupo.getId(), permissao2.getId())).doesNotThrowAnyException();
+    }
+
+
+    @Test
     @DisplayName("Dado um grupoId invalido e uma permissaoId valida Quando chamar metodo associarGrupo Entao deve lancar exception GrupoNaoEncontradoException")
     void Dado_um_grupoId_invalido_e_uma_permissaoId_valida_Quando_chamar_metodo_associarGrupo_Entao_deve_lancar_exception_GrupoNaoEncontradoException() {
         this.buscarGrupoPorIdComFalha();
@@ -153,6 +163,7 @@ class GrupoServiceTest {
                 .isInstanceOf(GrupoNaoEncontradoException.class)
                 .hasMessage(String.format("Não existe cadastro de grupo com o código %d", grupoId));
     }
+
 
     @Test
     @DisplayName("Dado um grupoId valido e uma permissaoId invalida Quando chamar metodo associarGrupo Entao deve lancar exception PermissaoNaoEncontradaException")
@@ -163,6 +174,15 @@ class GrupoServiceTest {
         assertThatThrownBy(() -> service.associarPermissao(grupoId, permissaoId))
                 .isInstanceOf(PermissaoNaoEncontradaException.class)
                 .hasMessage(String.format("Não existe cadastro de permissão com o código %d", grupoId));
+    }
+
+    @Test
+    @DisplayName("Dado um grupo valido e uma permissao valida Quando chamar metodo desassociarGrupo Entao deve fazer a desassociacao")
+    void Dado_um_grupo_valido_e_permissao_valida_Quando_chamar_metodo_desassociarGrupo_Entao_deve_fazer_desassociacao() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(grupo));
+        when(permissaoService.buscarOuFalhar(anyLong())).thenReturn(permissao);
+
+        assertThatCode(() -> service.desassociarPermissao(grupo.getId(), permissao.getId())).doesNotThrowAnyException();
     }
 
     @Test
@@ -220,9 +240,8 @@ class GrupoServiceTest {
 
     private void buscarGrupoPorIdComSucesso() {
         when(repository.findById(anyLong())).thenAnswer(invocation -> {
-            Long idLivroPassado = invocation.getArgument(0, Long.class);
-            grupo.setId(idLivroPassado);
-            grupo.setPermissoes(Set.of(permissao));
+            Long idGrupoPassado = invocation.getArgument(0, Long.class);
+            grupo.setId(idGrupoPassado);
             return Optional.of(grupo);
         });
     }

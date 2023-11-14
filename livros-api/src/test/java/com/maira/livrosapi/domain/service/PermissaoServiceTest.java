@@ -1,5 +1,8 @@
 package com.maira.livrosapi.domain.service;
 
+import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
+import com.maira.livrosapi.domain.exception.GrupoNaoEncontradoException;
+import com.maira.livrosapi.domain.exception.NegocioException;
 import com.maira.livrosapi.domain.exception.PermissaoNaoEncontradaException;
 import com.maira.livrosapi.domain.model.Permissao;
 import com.maira.livrosapi.domain.repository.PermissaoRepository;
@@ -10,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -19,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -89,6 +93,48 @@ class PermissaoServiceTest {
        assertThat(sut).isInstanceOf(Permissao.class);
        assertThat(sut.getId()).isNotNull();
 
+    }
+
+    @Test
+    @DisplayName("Dado uma permissao nova com nome existente Quando salvar Entao deve retornar exception NegocioException")
+    void Dado_uma_permissao_nova_com_nome_existente_Quando_salvar_Entao_deve_retornar_exception_NegocioException() {
+        when(repository.save(any(Permissao.class))).thenThrow(DataIntegrityViolationException.class);
+
+        assertThatThrownBy(() -> service.salvar(permissao))
+                .isInstanceOf(NegocioException.class)
+                .hasMessage(String.format("Permissão de nome %s já cadastrada", permissao.getNome()));
+
+        verify(repository, times(1)).save(any(Permissao.class));
+    }
+
+    @Test
+    @DisplayName("Dado uma permissaoId valido Quando chamar metodo excluir Entao deve excluir permissao")
+    void Dado_um_permissaoId_valido_Quando_chamar_metodo_excluir_Entao_deve_excluir_permissao() {
+        assertThatCode(() -> service.excluir(permissaoId)).doesNotThrowAnyException();
+
+        verify(repository, times(1)).deleteById(anyLong());
+        verify(repository, times(1)).flush();
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    @DisplayName("Dado uma permissaoId invalido Quando chamar metodo excluir Entao deve lancar exception PermissaoNaoEncontradaException")
+    void Dado_um_permissaoId_invalido_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_PermissaoNaoEncontradaException() {
+        doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(anyLong());
+
+        assertThatThrownBy(() -> service.excluir(permissaoId))
+                .isInstanceOf(PermissaoNaoEncontradaException.class)
+                .hasMessage(String.format("Não existe cadastro de permissão com o código %d", permissaoId));
+    }
+
+
+    @Test
+    @DisplayName("Dado uma permissaoId em uso Quando chamar metodo excluir Entao deve lancar exception EntidadeEmUsoException")
+    void Dado_um_permissaoId_em_uso_Quando_chamar_metodo_excluir_Entao_deve_lancar_exception_EntidadeEmUsoException() {
+        doThrow(DataIntegrityViolationException.class).when(repository).deleteById(anyLong());
+
+        assertThatThrownBy(() -> service.excluir(permissaoId)).isInstanceOf(EntidadeEmUsoException.class)
+                .hasMessage(String.format("Permissão de código %d não pode ser removida, pois está em uso", permissaoId));
     }
 
     @Test

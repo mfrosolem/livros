@@ -158,5 +158,29 @@ class FotoLivroServiceTest {
 		verify(repository, times(1)).flush();
 		verifyNoMoreInteractions(repository);
 	}
+
+
+	@Test
+	@DisplayName("Dado um fotoLivro e inputStream existente Quando salvar Entao deve excluir fotoLivro antigo")
+	void Dado_um_fotoLivro_e_inputStream_existente_Quando_salvar_Entao_deve_excluir_fotoLivro_antigo() throws IOException {
+		when(repository.findFotoById(anyLong()))
+				.thenAnswer(answer -> {
+					return Optional.of(fotoLivro);
+				});
+
+		when(repository.save(any(FotoLivro.class)))
+				.thenAnswer(answer -> {
+					return answer.getArgument(0, FotoLivro.class);
+				});
+
+		FotoLivro sut = service.salvar(fotoLivro, fotoFile.getInputStream());
+
+		assertThat(sut).isInstanceOf(FotoLivro.class);
+		assertThat(sut.getId()).isNotNull();
+		verify(repository, times(1)).delete(any(FotoLivro.class));
+		verify(repository, times(1)).save(any(FotoLivro.class));
+		verify(repository, times(1)).flush();
+		verifyNoMoreInteractions(repository);
+	}
 	
 }
