@@ -171,6 +171,8 @@
 				<configuration>
 					<excludes>
 						<exclude>com/maira/livrosapi/LivrosApiApplication.class</exclude>
+						<exclude>com/maira/livrosapi/core/**</exclude>
+						<exclude>com/maira/livrosapi/api/assembler/**</exclude>
 					</excludes>
 				</configuration>
 
