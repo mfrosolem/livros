@@ -50,7 +50,7 @@ public class LivroFotoController implements LivroFotoControllerOpenApi {
 
 	
 	@CheckRoleSecurity.Livros.PodeCadastrarEditar
-	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoLivroModel atualizarFoto(@PathVariable Long livroId, @Valid FotoLivroInput fotoLivroInput)
 			throws IOException {
 

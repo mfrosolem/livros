@@ -1,0 +1,3 @@
+INSERT INTO editora (id, nome, url_site_oficial, url_facebook, url_twitter, url_wikipedia) VALUES (1,'Autêntica',NULL,NULL,NULL,NULL);
+INSERT INTO editora (id, nome, url_site_oficial, url_facebook, url_twitter, url_wikipedia) VALUES (2,'Objetiva',NULL,NULL,NULL,NULL);
+INSERT INTO editora (id, nome, url_site_oficial, url_facebook, url_twitter, url_wikipedia) VALUES (3,'Grupo Companhia das Letras','','','','');

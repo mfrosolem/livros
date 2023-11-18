@@ -21,13 +21,14 @@ import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PermissaoControllerIT {
+class PermissaoIT {
 
     private MockMvc mvc;
 
@@ -94,6 +95,7 @@ class PermissaoControllerIT {
         usuarioConsulta = this.usuarioService.salvar(usuarioConsulta);
         usuarioCadastro = this.usuarioService.salvar(usuarioCadastro);
         usuarioSemPermissao = this.usuarioService.salvar(usuarioSemPermissao);
+
     }
 
     @BeforeEach
@@ -110,7 +112,7 @@ class PermissaoControllerIT {
     void naoDevePermitirAcessarPermissoesSemAutenticacao() throws Exception {
         mvc.perform(get("/permissoes")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized()).andDo(print());
     }
 
     @Test
