@@ -40,7 +40,7 @@ public class LivroController implements LivroControllerOpenApi {
 	public Page<LivroModel> listar(@RequestParam(required = false, defaultValue = "") String titulo,
 			Pageable pageable) {
 		
-		Page<Livro> livrosPage = cadastroLivro.listByTituloContaining(titulo, pageable);
+		Page<Livro> livrosPage = cadastroLivro.listByContaining(titulo, pageable);
 		List<LivroModel> livrosModel = livroModelAssembler.toCollectionModel(livrosPage.getContent());
 		return new PageImpl<>(livrosModel, pageable, livrosPage.getTotalElements());
 	}

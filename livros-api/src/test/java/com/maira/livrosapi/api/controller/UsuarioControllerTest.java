@@ -105,7 +105,7 @@ class UsuarioControllerTest {
     @Test
     @DisplayName("Quando chamar GET Entao deve retornar status 200")
     void listarUsuario_RetornaOK() throws Exception {
-        when(service.listByNomeContaining(anyString(), Mockito.any(Pageable.class)))
+        when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Usuario> pageUsuario = new PageImpl<Usuario>(Collections.singletonList(usuario), pageableParametro, 1);
@@ -127,7 +127,7 @@ class UsuarioControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando nome Entao deve retornar status 200")
     void listarUsuario_PorNome_RetornaListaFiltradaEStatusOK() throws Exception {
-        when(service.listByNomeContaining(anyString(), Mockito.any(Pageable.class)))
+        when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Usuario> pageUsuario = new PageImpl<Usuario>(Collections.singletonList(usuario), pageableParametro, 1);
@@ -151,7 +151,7 @@ class UsuarioControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando nome inexistente Entao deve retornar lista vazia")
     void listarUsuario_PorNomeInexistente_RetornaListaVaziaStatusOK() throws Exception {
-        when(service.listByNomeContaining(anyString(), Mockito.any(Pageable.class)))
+        when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Usuario> pageUsuario = new PageImpl<Usuario>(Collections.emptyList(), pageableParametro, 1);
@@ -175,7 +175,7 @@ class UsuarioControllerTest {
     @DisplayName("Quando chamar GET passando pageable Entao deve retornar status 200")
     void listarUsuario_PassandoPageable_RetornaListaEStatusOK () throws Exception {
 
-        when(service.listByNomeContaining(anyString(), Mockito.any(Pageable.class)))
+        when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Usuario> pageUsuario = new PageImpl<Usuario>(Collections.singletonList(usuario), pageableParametro, 1);

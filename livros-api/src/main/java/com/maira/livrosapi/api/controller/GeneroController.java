@@ -35,7 +35,7 @@ public class GeneroController implements GeneroControllerOpenApi {
 	@GetMapping
 	public Page<GeneroModel> listar(@RequestParam(required = false, defaultValue = "") String descricao,
 									Pageable pageable) {
-		Page<Genero> pageGenero = cadastroGenero.listByDescricaoContaining(descricao, pageable);
+		Page<Genero> pageGenero = cadastroGenero.listByContaining(descricao, pageable);
 		List<GeneroModel> generosModel = generoModelAssembler.toCollectionModel(pageGenero.getContent());
 		return new PageImpl<>(generosModel, pageable, pageGenero.getTotalElements());
 	}

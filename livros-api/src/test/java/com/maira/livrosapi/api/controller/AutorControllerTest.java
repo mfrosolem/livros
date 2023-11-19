@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -86,7 +86,7 @@ class AutorControllerTest {
 	@Test
 	@DisplayName("Quando chamar GET Entao deve retornar status 200")
 	void listarAutor_RetornaOK() throws Exception {
-		when(service.listByNameContaining(anyString(), Mockito.any(Pageable.class)))
+		when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
 		.thenAnswer(answer -> {
 			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 			Page<Autor> pageAutor = new PageImpl<Autor>(Collections.singletonList(autor), pageableParametro, 1);
@@ -108,7 +108,7 @@ class AutorControllerTest {
 	@Test
 	@DisplayName("Quando chamar GET passando nome Entao deve retornar status 200")
 	void listarAutor_PorNome_RetornaListaFiltradaEStatusOK() throws Exception {
-		when(service.listByNameContaining(anyString(), Mockito.any(Pageable.class)))
+		when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
 		.thenAnswer(answer -> {
 			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 			Page<Autor> pageAutor = new PageImpl<Autor>(Collections.singletonList(autor), pageableParametro, 1);
@@ -132,7 +132,7 @@ class AutorControllerTest {
 	@Test
 	@DisplayName("Quando chamar GET passando nome inexistente Entao deve retornar lista vazia")
 	void listarAutor_PorNomeInexistente_RetornaListaVaziaStatusOK() throws Exception {
-		when(service.listByNameContaining(anyString(), Mockito.any(Pageable.class)))
+		when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
 				.thenAnswer(answer -> {
 					Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 					Page<Autor> pageAutor = new PageImpl<Autor>(Collections.emptyList(), pageableParametro, 1);
@@ -156,7 +156,7 @@ class AutorControllerTest {
 	@DisplayName("Quando chamar GET passando pageable Entao deve retornar status 200")
 	void listarAutor_PassandoPageable_RetornaListaEStatusOK () throws Exception {
 
-		when(service.listByNameContaining(anyString(), Mockito.any(Pageable.class)))
+		when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
 		.thenAnswer(answer -> {
 			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 			Page<Autor> pageAutor = new PageImpl<Autor>(Collections.singletonList(autor), pageableParametro, 1);

@@ -36,7 +36,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 	@GetMapping
 	@Override
 	public Page<UsuarioModel> listar(@RequestParam(required = false, defaultValue = "") String nome, Pageable pageable) {
-		Page<Usuario> usuariosPage = cadastroUsuario.listByNomeContaining(nome, pageable);
+		Page<Usuario> usuariosPage = cadastroUsuario.listByContaining(nome, pageable);
 		List<UsuarioModel> usuariosModel = usuarioModelAssembler.toCollectionModel(usuariosPage.getContent());
 		return new PageImpl<>(usuariosModel, pageable, usuariosPage.getTotalElements());
 	}

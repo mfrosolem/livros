@@ -18,6 +18,7 @@ import com.maira.livrosapi.domain.model.Editora;
 import com.maira.livrosapi.domain.model.Genero;
 import com.maira.livrosapi.domain.model.Livro;
 import com.maira.livrosapi.domain.service.LivroService;
+import com.maira.livrosapi.domain.service.impl.LivroServiceImpl;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -110,7 +111,7 @@ class LivroControllerTest {
     @DisplayName("Quando chamar GET Entao deve retornar status 200")
     void listarGernero_RetornaOK() throws Exception {
 
-        when(service.listByTituloContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Livro> pageLivro = new PageImpl<Livro>(Collections.singletonList(livro), pageableParametro, 1);
@@ -132,7 +133,7 @@ class LivroControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando titulo Entao deve retornar status 200")
     void listarLivro_PorTitulo_RetornaListaFiltradaEStatusOK() throws Exception {
-        when(service.listByTituloContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Livro> pageLivro = new PageImpl<Livro>(Collections.singletonList(livro), pageableParametro, 1);
@@ -156,7 +157,7 @@ class LivroControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando titulo inexistente Entao deve retornar lista vazia")
     void listarLivro_PorTituloInexistente_RetornaListaVaziaStatusOK() throws Exception {
-        when(service.listByTituloContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Livro> pageLivro = new PageImpl<Livro>(Collections.emptyList(), pageableParametro, 1);
@@ -180,7 +181,7 @@ class LivroControllerTest {
     @DisplayName("Quando chamar GET passando pageable Entao deve retornar status 200")
     void listarLivro_PassandoPageable_RetornaListaEStatusOK() throws Exception {
 
-        when(service.listByTituloContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Livro> pageLivro = new PageImpl<Livro>(Collections.singletonList(livro), pageableParametro, 1);

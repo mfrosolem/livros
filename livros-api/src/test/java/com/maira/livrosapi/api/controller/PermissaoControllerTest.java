@@ -78,7 +78,7 @@ class PermissaoControllerTest {
     @DisplayName("Quando chamar GET Entao deve retornar status 200")
     void listarGernero_RetornaOK() throws Exception {
 
-        when(service.listByNameContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Permissao> pagePermissao = new PageImpl<Permissao>(Collections.singletonList(permissao), pageableParametro, 1);
@@ -100,7 +100,7 @@ class PermissaoControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando descricao Entao deve retornar status 200")
     void listarPermissao_PorDescricao_RetornaListaFiltradaEStatusOK() throws Exception {
-        when(service.listByNameContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Permissao> pagePermissao = new PageImpl<Permissao>(Collections.singletonList(permissao), pageableParametro, 1);
@@ -124,7 +124,7 @@ class PermissaoControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando descricao inexistente Entao deve retornar lista vazia")
     void listarPermissao_PorDescricaoInexistente_RetornaListaVaziaStatusOK() throws Exception {
-        when(service.listByNameContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Permissao> pagePermissao = new PageImpl<Permissao>(Collections.emptyList(), pageableParametro, 1);
@@ -148,7 +148,7 @@ class PermissaoControllerTest {
     @DisplayName("Quando chamar GET passando pageable Entao deve retornar status 200")
     void listarPermissao_PassandoPageable_RetornaListaEStatusOK() throws Exception {
 
-        when(service.listByNameContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Permissao> pagePermissao = new PageImpl<Permissao>(Collections.singletonList(permissao), pageableParametro, 1);

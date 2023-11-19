@@ -8,6 +8,7 @@ import com.maira.livrosapi.domain.model.Grupo;
 import com.maira.livrosapi.domain.model.Permissao;
 import com.maira.livrosapi.domain.model.Usuario;
 import com.maira.livrosapi.domain.repository.UsuarioRepository;
+import com.maira.livrosapi.domain.service.impl.UsuarioServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.*;
 class UsuarioServiceTest {
 
     @InjectMocks
-    private UsuarioService service;
+    private UsuarioServiceImpl service;
 
     @Mock
     private UsuarioRepository repository;
@@ -343,7 +344,7 @@ class UsuarioServiceTest {
         Page<Usuario> page = new PageImpl<>(usuarios,pageable, usuarios.size());
         when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-        Page<Usuario> sut = service.listByNomeContaining("", pageable);
+        Page<Usuario> sut = service.listByContaining("", pageable);
 
         assertThat(sut).isNotEmpty().hasSize(3);
     }
@@ -356,7 +357,7 @@ class UsuarioServiceTest {
         Page<Usuario> page = new PageImpl<>(usuarios,pageable, usuarios.size());
         when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-        Page<Usuario> sut = service.listByNomeContaining("Romance", pageable);
+        Page<Usuario> sut = service.listByContaining("Romance", pageable);
         assertThat(sut).isEmpty();
     }
 

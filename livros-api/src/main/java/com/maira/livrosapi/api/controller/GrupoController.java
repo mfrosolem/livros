@@ -39,7 +39,7 @@ public class GrupoController implements GrupoControllerOpenApi {
     @CheckRoleSecurity.UsuariosGruposPermissoes.PodeConsultar
     @GetMapping
     public Page<GrupoModel> listar(@RequestParam(required = false, defaultValue = "") String nome, Pageable pageable) {
-        Page<Grupo> gruposPage = cadastroGrupo.listyByNameContaining(nome, pageable);
+        Page<Grupo> gruposPage = cadastroGrupo.listByContaining(nome, pageable);
         List<GrupoModel> gruposModel = grupoModelAssembler.toCollectionModel(gruposPage.getContent());
         return new PageImpl<>(gruposModel, pageable, gruposPage.getTotalElements());
     }

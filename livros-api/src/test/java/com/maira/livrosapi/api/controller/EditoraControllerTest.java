@@ -76,7 +76,7 @@ class EditoraControllerTest {
     @Test
     @DisplayName("Quando chamar GET Entao deve retornar status 200")
     void listarEditora_RetornaOK() throws Exception {
-        when(service.listByNameContaining(anyString(), Mockito.any(Pageable.class)))
+        when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Editora> pageEditora = new PageImpl<Editora>(Collections.singletonList(editora), pageableParametro, 1);
@@ -98,7 +98,7 @@ class EditoraControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando nome Entao deve retornar status 200")
     void listarEditora_PorNome_RetornaListaFiltradaEStatusOK() throws Exception {
-        when(service.listByNameContaining(anyString(), Mockito.any(Pageable.class)))
+        when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Editora> pageEditora = new PageImpl<Editora>(Collections.singletonList(editora), pageableParametro, 1);
@@ -122,7 +122,7 @@ class EditoraControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando nome inexistente Entao deve retornar lista vazia")
     void listarEditora_PorNomeInexistente_RetornaListaVaziaStatusOK() throws Exception {
-        when(service.listByNameContaining(anyString(), Mockito.any(Pageable.class)))
+        when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Editora> pageEditora = new PageImpl<Editora>(Collections.emptyList(), pageableParametro, 1);
@@ -146,7 +146,7 @@ class EditoraControllerTest {
     @DisplayName("Quando chamar GET passando pageable Entao deve retornar status 200")
     void listarEditora_PassandoPageable_RetornaListaEStatusOK () throws Exception {
 
-        when(service.listByNameContaining(anyString(), Mockito.any(Pageable.class)))
+        when(service.listByContaining(anyString(), Mockito.any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Editora> pageEditora = new PageImpl<Editora>(Collections.singletonList(editora), pageableParametro, 1);

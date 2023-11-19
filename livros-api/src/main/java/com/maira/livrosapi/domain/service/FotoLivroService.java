@@ -1,64 +1,12 @@
 package com.maira.livrosapi.domain.service;
 
-import com.maira.livrosapi.domain.exception.FotoLivroNaoEncontradaException;
 import com.maira.livrosapi.domain.model.FotoLivro;
-import com.maira.livrosapi.domain.repository.LivroRepository;
-import com.maira.livrosapi.domain.service.FotoStorageService.NovaFoto;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
-import java.util.Optional;
 
-@Service
-public class FotoLivroService {
+public interface FotoLivroService {
 
-	private final LivroRepository livroRepository;
-	private final FotoStorageService fotoStorage;
-
-	public FotoLivroService(LivroRepository livroRepository, FotoStorageService fotoStorage) {
-		this.livroRepository = livroRepository;
-		this.fotoStorage = fotoStorage;
-	}
-
-	@Transactional
-	public FotoLivro salvar(FotoLivro foto, InputStream dadosArquivos) {
-
-		Long livroId = foto.getLivro().getId();
-		String nomeNovoArquivo = fotoStorage.gerarNomeArquivo(foto.getNomeArquivo());
-		String nomeArquivoExistente = "";
-
-		Optional<FotoLivro> fotoExistente = livroRepository.findFotoById(livroId);
-
-		if (fotoExistente.isPresent()) {
-			nomeArquivoExistente = fotoExistente.get().getNomeArquivo();
-			livroRepository.delete(fotoExistente.get());
-		}
-
-		foto.setNomeArquivo(nomeNovoArquivo);
-		foto = livroRepository.save(foto);
-		livroRepository.flush();
-
-		NovaFoto novaFoto = NovaFoto.builder().nomeArquivo(foto.getNomeArquivo()).inputStream(dadosArquivos).build();
-		fotoStorage.substituir(nomeArquivoExistente, novaFoto);
-
-		return foto;
-
-	}
-
-	public FotoLivro buscarOuFalhar(Long livroId) {
-		return livroRepository.findFotoById(livroId).orElseThrow(() -> new FotoLivroNaoEncontradaException(livroId));
-	}
-
-	@Transactional
-	public void excluir(Long livroId) {
-		FotoLivro foto = this.buscarOuFalhar(livroId);
-		String nomeArquivo = foto.getNomeArquivo();
-
-		livroRepository.delete(foto);
-		livroRepository.flush();
-
-		fotoStorage.remover(nomeArquivo);
-	}
-
+    FotoLivro salvar(FotoLivro foto, InputStream dadosArquivos);
+    FotoLivro buscarOuFalhar(Long livroId);
+    void excluir(Long livroId);
 }

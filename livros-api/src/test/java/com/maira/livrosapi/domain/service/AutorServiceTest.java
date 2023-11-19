@@ -4,6 +4,7 @@ import com.maira.livrosapi.domain.exception.AutorNaoEncontradoException;
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.model.Autor;
 import com.maira.livrosapi.domain.repository.AutorRepository;
+import com.maira.livrosapi.domain.service.impl.AutorServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.*;
 class AutorServiceTest {
 
 	@InjectMocks
-	AutorService service;
+	AutorServiceImpl service;
 
 	@Mock
 	AutorRepository repository;
@@ -163,7 +164,7 @@ class AutorServiceTest {
 		Page<Autor> page = new PageImpl<>(autores,pageable, autores.size());
 		when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-		Page<Autor> sut = service.listByNameContaining("", pageable);
+		Page<Autor> sut = service.listByContaining("", pageable);
 
 		assertThat(sut).isNotEmpty().hasSize(3);
 	}
@@ -176,7 +177,7 @@ class AutorServiceTest {
 		Page<Autor> page = new PageImpl<>(autores,pageable, autores.size());
 		when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-		Page<Autor> sut = service.listByNameContaining("Edgar Allan", pageable);
+		Page<Autor> sut = service.listByContaining("Edgar Allan", pageable);
 		assertThat(sut).isEmpty();
 	}
 	 

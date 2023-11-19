@@ -33,7 +33,7 @@ public class AutorController implements AutorControllerOpenApi {
 	@CheckRoleSecurity.Autores.PodeConsultar
 	@GetMapping
 	public Page<AutorModel> listar(@RequestParam(required = false, defaultValue = "") String nome, Pageable pageable) {
-		Page<Autor> autoresPage = cadastroAutor.listByNameContaining(nome, pageable);
+		Page<Autor> autoresPage = cadastroAutor.listByContaining(nome, pageable);
 		List<AutorModel> autoresModel = autorModelAssembler.toCollectionModel(autoresPage.getContent());
 		return new PageImpl<>(autoresModel, pageable, autoresPage.getTotalElements());
 	}

@@ -1,11 +1,11 @@
 package com.maira.livrosapi.domain.service;
 
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
-import com.maira.livrosapi.domain.exception.GrupoNaoEncontradoException;
 import com.maira.livrosapi.domain.exception.NegocioException;
 import com.maira.livrosapi.domain.exception.PermissaoNaoEncontradaException;
 import com.maira.livrosapi.domain.model.Permissao;
 import com.maira.livrosapi.domain.repository.PermissaoRepository;
+import com.maira.livrosapi.domain.service.impl.PermissaoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 class PermissaoServiceTest {
 
     @InjectMocks
-    private  PermissaoService service;
+    private PermissaoServiceImpl service;
 
     @Mock
     private PermissaoRepository repository;
@@ -151,7 +151,7 @@ class PermissaoServiceTest {
         Page<Permissao> page = new PageImpl<>(permissoes,pageable, permissoes.size());
         when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-        Page<Permissao> sut = service.listByNameContaining("", pageable);
+        Page<Permissao> sut = service.listByContaining("", pageable);
 
         assertThat(sut).isNotEmpty().hasSize(3);
     }
@@ -164,7 +164,7 @@ class PermissaoServiceTest {
         Page<Permissao> page = new PageImpl<>(permissoes,pageable, permissoes.size());
         when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-        Page<Permissao> sut = service.listByNameContaining("Visitante", pageable);
+        Page<Permissao> sut = service.listByContaining("Visitante", pageable);
         assertThat(sut).isEmpty();
     }
 

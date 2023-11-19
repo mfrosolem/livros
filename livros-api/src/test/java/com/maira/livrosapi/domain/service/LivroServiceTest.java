@@ -1,14 +1,12 @@
 package com.maira.livrosapi.domain.service;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.maira.livrosapi.domain.exception.*;
 import com.maira.livrosapi.domain.model.Autor;
 import com.maira.livrosapi.domain.model.Editora;
 import com.maira.livrosapi.domain.model.Genero;
 import com.maira.livrosapi.domain.model.Livro;
 import com.maira.livrosapi.domain.repository.LivroRepository;
+import com.maira.livrosapi.domain.service.impl.LivroServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,12 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class LivroServiceTest {
 	
 	@InjectMocks
-	LivroService service;
+	LivroServiceImpl service;
 	
 	@Mock
 	LivroRepository repository;
@@ -326,7 +327,7 @@ class LivroServiceTest {
 		Page<Livro> page = new PageImpl<>(livros,pageable, livros.size());
 		when(repository.findByTituloContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-		Page<Livro> sut = service.listByTituloContaining("", pageable);
+		Page<Livro> sut = service.listByContaining("", pageable);
 
 		assertThat(sut).isNotEmpty().hasSize(3);
 	}
@@ -339,7 +340,7 @@ class LivroServiceTest {
 		Page<Livro> page = new PageImpl<>(livros,pageable, livros.size());
 		when(repository.findByTituloContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-		Page<Livro> sut = service.listByTituloContaining("A Sangue Frio", pageable);
+		Page<Livro> sut = service.listByContaining("A Sangue Frio", pageable);
 		assertThat(sut).isEmpty();
 	}
 

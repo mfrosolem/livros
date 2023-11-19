@@ -7,13 +7,13 @@ import com.maira.livrosapi.domain.exception.PermissaoNaoEncontradaException;
 import com.maira.livrosapi.domain.model.Grupo;
 import com.maira.livrosapi.domain.model.Permissao;
 import com.maira.livrosapi.domain.repository.GrupoRepository;
+import com.maira.livrosapi.domain.service.impl.GrupoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 class GrupoServiceTest {
 
     @InjectMocks
-    private GrupoService service;
+    private GrupoServiceImpl service;
 
     @Mock
     private GrupoRepository repository;
@@ -220,7 +220,7 @@ class GrupoServiceTest {
         Page<Grupo> page = new PageImpl<>(grupos,pageable, grupos.size());
         when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-        Page<Grupo> sut = service.listyByNameContaining("", pageable);
+        Page<Grupo> sut = service.listByContaining("", pageable);
 
         assertThat(sut).isNotEmpty().hasSize(3);
     }
@@ -233,7 +233,7 @@ class GrupoServiceTest {
         Page<Grupo> page = new PageImpl<>(grupos,pageable, grupos.size());
         when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-        Page<Grupo> sut = service.listyByNameContaining("visita", pageable);
+        Page<Grupo> sut = service.listByContaining("visita", pageable);
         assertThat(sut).isEmpty();
     }
 

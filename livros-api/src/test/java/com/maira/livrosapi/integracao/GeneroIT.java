@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("it")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@WithUserDetails(value = "teste@livros.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+@WithUserDetails(value = "genero@livros.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
 class GeneroIT {
 
     private MockMvc mvc;
@@ -83,12 +83,13 @@ class GeneroIT {
 
         usuario = Usuario.builder()
                 .nome("Usuario Teste")
-                .email("teste@livros.com")
+                .email("genero@livros.com")
                 .senha("123")
                 .grupos(Set.of(grupo))
                 .build();
         usuario = this.usuarioService.salvar(usuario);
     }
+
 
     @BeforeEach
     public void setupEach() {

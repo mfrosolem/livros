@@ -4,6 +4,7 @@ import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.GeneroNaoEncontradoException;
 import com.maira.livrosapi.domain.model.Genero;
 import com.maira.livrosapi.domain.repository.GeneroRepository;
+import com.maira.livrosapi.domain.service.impl.GeneroServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -30,7 +32,7 @@ import static org.mockito.Mockito.*;
 class GeneroServiceTest {
 
 	@InjectMocks
-	GeneroService service;
+	GeneroServiceImpl service;
 
 	@Mock
 	GeneroRepository repository;
@@ -147,20 +149,20 @@ class GeneroServiceTest {
 		Page<Genero> page = new PageImpl<>(generos,pageable, generos.size());
 		when(repository.findByDescricaoContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-		Page<Genero> sut = service.listByDescricaoContaining("", pageable);
+		Page<Genero> sut = service.listByContaining("", pageable);
 
 		assertThat(sut).isNotEmpty().hasSize(3);
 	}
 
 	@Test
-	@DisplayName("Quando chamar metodo listByDescricaoContaining filtrando por descricao inexistente Entao deve retornar lista vazia")
+	@DisplayName("Quando chamar metodo listByContaining filtrando por descricao inexistente Entao deve retornar lista vazia")
 	void listByDescricaoContaining_Filtrando_RetornaListaVazia() {
 		List<Genero> generos = new ArrayList<>();
 		Pageable pageable = PageRequest.of(0,20);
 		Page<Genero> page = new PageImpl<>(generos,pageable, generos.size());
 		when(repository.findByDescricaoContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-		Page<Genero> sut = service.listByDescricaoContaining("Romance", pageable);
+		Page<Genero> sut = service.listByContaining("Romance", pageable);
 		assertThat(sut).isEmpty();
 	}
 

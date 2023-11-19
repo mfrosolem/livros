@@ -36,7 +36,7 @@ public class EditoraController implements EditoraControllerOpenApi {
 	public Page<EditoraModel> listar(@RequestParam(required = false, defaultValue = "") String nome,
 			Pageable pageable) {
 		
-		Page<Editora> editorasPage = cadastroEditora.listByNameContaining(nome, pageable);
+		Page<Editora> editorasPage = cadastroEditora.listByContaining(nome, pageable);
 		List<EditoraModel> editorasModel = editoraModelAssembler.toCollectionModel(editorasPage.getContent());
 		return new PageImpl<>(editorasModel, pageable, editorasPage.getTotalElements());
 	}

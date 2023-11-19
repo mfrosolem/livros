@@ -77,7 +77,7 @@ class GeneroControllerTest {
 	@DisplayName("Quando chamar GET Entao deve retornar status 200")
 	void listarGernero_RetornaOK() throws Exception {
 		
-		when(service.listByDescricaoContaining(anyString(), any(Pageable.class)))
+		when(service.listByContaining(anyString(), any(Pageable.class)))
 		.thenAnswer(answer -> {
 			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 			Page<Genero> pageGenero = new PageImpl<Genero>(Collections.singletonList(genero), pageableParametro, 1);
@@ -99,7 +99,7 @@ class GeneroControllerTest {
 	@Test
 	@DisplayName("Quando chamar GET passando descricao Entao deve retornar status 200")
 	void listarGenero_PorDescricao_RetornaListaFiltradaEStatusOK() throws Exception {
-		when(service.listByDescricaoContaining(anyString(), any(Pageable.class)))
+		when(service.listByContaining(anyString(), any(Pageable.class)))
 		.thenAnswer(answer -> {
 			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 			Page<Genero> pageGenero = new PageImpl<Genero>(Collections.singletonList(genero), pageableParametro, 1);
@@ -123,7 +123,7 @@ class GeneroControllerTest {
 	@Test
 	@DisplayName("Quando chamar GET passando descricao inexistente Entao deve retornar lista vazia")
 	void listarGenero_PorDescricaoInexistente_RetornaListaVaziaStatusOK() throws Exception {
-		when(service.listByDescricaoContaining(anyString(), any(Pageable.class)))
+		when(service.listByContaining(anyString(), any(Pageable.class)))
 				.thenAnswer(answer -> {
 					Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 					Page<Genero> pageGenero = new PageImpl<Genero>(Collections.emptyList(), pageableParametro, 1);
@@ -147,7 +147,7 @@ class GeneroControllerTest {
 	@DisplayName("Quando chamar GET passando pageable Entao deve retornar status 200")
 	void listarGenero_PassandoPageable_RetornaListaEStatusOK() throws Exception {
 
-		when(service.listByDescricaoContaining(anyString(), any(Pageable.class)))
+		when(service.listByContaining(anyString(), any(Pageable.class)))
 		.thenAnswer(answer -> {
 			Pageable pageableParametro = answer.getArgument(1, Pageable.class);
 			Page<Genero> pageGenero = new PageImpl<Genero>(Collections.singletonList(genero), pageableParametro, 1);

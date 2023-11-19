@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import com.maira.livrosapi.domain.exception.FotoLivroNaoEncontradaException;
 import com.maira.livrosapi.domain.model.*;
 import com.maira.livrosapi.domain.repository.LivroRepository;
+import com.maira.livrosapi.domain.service.impl.FotoLivroServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ import java.util.Optional;
 class FotoLivroServiceTest {
 	
 	@InjectMocks
-	FotoLivroService service;
+	FotoLivroServiceImpl service;
 	
 	@Mock
 	LivroRepository repository;

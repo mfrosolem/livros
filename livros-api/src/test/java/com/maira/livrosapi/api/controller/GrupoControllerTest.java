@@ -79,7 +79,7 @@ class GrupoControllerTest {
     @DisplayName("Quando chamar GET Entao deve retornar status 200")
     void listarGrupo_RetornaOK() throws Exception {
 
-        when(service.listyByNameContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Grupo> pageGrupo = new PageImpl<Grupo>(Collections.singletonList(grupo), pageableParametro, 1);
@@ -101,7 +101,7 @@ class GrupoControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando nome Entao deve retornar status 200")
     void listarGrupo_PorNome_RetornaListaFiltradaEStatusOK() throws Exception {
-        when(service.listyByNameContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Grupo> pageGrupo = new PageImpl<Grupo>(Collections.singletonList(grupo), pageableParametro, 1);
@@ -123,7 +123,7 @@ class GrupoControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando nome inexistente Entao deve retornar lista vazia")
     void listarGrupo_PorNomeInexistente_RetornaListaVaziaStatusOK() throws Exception {
-        when(service.listyByNameContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Grupo> pageGrupo = new PageImpl<Grupo>(Collections.emptyList(), pageableParametro, 1);
@@ -145,7 +145,7 @@ class GrupoControllerTest {
     @Test
     @DisplayName("Quando chamar GET passando pageable Entao deve retornar status 200")
     void listarGrupo_PassandoPageable_RetornaListaStatusOK() throws Exception {
-        when(service.listyByNameContaining(anyString(), any(Pageable.class)))
+        when(service.listByContaining(anyString(), any(Pageable.class)))
                 .thenAnswer(answer -> {
                     Pageable pageableParametro = answer.getArgument(1, Pageable.class);
                     Page<Grupo> pageGrupo = new PageImpl<Grupo>(Collections.singletonList(grupo), pageableParametro, 1);

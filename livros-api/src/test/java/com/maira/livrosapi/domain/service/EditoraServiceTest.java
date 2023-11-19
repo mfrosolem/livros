@@ -4,6 +4,7 @@ import com.maira.livrosapi.domain.exception.EditoraNaoEncontradaException;
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.model.Editora;
 import com.maira.livrosapi.domain.repository.EditoraRepository;
+import com.maira.livrosapi.domain.service.impl.EditoraServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.*;
 class EditoraServiceTest {
 	
 	@InjectMocks
-	EditoraService service;
+	EditoraServiceImpl service;
 	
 	@Mock
 	EditoraRepository repository;
@@ -162,7 +163,7 @@ class EditoraServiceTest {
 		Page<Editora> page = new PageImpl<>(editoras,pageable, editoras.size());
 		when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-		Page<Editora> sut = service.listByNameContaining("", pageable);
+		Page<Editora> sut = service.listByContaining("", pageable);
 
 		assertThat(sut).isNotEmpty().hasSize(3);
 	}
@@ -175,7 +176,7 @@ class EditoraServiceTest {
 		Page<Editora> page = new PageImpl<>(editoras,pageable, editoras.size());
 		when(repository.findByNomeContaining(anyString(), any(Pageable.class))).thenReturn(page);
 
-		Page<Editora> sut = service.listByNameContaining("Romance", pageable);
+		Page<Editora> sut = service.listByContaining("Romance", pageable);
 		assertThat(sut).isEmpty();
 	}
 	

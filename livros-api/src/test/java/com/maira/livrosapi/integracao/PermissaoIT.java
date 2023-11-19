@@ -88,7 +88,7 @@ class PermissaoIT {
 
         usuarioSemPermissao = Usuario.builder()
                 .nome("teste")
-                .email("teste@livros.com")
+                .email("permissao@livros.com")
                 .senha("123")
                 .build();
 
@@ -117,7 +117,7 @@ class PermissaoIT {
 
     @Test
     //@WithMockUser(value = "admin@livros.com", authorities = "ROLE")
-    @WithUserDetails(value = "teste@livros.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "permissao@livros.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName("Nao Deve permitir acessar permissoes quando o usuário autenticado mas sem permissao")
     void naoDevePermitirAcessarPermissoesSemAutorizacao() throws Exception {
         mvc.perform(get("/permissoes")
