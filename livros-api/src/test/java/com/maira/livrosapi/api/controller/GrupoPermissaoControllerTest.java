@@ -1,6 +1,5 @@
 package com.maira.livrosapi.api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maira.livrosapi.api.assembler.PermissaoModelAssembler;
 import com.maira.livrosapi.api.exception.ApiExceptionHandler;
 import com.maira.livrosapi.api.model.PermissaoModel;
@@ -48,9 +47,6 @@ class GrupoPermissaoControllerTest {
 
     @MockBean
     private PermissaoModelAssembler permissaoModelAssembler;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     Grupo grupo;
     Long grupoId = 1L;
