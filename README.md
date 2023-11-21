@@ -13,19 +13,20 @@ Projeto em desenvolvimento para organização de livros.
 - `Autor(a)`: Cadastro, edição, exclusão, consulta e lista de autores;
 - `Livro`: Cadastro, edição, exclusão, consulta e lista de livros;
 - `Foto do livro`: Upload, substituição e remoção da foto de capa do livro;
+- Testes Unitários
 
 ## :computer: Tecnologias utilizadas
 - Java 17
-- Spring Boot 3.1.1 (Spring 6)
+- Spring Boot 3.1.5 (Spring 6)
 - MySQL 8.0
 - JPA
 - Maven
-- Angular v14
+- Angular v15
 - BootStrap 5.2.3
 
 ## IDEs utilizadas
- - Spring Tool Suite 4.15.1
- - Visual Studio Code 1.76.1
+ - IntelliJ IDEA
+ - Visual Studio Code
 
 ## Executando local
 
