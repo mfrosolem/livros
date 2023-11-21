@@ -21,7 +21,7 @@ Projeto em desenvolvimento para organização de livros.
 - MySQL 8.0
 - JPA
 - Maven
-- Angular v15
+- Angular v16
 - BootStrap 5.2.3
 
 ## IDEs utilizadas
