@@ -1,0 +1,43 @@
+networks:
+  livros-network:
+    driver: bridge
+
+services:
+  livros-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: ""
+    ports:
+      - "3306:3306"
+    networks:
+      - livros-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p "]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  livros-api:
+    image: livros-api
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: livros-mysql
+      SPRING_PROFILES_ACTIVE: development
+      LIVROSAPI_STORAGE_LOCAL_DIRETORIO-FOTOS: /app
+    networks:
+      - livros-network
+    depends_on:
+      livros-mysql:
+        condition: service_healthy
+
+  livros-ui:
+    image: livros-ui
+    ports:
+      - "8000:80"
+    networks:
+      - livros-network
+    depends_on:
+      - livros-api
+
