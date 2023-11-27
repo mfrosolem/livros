@@ -25,7 +25,7 @@ services:
     environment:
       DB_HOST: livros-mysql
       SPRING_PROFILES_ACTIVE: development
-      LIVROSAPI_STORAGE_LOCAL_DIRETORIO-FOTOS: /app
+      DIR_FOTO: /app/imagens
     networks:
       - livros-network
     depends_on:
