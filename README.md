@@ -23,6 +23,7 @@ Projeto em desenvolvimento para organização de livros.
 - Maven
 - Angular v16
 - BootStrap 5.2.3
+- Docker
 
 ## IDEs utilizadas
  - IntelliJ IDEA
