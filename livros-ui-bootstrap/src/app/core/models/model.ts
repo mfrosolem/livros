@@ -48,6 +48,11 @@ export interface ILivro {
   genero: Genero;
 }
 
+export interface IGrupo {
+  id: number;
+  nome: string;
+}
+
 // CLASSES
 
 export class Genero {
@@ -99,4 +104,9 @@ export class Livro {
   editora = new Editora();
   genero = new Genero();
   autor = new Autor();
+}
+
+export class Grupo {
+  id?: number;
+  nome?: string;
 }

@@ -88,12 +88,11 @@ export class GeneroService {
   }
 
   private create(record: GeneroInput) {
-    console.log(record)
-    return this.http.post<GeneroInput>(this.API, record).pipe(take(1));
+    return this.http.post<Genero>(this.API, record).pipe(take(1));
   }
 
   private update(id: number, record: GeneroInput) {
-    return this.http.put<GeneroInput>(`${this.API}/${id}`, record).pipe(take(1));
+    return this.http.put<Genero>(`${this.API}/${id}`, record).pipe(take(1));
   }
 
 }

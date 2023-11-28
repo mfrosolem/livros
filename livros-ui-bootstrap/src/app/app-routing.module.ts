@@ -24,6 +24,10 @@ const routes: Routes = [
     path: 'livros',
     loadChildren: () => import('./livros/livros.module').then(m => m.LivrosModule)
   },
+  {
+    path: 'grupos',
+    loadChildren: () => import('./grupos/grupos.module').then(m => m.GruposModule)
+  },
   { path: '**', redirectTo: 'pagina-nao-encontrada' }
 ];
 
