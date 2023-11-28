@@ -1,12 +1,17 @@
-<nav class="navbar navbar-dark navbar-expand-lg bg-primary">
+<!-- <nav class="navbar navbar-dark navbar-expand-lg bg-primary"> -->
+  <nav class="navbar navbar-dark navbar-expand-lg bg-primary">
+
   <div class="container-fluid">
     <a class="navbar-brand">Livros</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02"
-      aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" routerLink="/autores">Autor</a>
         </li>
@@ -20,9 +25,22 @@
           <a class="nav-link" routerLinkActive="active" routerLink="/livros">Livro</a>
         </li>
 
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Adm
+          </a>
+
+          <ul class="dropdown-menu bg-primary">
+            <li><a class="dropdown-item bg-primary text-white" routerLinkActive="active" routerLink="/grupos">Grupo</a></li>
+            <li><a class="dropdown-item bg-primary text-white" routerLinkActive="active" routerLink="/grupos">Permissão</a></li>
+          </ul>
+
+        </li>
+
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" href="javascript:;" (click)="logout()" >Logout</a>
         </li>
+
       </ul>
     </div>
   </div>

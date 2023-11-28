@@ -22,7 +22,7 @@ Projeto em desenvolvimento para organização de livros.
 - JPA
 - Maven
 - Angular v16
-- BootStrap 5.2.3
+- BootStrap 5.3.2
 - Docker
 
 ## IDEs utilizadas
