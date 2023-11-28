@@ -28,6 +28,10 @@ const routes: Routes = [
     path: 'grupos',
     loadChildren: () => import('./grupos/grupos.module').then(m => m.GruposModule)
   },
+  {
+    path: 'permissoes',
+    loadChildren: () => import('./permissoes/permissoes.module').then(m => m.PermissoesModule)
+  },
   { path: '**', redirectTo: 'pagina-nao-encontrada' }
 ];
 

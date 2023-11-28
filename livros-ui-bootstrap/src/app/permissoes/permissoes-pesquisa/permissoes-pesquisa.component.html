@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <h1 class="mt-2">Grupos</h1>
+    <h1 class="mt-2">Permissões</h1>
     <form [formGroup]="form" autocomplete="off" (ngSubmit)="onSearch()">
       <div class="row">
         <div class="col-md-12">
@@ -24,26 +24,13 @@
           <thead>
             <tr>
               <th scope="col">Nome</th>
-              <th class="col-acoes-header"></th>
+              <th scope="col">Descrição</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let grupo of grupos">
-              <td>{{ grupo.nome }}</td>
-              <td class="col-acoes">
-                <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(grupo)" >
-                  <i class="bi bi-pencil"></i>
-                </button>
-  
-                
-                <button type="button" class="btn btn-outline-danger mb-1 btn-sm" 
-                tooltip ="Excluir"
-                placement="right"
-                (click)="confirmDelete(grupo)"
-                [disabled]="naoTemPermissao('CADASTRAR_USUARIOS_GRUPOS_PERMISSOES')">
-                  <i class="bi bi-trash3"></i>
-                </button>          
-              </td>
+            <tr *ngFor="let permissao of permissoes">
+              <td>{{ permissao.nome }}</td>
+              <td>{{ permissao.descricao }}</td>
             </tr>
           </tbody>
         </table>
@@ -59,14 +46,4 @@
       </div>
     </div>
   
-  
-  
-    <div class="row">
-      <div class="col-md-12">
-        <a class="btn btn-primary" role="button" (click)="onAdd()">Novo grupo</a>
-      </div>
-    </div>
-  
-  
   </div>
-  

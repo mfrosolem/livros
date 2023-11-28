@@ -53,6 +53,12 @@ export interface IGrupo {
   nome: string;
 }
 
+export interface IPermissao {
+  id: number;
+  nome: string;
+  descricao: string;
+}
+
 // CLASSES
 
 export class Genero {
@@ -109,4 +115,10 @@ export class Livro {
 export class Grupo {
   id?: number;
   nome?: string;
+}
+
+export class Permissao {
+  id?: number;
+  nome?: string;
+  descricao?: string;
 }

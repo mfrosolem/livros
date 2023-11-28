@@ -25,7 +25,7 @@ export class LivrosPesquisaComponent implements OnInit {
     titulo: []
   });
 
-  quantidadeItemPagina: number = 5;
+  quantidadeItemPagina: number = 10;
   page?: number = 1;
   totalRegistros = 0;
   totalPages = 0;
