@@ -6,13 +6,15 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { AutorCadastroComponent } from './autor-cadastro/autor-cadastro.component';
 import { AutoresPesquisaComponent } from './autores-pesquisa/autores-pesquisa.component';
 import { AutoresRoutingModule } from './autores-routing.module';
+import { AutoresListComponent } from './autores-list/autores-list.component';
 
 
 
 @NgModule({
   declarations: [
     AutoresPesquisaComponent,
-    AutorCadastroComponent
+    AutorCadastroComponent,
+    AutoresListComponent
   ],
   imports: [
     CommonModule,

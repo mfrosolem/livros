@@ -7,13 +7,15 @@ import { FotoUploadComponent } from './foto-upload/foto-upload.component';
 import { LivroCadastroComponent } from './livro-cadastro/livro-cadastro.component';
 import { LivrosPesquisaComponent } from './livros-pesquisa/livros-pesquisa.component';
 import { LivrosRoutingModule } from './livros-routing.module';
+import { LivrosListComponent } from './livros-list/livros-list.component';
 
 
 @NgModule({
   declarations: [
     LivrosPesquisaComponent,
     LivroCadastroComponent,
-    FotoUploadComponent
+    FotoUploadComponent,
+    LivrosListComponent
   ],
   imports: [
     CommonModule,

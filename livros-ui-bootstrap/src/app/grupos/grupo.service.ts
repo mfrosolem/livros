@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Grupo } from '../core/models/model';
 import { map, take } from 'rxjs';
+import { Grupo } from '../core/models/grupo/grupo';
+import { GrupoPage } from '../core/models/grupo/grupo-page';
 
 
 export class GrupoFilter{
@@ -52,11 +53,10 @@ export class GrupoService {
       params = params.set('nome', filterGrupo.nome);
     }
 
-    return this.http.get<Grupo>(this.API, { params }).pipe(
+    return this.http.get<GrupoPage>(this.API, { params }).pipe(
       map((response: any) => {
-        const grupos = response['content'];
-        const resultado = {
-          grupos,
+        const resultado: GrupoPage = {
+          grupos: response['content'],
           totalElements: response['totalElements'],
           totalPages: response['totalPages']
         }

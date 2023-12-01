@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { map, take, Observable } from 'rxjs';
 
 import { environment } from './../../environments/environment';
-import { Autor } from './../core/models/model';
+import { Autor } from '../core/models/autor/autor';
+import { AutorPage } from '../core/models/autor/autor-pages';
+
 
 export class AutorFilter {
   nome?: string;
@@ -98,13 +100,12 @@ export class AutorService {
       params = params.set('nome', filterAutor.nome);
     }
 
-    return this.http.get<Autor[]>(this.API, { params })
+    return this.http.get<AutorPage[]>(this.API, { params })
       .pipe(
         take(1),
         map((response: any) => {
-          const autores = response['content'];
-          const resultado = {
-            autores,
+          let resultado: AutorPage = {
+            autores: response['content'],
             totalElements: response['totalElements'],
             totalPages: response['totalPages']
           }

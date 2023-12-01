@@ -18,53 +18,37 @@
 
   </form>
 
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table table-sm table-responsive table-light table-hover" #tabela>
-        <thead>
-          <tr>
-            <th scope="col">Nome</th>
-            <th class="col-acoes-header"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let editora of editoras">
-            <td>{{ editora.nome }}</td>
-            <td class="col-acoes">
-              <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(editora)">
-                <i class="bi bi-pencil"></i>
-              </button>
+  <div *ngIf="editoras$ | async as editorasPage; else loading">
 
-              <button type="button" class="btn btn-outline-danger mb-1 btn-sm" 
-              (click)="confirmDelete(editora)"
-              [disabled]="naoTemPermissao('REMOVER_EDITORA')">
-                <i class="bi bi-trash3"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-editoras-list [editoras]="editorasPage.editoras" (edit)="onEdit($event)" (remove)="confirmDelete($event)" 
+    (naoTemPermissao)="naoTemPermissao($event)">
+
+    </app-editoras-list>
 
   </div>
 
   <div class="row">
     <div class="col-xs-12 col-12">
-      <pagination [totalItems]="totalRegistros" [itemsPerPage]="quantidadeItemPagina" (numPages)="totalPages"
-        [(ngModel)]="page" (pageChanged)="pageChanged($event)"
-        previousText="Anterior" nextText="Próximo"></pagination>
+      <pagination [totalItems]="totalElements" [itemsPerPage]="quantidadeItemPagina" (numPages)="totalPages"
+        [(ngModel)]="page" (pageChanged)="pageChanged($event)" previousText="Anterior" nextText="Próximo"></pagination>
     </div>
   </div>
 
 
 
-  <div class="row">
-    <div class="col-md-12">
-      <a class="btn btn-outline-primary" role="button" (click)="onAdd()">Nova Editora</a>
+    <div class="row">
+      <div class="col-md-12">
+        <a class="btn btn-outline-primary" role="button" (click)="onAdd()">Nova Editora</a>
+      </div>
     </div>
-  </div>
 
 
-
+  <ng-template #loading>
+    <div class="d-flex justify-content-center text-info">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </ng-template>
 
 </div>

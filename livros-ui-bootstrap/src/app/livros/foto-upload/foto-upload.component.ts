@@ -3,13 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, switchMap, take } from 'rxjs';
-import { ErrorHandlerService } from 'src/app/core/error-handler.service';
-import { Livro } from 'src/app/core/models/model';
-import { ToastService } from 'src/app/shared/toast.service';
+import { EMPTY, Observable, switchMap, take } from 'rxjs';
+import { ErrorHandlerService } from '../../core/error-handler.service';
+import { ToastService } from '../../shared/toast.service';
 
 import { LivroService } from '../livro.service';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
+//import { Livro } from '../../core/models/livro/livro';
+import { Livro } from 'src/app/core/models/model';
 
 @Component({
   selector: 'app-foto-upload',
@@ -21,6 +22,7 @@ export class FotoUploadComponent implements OnInit {
   URL_SEM_IMAGEM = '/assets/images/sem_imagem.jpg';
   imagemUrl = this.URL_SEM_IMAGEM;
   livro: Livro = new Livro();
+  //livro: Livro | null = null;
   fileFoto!: File;
   habilitaExcluir: boolean = false;
 
@@ -38,12 +40,14 @@ export class FotoUploadComponent implements OnInit {
     private title: Title,
     private toastService: ToastService,
     private confirmModalService: ConfirmModalService
-  ) { }
-
-  ngOnInit(): void {
+  ) { 
     const codigoLivro = this.route.snapshot.params['codigo'];
     this.carregarRegistroLivro(codigoLivro);
     this.carregaFotoLivro(codigoLivro);
+  }
+
+  ngOnInit(): void {
+    
   }
 
   inputFotoChange(event: any) {
@@ -66,17 +70,22 @@ export class FotoUploadComponent implements OnInit {
   }
 
   onSubmit() {
-    this.livroService.uploadFoto(this.livro, this.fileFoto)
-      .subscribe({
-        next: (response) => {
-          this.form.reset();
-          this.toastService.showSuccessToast(`Foto para o livro ${this.livro.titulo} salva com sucesso!`);
-          this.habilitaExcluir = true;
-        },
-        error: (falha) => {
-          this.errorHandlerService.handle(falha);
-        }
-      })
+
+    if (this.livro?.id) {
+
+      this.livroService.uploadFoto(this.livro.id, this.fileFoto)
+        .subscribe({
+          next: (response) => {
+            this.form.reset();
+            this.toastService.showSuccessToast(`Foto para o livro ${this.livro.titulo} salva com sucesso!`);
+            this.habilitaExcluir = true;
+            this.location.back();
+          },
+          error: (falha) => {
+            this.errorHandlerService.handle(falha);
+          }
+        });
+    }
   }
 
   onCancel() {

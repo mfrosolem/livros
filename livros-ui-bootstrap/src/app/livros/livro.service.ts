@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, take } from 'rxjs';
+import { map, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { LivroPage } from '../core/models/livro/livro-page';
+import { Livro } from '../core/models/livro/livro';
 
-import { Autor, Editora, Genero, Livro } from './../core/models/model';
 
 export class LivroFilter {
   titulo?: string;
@@ -122,12 +123,11 @@ export class LivroService {
       params = params.set('titulo', filter.titulo);
     }
 
-    return this.http.get<Livro[]>(this.API, { params })
+    return this.http.get<LivroPage>(this.API, { params })
       .pipe(
         map((response: any) => {
-          const livros = response['content'];
-          const resultado = {
-            livros,
+          const resultado: LivroPage = {
+            livros: response['content'],
             totalElements: response['totalElements'],
             totalPages: response['totalPages']
           }
@@ -163,19 +163,19 @@ export class LivroService {
 
   }
 
-  uploadFoto(livro: Livro, foto: File) {
-    const url = `${this.API}/${livro.id}/foto`;
+  uploadFoto(livroId: number, foto: File) {
+    const url = `${this.API}/${livroId}/foto`;
 
     const formData = new FormData();
     formData.append('arquivo', foto);
-    formData.append('descricao', `Capa_${livro.id}`);
+    formData.append('descricao', `Capa_${livroId}`);
 
     return this.http.put(url, formData).pipe(take(1));
 
   }
 
-  removeFoto(codigo: number) {
-    const url = `${this.API}/${codigo}/foto`;
+  removeFoto(id: number) {
+    const url = `${this.API}/${id}/foto`;
 
     return this.http.delete(url).pipe(take(1));
   }

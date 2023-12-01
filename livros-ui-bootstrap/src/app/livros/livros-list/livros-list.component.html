@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-sm table-responsive table-light table-hover" #tabela>
+            <thead>
+                <tr>
+                    <th scope="col">ISBN</th>
+                    <th scope="col">Título</th>
+                    <th scope="col">Autor</th>
+                    <th scope="col">Gênero</th>
+                    <th scope="col">Páginas</th>
+                    <th class="col-acoes-header"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let livro of livros">
+                    <td>{{ livro.isbn }}</td>
+                    <td>{{ livro.titulo }}</td>
+                    <td>{{ livro.autor.nomeConhecido }}</td>
+                    <td>{{ livro.genero.descricao }}</td>
+                    <td>{{ livro.paginas }}</td>
+                    <td class="col-acoes">
+                        <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(livro)">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                        <button type="button" class="btn btn-outline-danger mb-1 btn-sm" (click)="onRemove(livro)"
+                            [disabled]="onNaoTemPermissao('REMOVER_LIVRO')">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

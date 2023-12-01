@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { map, take } from 'rxjs';
 
 import { environment } from './../../environments/environment';
-import { Editora } from './../core/models/model';
+import { Editora } from '../core/models/editora/editora';
+import { EditoraPage } from '../core/models/editora/editora-page';
 
 export class EditoraFilter {
   nome?: string;
@@ -65,13 +66,12 @@ export class EditoraService {
       params = params.set('nome', filterEditora.nome);
     }
 
-    return this.http.get<Editora[]>(this.API, { params })
+    return this.http.get<EditoraPage>(this.API, { params })
       .pipe(
         take(1),
-        map((response: any) => {
-          const editoras = response['content'];
-          const resultado = {
-            editoras,
+        map((response: any) => {          
+          const resultado: EditoraPage = {
+            editoras: response['content'],
             totalElements: response['totalElements'],
             totalPages: response['totalPages']
           }
@@ -105,7 +105,7 @@ export class EditoraService {
     return this.http.put<Editora>(`${this.API}/${id}`, record).pipe(take(1));
   }
 
-  private parseToInput(editora: Editora) : EditoraInput {
+  private parseToInput(editora: Partial<Editora>) : EditoraInput {
     const input = new EditoraInput(editora.nome, editora.urlSiteOficial, editora.urlFacebook,
       editora.urlTwitter, editora.urlWikipedia);
     return input;

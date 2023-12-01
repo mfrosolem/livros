@@ -3,14 +3,15 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
-import { EMPTY, switchMap, take } from 'rxjs';
+import { EMPTY, Observable, catchError, first, of, switchMap, take, tap } from 'rxjs';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
-import { ILivro } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { LivroFilter, LivroService } from './../livro.service';
 import { AuthService } from 'src/app/seguranca/auth.service';
+import { Livro } from '../../core/models/livro/livro';
+import { LivroPage } from '../../core/models/livro/livro-page';
 
 @Component({
   selector: 'app-livros-pesquisa',
@@ -20,14 +21,14 @@ import { AuthService } from 'src/app/seguranca/auth.service';
 })
 export class LivrosPesquisaComponent implements OnInit {
 
-  livros: ILivro[] = [];
+  livros$: Observable<LivroPage> | null = null;
   form: FormGroup = this.formBuilder.group({
     titulo: []
   });
 
   quantidadeItemPagina: number = 10;
   page?: number = 1;
-  totalRegistros = 0;
+  totalElements = 0;
   totalPages = 0;
 
   constructor(
@@ -51,23 +52,24 @@ export class LivrosPesquisaComponent implements OnInit {
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
-  onEdit(livro: ILivro) {
+  onEdit(livro: Livro) {
     this.router.navigate(['edit', livro.id], { relativeTo: this.route });
   }
 
   onSearch(page: number = 0) {
     const filterLivro = new LivroFilter(page, this.quantidadeItemPagina, this.form.value.titulo);
-    this.livroService.findByFilter(filterLivro)
-      .subscribe({
-        next: (dados) => {
-          this.livros = dados.livros;
-          this.totalRegistros = dados.totalElements;
-          this.totalPages = dados.totalPages;
-        },
-        error: (falha) => {
+    this.livros$ = this.livroService.findByFilter(filterLivro)
+      .pipe(
+        first(),
+        tap(resultado => {
+          this.totalElements = resultado.totalElements;
+          this.totalPages = resultado.totalPages;
+        }),
+        catchError(falha => {
           this.errorHandlerService.handle(falha);
-        },
-      });
+          return of({ livros: [], totalElements: 0, totalPages: 0 })
+        })
+      );
   }
 
   pageChanged(event: PageChangedEvent): void {
@@ -75,7 +77,7 @@ export class LivrosPesquisaComponent implements OnInit {
     this.onSearch(this.page - 1);
   }
 
-  confirmDelete(livro: ILivro) {
+  confirmDelete(livro: Livro) {
 
     const resultado$ =
       this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${livro.titulo}`);
@@ -104,7 +106,7 @@ export class LivrosPesquisaComponent implements OnInit {
 
   private onRefreshPagina() {
     this.page = 1;
-    this.totalRegistros = 0;
+    this.totalElements = 0;
     this.totalPages = 0;
     this.onSearch();
   }

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { PermissaoFilter, PermissaoService } from '../permissao.service';
-import { IPermissao } from 'src/app/core/models/model';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { ErrorHandlerService } from 'src/app/core/error-handler.service';
-import { AuthService } from 'src/app/seguranca/auth.service';
+import { ErrorHandlerService } from '../../core/error-handler.service';
+import { AuthService } from '../../seguranca/auth.service';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
+import { Observable, catchError, first, map, of, tap } from 'rxjs';
+import { PermissaoPage } from '../../core/models/permissao/permissao-page';
 
 @Component({
   selector: 'app-permissoes-pesquisa',
@@ -14,7 +15,7 @@ import { PageChangedEvent } from 'ngx-bootstrap/pagination';
 })
 export class PermissoesPesquisaComponent implements OnInit {
 
-  permissoes: IPermissao[] = [];
+  permissoes$: Observable<PermissaoPage> | null = null;
 
   form: FormGroup = this.formBuilder.group({
     nome: []
@@ -22,7 +23,7 @@ export class PermissoesPesquisaComponent implements OnInit {
 
   quantidadeItemPagina: number = 10;
   page?: number = 1;
-  totalRegistros = 0;
+  totalElements = 0;
   totalPages = 0;
 
   constructor(
@@ -31,23 +32,28 @@ export class PermissoesPesquisaComponent implements OnInit {
     private title: Title,
     private errorHandlerService: ErrorHandlerService,
     private auth: AuthService
-  ) {}
+  ) {
+    this.onSearch();
+  }
 
   ngOnInit(): void {
-    this.title.setTitle('Pesquisa Permissões');
-    this.onSearch();
+    this.title.setTitle('Pesquisa Permissões');    
   }
 
   onSearch(page: number = 0) {
     const filterPermissao = new PermissaoFilter(page, this.quantidadeItemPagina, this.form.value.nome);
-    this.permissaoService.findByFilter(filterPermissao).subscribe({
-      next: (dados) => {
-        this.permissoes = dados.permissoes;
-        this.totalRegistros = dados.totalElements;
-        this.totalPages = dados.totalPages;
-      }, 
-      error: (falha) => this.errorHandlerService.handle(falha)
-    });
+    this.permissoes$ = this.permissaoService.findByFilter(filterPermissao)
+      .pipe(
+        first(),
+        tap(resultado => {
+          this.totalElements = resultado.totalElements;
+          this.totalPages = resultado.totalPages;
+        }),
+        catchError(falha => {
+          this.errorHandlerService.handle(falha);
+          return of({ permissoes: [], totalElements: 0, totalPages: 0 })
+        })
+      );
   }
 
 

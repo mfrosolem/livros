@@ -5,9 +5,9 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
-import { Autor } from './../../core/models/model';
 import { ToastService } from './../../shared/toast.service';
 import { AutorService } from './../autor.service';
+import { Autor } from '../../core/models/autor/autor';
 
 @Component({
   selector: 'app-autor-cadastro',

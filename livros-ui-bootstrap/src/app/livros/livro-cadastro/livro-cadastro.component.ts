@@ -6,11 +6,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { AutorService } from './../../autores/autor.service';
 import { ErrorHandlerService } from './../../core/error-handler.service';
-import { Autor, Editora, Genero, Livro } from './../../core/models/model';
 import { EditoraService } from './../../editoras/editora.service';
 import { GeneroService } from './../../generos/genero.service';
 import { ToastService } from './../../shared/toast.service';
 import { LivroService } from './../livro.service';
+import { Genero } from '../../core/models/genero/genero';
+import { Autor } from '../../core/models/autor/autor';
+import { Editora } from '../../core/models/editora/editora';
 
 @Component({
   selector: 'app-livro-cadastro',
@@ -105,13 +107,13 @@ export class LivroCadastroComponent implements OnInit {
   }
 
   onChangeFoto() {
-    this.router.navigate(['foto'], { relativeTo: this.route });
+    this.router.navigate(['foto'], {  relativeTo: this.route });
   }
 
   private carregarRegistro(codigo: number) {
     this.livroService.findById(codigo)
       .subscribe({
-        next: (livroRetornado: Livro) => {
+        next: (livroRetornado: any) => {
           this.form.patchValue(livroRetornado);
           this.atualizarTituloEdicao();
         },

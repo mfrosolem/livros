@@ -2,15 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, switchMap, take } from 'rxjs';
+import { EMPTY, Observable, catchError, first, of, switchMap, take, tap } from 'rxjs';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
-import { IGenero } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { GeneroFilter, GeneroService } from './../genero.service';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
 import { AuthService } from 'src/app/seguranca/auth.service';
+import { Genero } from '../../core/models/genero/genero';
+import { GeneroPage } from '../../core/models/genero/genero-page';
 
 @Component({
   selector: 'app-generos-pesquisa',
@@ -20,7 +21,8 @@ import { AuthService } from 'src/app/seguranca/auth.service';
 })
 export class GenerosPesquisaComponent implements OnInit {
 
-  generos: IGenero[] = [];
+  generos$: Observable<GeneroPage> | null = null;
+
   form: FormGroup = this.formBuilder.group({
     descricao: []
   });
@@ -28,7 +30,7 @@ export class GenerosPesquisaComponent implements OnInit {
 
   quantidadeItemPagina: number = 10;
   page?: number = 1;
-  totalRegistros = 0;
+  totalElements = 0;
   totalPages = 0;
 
   constructor(
@@ -41,26 +43,29 @@ export class GenerosPesquisaComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private auth: AuthService
-  ) { }
+  ) { 
+    this.onSearch();
+  }
 
   ngOnInit(): void {
     this.title.setTitle('Pesquisa Gêneros');
-    this.onSearch();
   }
 
   onSearch(page: number = 0) {
     const filterGenero = new GeneroFilter(page, this.quantidadeItemPagina, this.form.value.descricao);
-    this.generoService.findByFilter(filterGenero)
-      .subscribe({
-        next: (dados) => {
-          this.generos = dados.generos;
-          this.totalRegistros = dados.totalElements;
-          this.totalPages = dados.totalPages;
-        },
-        error: (falha) => {
+
+    this.generos$ = this.generoService.findByFilter(filterGenero)
+      .pipe(
+        first(),
+        tap(resultado => {
+          this.totalElements = resultado.totalElements;
+          this.totalPages = resultado.totalPages;
+        }),
+        catchError(falha => {
           this.errorHandlerService.handle(falha);
-        },
-      });
+          return of({ generos: [], totalElements: 0, totalPages: 0 })
+        })
+      );
   }
 
   pageChanged(event: PageChangedEvent): void {
@@ -68,7 +73,7 @@ export class GenerosPesquisaComponent implements OnInit {
     this.onSearch(this.page - 1);
   }
 
-  confirmDelete(genero: IGenero) {
+  confirmDelete(genero: Genero) {
 
     const resultado$ =
       this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${genero.descricao}`);
@@ -91,7 +96,7 @@ export class GenerosPesquisaComponent implements OnInit {
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
-  onEdit(genero: IGenero) {
+  onEdit(genero: Genero) {
     this.router.navigate(['edit', genero.id], { relativeTo: this.route });
   }
 
@@ -101,9 +106,10 @@ export class GenerosPesquisaComponent implements OnInit {
 
   private onRefreshPagina() {
     this.page = 1;
-    this.totalRegistros = 0;
-    this.totalPages = 0;
     this.onSearch();
+    this.totalElements = 0;
+    this.totalPages = 0;
+    
   }
 
 

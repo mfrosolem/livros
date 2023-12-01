@@ -3,14 +3,15 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
-import { EMPTY, switchMap, take } from 'rxjs';
+import { EMPTY, Observable, catchError, first, map, of, switchMap, take, tap } from 'rxjs';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
-import { IAutor } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { AutorFilter, AutorService } from './../autor.service';
-import { AuthService } from 'src/app/seguranca/auth.service';
+import { AuthService } from '../../seguranca/auth.service';
+import { Autor } from '../../core/models/autor/autor';
+import { AutorPage } from '../../core/models/autor/autor-pages';
 
 
 @Component({
@@ -21,14 +22,14 @@ import { AuthService } from 'src/app/seguranca/auth.service';
 })
 export class AutoresPesquisaComponent implements OnInit {
 
-  autores: IAutor[] = [];
+  autores$: Observable<AutorPage> | null = null;
   form: FormGroup = this.formBuilder.group({
     nome: []
   });
 
   quantidadeItemPagina: number = 10;
   page?: number = 1;
-  totalRegistros = 0;
+  totalElements = 0;
   totalPages = 0;
 
 
@@ -42,34 +43,37 @@ export class AutoresPesquisaComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private auth: AuthService
-  ) { }
+  ) {
+    this.onSearch();
+   }
 
   ngOnInit(): void {
     this.title.setTitle('Pesquisa Autores');
-    this.onSearch();
+    
   }
 
   onAdd() {
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
-  onEdit(autor: IAutor) {
+  onEdit(autor: Autor) {
     this.router.navigate(['edit', autor.id], { relativeTo: this.route });
   }
 
   onSearch(page: number = 0) {
     const filterAutor = new AutorFilter(page, this.quantidadeItemPagina, this.form.value.nome);
-    this.autorService.findByFilter(filterAutor)
-      .subscribe({
-        next: (dados) => {
-          this.autores = dados.autores;
-          this.totalRegistros = dados.totalElements;
-          this.totalPages = dados.totalPages;
-        },
-        error: (falha) => {
+    this.autores$ = this.autorService.findByFilter(filterAutor)
+      .pipe(
+        first(),
+        tap(resultado => {
+          this.totalElements = resultado.totalElements;
+          this.totalPages = resultado.totalPages;
+        }),
+        catchError(falha => {
           this.errorHandlerService.handle(falha);
-        },
-      });
+          return of({ autores: [], totalElements: 0, totalPages: 0 })
+        })
+      );
   }
 
   pageChanged(event: PageChangedEvent): void {
@@ -77,7 +81,7 @@ export class AutoresPesquisaComponent implements OnInit {
     this.onSearch(this.page - 1);
   }
 
-  confirmDelete(autor: IAutor) {
+  confirmDelete(autor: Autor) {
 
     const resultado$ =
       this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${autor.nome} ${autor.sobrenome}`);
@@ -104,7 +108,7 @@ export class AutoresPesquisaComponent implements OnInit {
 
   private onRefreshPagina() {
     this.page = 1;
-    this.totalRegistros = 0;
+    this.totalElements = 0;
     this.totalPages = 0;
     this.onSearch();
   }

@@ -7,11 +7,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { SharedModule } from '../shared/shared.module';
+import { PermissoesListComponent } from './permissoes-list/permissoes-list.component';
 
 
 @NgModule({
   declarations: [
-    PermissoesPesquisaComponent
+    PermissoesPesquisaComponent,
+    PermissoesListComponent
   ],
   imports: [
     CommonModule,
@@ -21,9 +23,6 @@ import { SharedModule } from '../shared/shared.module';
     TooltipModule.forRoot(),
     SharedModule,
 
-    PermissoesRoutingModule
-  ],
-  exports: [
     PermissoesRoutingModule
   ]
 })

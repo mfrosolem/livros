@@ -1,9 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, take } from 'rxjs';
+import { delay, first, map, take } from 'rxjs';
 
 import { environment } from './../../environments/environment';
-import { Genero } from './../core/models/model';
+import { Genero } from '../core/models/genero/genero';
+import { GeneroPage } from '../core/models/genero/genero-page';
+
 
 export class GeneroFilter {
   descricao?: string;
@@ -38,11 +40,11 @@ export class GeneroService {
   listAll() {
     return this.http.get<Genero[]>(this.API)
       .pipe(
-        //delay(2000),
         map((response: any) => {
           const generos = response['content'];
           return generos;
         }),
+        // delay(2000),
         take(1)
       );
   }
@@ -56,18 +58,19 @@ export class GeneroService {
       params = params.set('descricao', filterGenero.descricao);
     }
 
-    return this.http.get<Genero>(this.API, { params }).pipe(
+    return this.http.get<GeneroPage>(this.API, { params }).pipe(
       map((response: any) => {
-        const generos = response['content'];
-        const resultado = {
-          generos,
+        const resultado: GeneroPage = {
+          generos: response['content'],
           totalElements: response['totalElements'],
           totalPages: response['totalPages']
         }
         return resultado;
-      }),
-      take(1)
+      }),      
+      first()
+      // ,delay(5000)
     );
+
   }
 
   findById(id: number) {
@@ -83,8 +86,8 @@ export class GeneroService {
     }
   }
 
-  remove(codigo: number) {
-    return this.http.delete<void>(`${this.API}/${codigo}`).pipe(take(1));
+  remove(id: number) {
+    return this.http.delete<void>(`${this.API}/${id}`).pipe(take(1));
   }
 
   private create(record: GeneroInput) {

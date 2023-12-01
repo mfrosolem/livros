@@ -5,9 +5,9 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
-import { Genero } from './../../core/models/model';
 import { ToastService } from './../../shared/toast.service';
 import { GeneroService } from './../genero.service';
+import { Genero } from '../../core/models/genero/genero';
 
 
 

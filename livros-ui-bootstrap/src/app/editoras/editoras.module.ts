@@ -7,12 +7,14 @@ import { SharedModule } from '../shared/shared.module';
 import { EditoraCadastroComponent } from './editora-cadastro/editora-cadastro.component';
 import { EditorasPesquisaComponent } from './editoras-pesquisa/editoras-pesquisa.component';
 import { EditorasRoutingModule } from './editoras-routing.module';
+import { EditorasListComponent } from './editoras-list/editoras-list.component';
 
 
 @NgModule({
   declarations: [
     EditorasPesquisaComponent,
-    EditoraCadastroComponent
+    EditoraCadastroComponent,
+    EditorasListComponent
   ],
   imports: [
     CommonModule,
@@ -21,9 +23,6 @@ import { EditorasRoutingModule } from './editoras-routing.module';
     SharedModule,
     FormsModule,
     PaginationModule.forRoot(),
-    EditorasRoutingModule
-  ],
-  exports: [
     EditorasRoutingModule
   ]
 })

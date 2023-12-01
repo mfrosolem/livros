@@ -1,49 +1,42 @@
 <div class="container-fluid">
-    <h1 class="mt-2">Permissões</h1>
-    <form [formGroup]="form" autocomplete="off" (ngSubmit)="onSearch()">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="form-group">
-            <label>Nome:</label>
-            <input type="text" class="form-control" name="nome" formControlName="nome">
-          </div>
-        </div>
-      </div>
-  
-      <div class="row  py-2">
-        <div class="col-md-6">
-          <button type="submit" class="btn btn-outline-secondary">Pesquisar</button>
-        </div>
-      </div>
-  
-    </form>
-  
+  <h1 class="mt-2">Permissões</h1>
+  <form [formGroup]="form" autocomplete="off" (ngSubmit)="onSearch()">
     <div class="row">
       <div class="col-md-12">
-        <table class="table table-sm table-responsive table-light table-hover" #tabela>
-          <thead>
-            <tr>
-              <th scope="col">Nome</th>
-              <th scope="col">Descrição</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let permissao of permissoes">
-              <td>{{ permissao.nome }}</td>
-              <td>{{ permissao.descricao }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  
-    </div>
-  
-    <div class="row">
-      <div class="col-xs-12 col-12">
-        <pagination [totalItems]="totalRegistros" [itemsPerPage]="quantidadeItemPagina" (numPages)="totalPages"
-          [(ngModel)]="page" (pageChanged)="pageChanged($event)"
-          previousText="Anterior" nextText="Próximo"></pagination>
+        <div class="form-group">
+          <label>Nome:</label>
+          <input type="text" class="form-control" name="nome" formControlName="nome">
+        </div>
       </div>
     </div>
-  
+
+    <div class="row  py-2">
+      <div class="col-md-6">
+        <button type="submit" class="btn btn-outline-secondary">Pesquisar</button>
+      </div>
+    </div>
+
+  </form>
+
+  <div *ngIf="permissoes$ | async as permissoesPage; else loading">
+    <app-permissoes-list [permissoes]="permissoesPage.permissoes">
+    </app-permissoes-list>
   </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-12">
+      <pagination [totalItems]="totalElements" [itemsPerPage]="quantidadeItemPagina" (numPages)="totalPages"
+        [(ngModel)]="page" (pageChanged)="pageChanged($event)" previousText="Anterior" nextText="Próximo">
+      </pagination>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="d-flex justify-content-center text-info">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </ng-template>
+
+</div>

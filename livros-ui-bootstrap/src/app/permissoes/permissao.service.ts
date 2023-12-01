@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Permissao } from '../core/models/model';
 import { map, take } from 'rxjs';
+import { Permissao } from '../core/models/permissao/permissao';
+import { PermissaoPage } from '../core/models/permissao/permissao-page';
 
 export class PermissaoFilter {
   nome?: string;
@@ -45,11 +46,10 @@ export class PermissaoService {
       params = params.set('nome', filterPermissao.nome);
     }
 
-    return this.http.get<Permissao>(this.API, { params }).pipe(
+    return this.http.get<PermissaoPage>(this.API, { params }).pipe(
       map((response: any) => {
-        const permissoes = response['content'];
-        const resultado = {
-          permissoes,
+        const resultado: PermissaoPage = {
+          permissoes: response['content'],
           totalElements: response['totalElements'],
           totalPages: response['totalPages']
         }

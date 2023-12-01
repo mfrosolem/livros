@@ -32,6 +32,10 @@ const routes: Routes = [
     path: 'permissoes',
     loadChildren: () => import('./permissoes/permissoes.module').then(m => m.PermissoesModule)
   },
+  {
+    path: 'usuarios',
+    loadChildren: () => import('./usuarios/usuarios.module').then(m => m.UsuariosModule)
+  },
   { path: '**', redirectTo: 'pagina-nao-encontrada' }
 ];
 

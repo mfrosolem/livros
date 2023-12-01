@@ -7,13 +7,15 @@ import { SharedModule } from '../shared/shared.module';
 import { GeneroCadastroComponent } from './genero-cadastro/genero-cadastro.component';
 import { GenerosPesquisaComponent } from './generos-pesquisa/generos-pesquisa.component';
 import { GenerosRoutingModule } from './generos-routing.module';
+import { GenerosListComponent } from './generos-list/generos-list.component';
 
 
 
 @NgModule({
   declarations: [
     GenerosPesquisaComponent,
-    GeneroCadastroComponent
+    GeneroCadastroComponent,
+    GenerosListComponent
   ],
   imports: [
     CommonModule,
@@ -23,9 +25,7 @@ import { GenerosRoutingModule } from './generos-routing.module';
     SharedModule,
 
     GenerosRoutingModule
-  ],
-  exports: [
-    GenerosRoutingModule
   ]
+
 })
 export class GenerosModule { }

@@ -3,14 +3,15 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
-import { EMPTY, switchMap, take } from 'rxjs';
+import { EMPTY, Observable, catchError, first, of, switchMap, take, tap } from 'rxjs';
 
 import { ErrorHandlerService } from './../../core/error-handler.service';
-import { IEditora } from './../../core/models/model';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
 import { ToastService } from './../../shared/toast.service';
 import { EditoraFilter, EditoraService } from './../editora.service';
 import { AuthService } from 'src/app/seguranca/auth.service';
+import { Editora } from '../../core/models/editora/editora';
+import { EditoraPage } from '../../core/models/editora/editora-page';
 
 
 @Component({
@@ -21,14 +22,15 @@ import { AuthService } from 'src/app/seguranca/auth.service';
 })
 export class EditorasPesquisaComponent implements OnInit {
 
-  editoras: IEditora[] = [];
+  editoras$: Observable<EditoraPage> | null = null;
+
   form: FormGroup = this.formBuilder.group({
     nome: []
   });
 
   quantidadeItemPagina: number = 10;
   page?: number = 1;
-  totalRegistros = 0;
+  totalElements = 0;
   totalPages = 0;
 
   constructor(
@@ -41,28 +43,31 @@ export class EditorasPesquisaComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private auth: AuthService
-  ) { }
+  ) { 
+    this.onSearch();
+  }
 
   ngOnInit(): void {
-
     this.title.setTitle('Pesquisa Editoras');
-    this.onSearch();
-
+    
   }
 
   onSearch(page: number = 0) {
     const filterEditora = new EditoraFilter(page, this.quantidadeItemPagina, this.form.value.nome);
-    this.editoraService.findByFilter(filterEditora)
-      .subscribe({
-        next: (dados) => {
-          this.editoras = dados.editoras;
-          this.totalRegistros = dados.totalElements;
-          this.totalPages = dados.totalPages;
-        },
-        error: (falha) => {
+
+    this.editoras$ = this.editoraService.findByFilter(filterEditora)
+      .pipe(
+        first(),
+        tap(resultado => {
+          this.totalElements = resultado.totalElements;
+          this.totalPages = resultado.totalPages;
+        }),
+        catchError(falha => {
           this.errorHandlerService.handle(falha);
-        },
-      });
+          return of({ editoras: [], totalElements: 0, totalPages: 0 })
+        })
+      );
+
   }
 
   pageChanged(event: PageChangedEvent): void {
@@ -70,7 +75,7 @@ export class EditorasPesquisaComponent implements OnInit {
     this.onSearch(this.page - 1);
   }
 
-  confirmDelete(editora: IEditora) {
+  confirmDelete(editora: Editora) {
 
     const resultado$ =
       this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${editora.nome}`);
@@ -95,7 +100,7 @@ export class EditorasPesquisaComponent implements OnInit {
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
-  onEdit(editora: IEditora) {
+  onEdit(editora: Editora) {
     this.router.navigate(['edit', editora.id], { relativeTo: this.route });
   }
 
@@ -105,7 +110,7 @@ export class EditorasPesquisaComponent implements OnInit {
 
   private onRefreshPagina() {
     this.page = 1;
-    this.totalRegistros = 0;
+    this.totalElements = 0;
     this.totalPages = 0;
     this.onSearch();
   }

@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-md-12">
+      <table class="table table-sm table-responsive table-light table-hover" #tabela>
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let permissao of permissoes">
+            <td>{{ permissao.nome }}</td>
+            <td>{{ permissao.descricao }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>

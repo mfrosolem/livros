@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { IGrupo } from 'src/app/core/models/model';
 import { GrupoFilter, GrupoService } from '../grupo.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { ErrorHandlerService } from 'src/app/core/error-handler.service';
-import { ConfirmModalService } from 'src/app/shared/confirm-modal.service';
-import { ToastService } from 'src/app/shared/toast.service';
+import { ErrorHandlerService } from '../../core/error-handler.service';
+import { ConfirmModalService } from '../../shared/confirm-modal.service';
+import { ToastService } from '../../shared/toast.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/seguranca/auth.service';
+import { AuthService } from '../../seguranca/auth.service';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
-import { EMPTY, switchMap, take } from 'rxjs';
+import { EMPTY, Observable, catchError, first, of, switchMap, take, tap } from 'rxjs';
+import { Grupo } from '../../core/models/grupo/grupo';
+import { GrupoPage } from '../../core/models/grupo/grupo-page';
 
 @Component({
   selector: 'app-grupos-pesquisa',
@@ -18,7 +19,7 @@ import { EMPTY, switchMap, take } from 'rxjs';
 })
 export class GruposPesquisaComponent implements OnInit {
 
-  grupos: IGrupo[] = [];
+  grupos$: Observable<GrupoPage> | null = null;
 
   form: FormGroup = this.formBuilder.group({
     nome: []
@@ -26,7 +27,7 @@ export class GruposPesquisaComponent implements OnInit {
 
   quantidadeItemPagina: number = 10;
   page?: number = 1;
-  totalRegistros = 0;
+  totalElements = 0;
   totalPages = 0;
   
 
@@ -41,28 +42,29 @@ export class GruposPesquisaComponent implements OnInit {
     private route: ActivatedRoute,
     private auth: AuthService
   ) {
-
+    this.onSearch();
   }
 
 
 
   ngOnInit(): void {
-    this.title.setTitle("Pesquisa Grupos");
-    this.onSearch();
+    this.title.setTitle("Pesquisa Grupos");    
   }
 
   onSearch(page: number = 0) {
     const filterGrupo = new GrupoFilter(page, this.quantidadeItemPagina, this.form.value.nome);
-    this.grupoService.findByFilter(filterGrupo).subscribe({
-      next: (dados) => {
-          this.grupos = dados.grupos;
-          this.totalRegistros = dados.totalElements;
-          this.totalPages = dados.totalPages;
-      },
-      error: (falha) => {
+    this.grupos$ = this.grupoService.findByFilter(filterGrupo)
+    .pipe(
+      first(),
+      tap(resultado => {
+        this.totalElements = resultado.totalElements;
+        this.totalPages = resultado.totalPages;
+      }),
+      catchError(falha => {
         this.errorHandlerService.handle(falha);
-      }
-    });
+        return of({ grupos: [], totalElements: 0, totalPages: 0 })
+      })
+    );
   }
 
   pageChanged(event: PageChangedEvent): void {
@@ -70,7 +72,7 @@ export class GruposPesquisaComponent implements OnInit {
     this.onSearch(this.page - 1);
   }
 
-  confirmDelete(grupo: IGrupo) {
+  confirmDelete(grupo: Grupo) {
     const resultado$ = 
     this.confirmModalService.showConfirm('Confirmação', `Deseja excluir ${grupo.nome}`);
 
@@ -92,7 +94,7 @@ export class GruposPesquisaComponent implements OnInit {
     this.router.navigate(['new'], { relativeTo: this.route });
   }
 
-  onEdit(grupo: IGrupo) {
+  onEdit(grupo: Grupo) {
     this.router.navigate(['edit', grupo.id], { relativeTo: this.route });
   }
 
@@ -103,7 +105,7 @@ export class GruposPesquisaComponent implements OnInit {
 
   private onRefreshPagina() {
     this.page = 1;
-    this.totalRegistros = 0;
+    this.totalElements = 0;
     this.totalPages = 0;
     this.onSearch();
   }
