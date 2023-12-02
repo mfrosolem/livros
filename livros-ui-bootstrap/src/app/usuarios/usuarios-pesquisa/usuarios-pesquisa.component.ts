@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EMPTY, Observable, catchError, first, of, switchMap, tap } from 'rxjs';
 import { UsuarioPage } from '../../core/models/usuario/usuario-page';
 import { UsuarioFilter, UsuarioService } from '../usuario.service';
@@ -9,7 +9,7 @@ import { ConfirmModalService } from '../../shared/confirm-modal.service';
 import { AuthService } from '../../seguranca/auth.service';
 import { Usuario } from '../../core/models/usuario/usuario';
 import { ToastService } from '../../shared/toast.service';
-import { PageChangedEvent, PaginationComponent } from 'ngx-bootstrap/pagination';
+import { PageChangedEvent } from 'ngx-bootstrap/pagination';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -18,6 +18,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./usuarios-pesquisa.component.css']
 })
 export class UsuariosPesquisaComponent implements OnInit {
+
+  notAllowed = true;
 
   usuarios$: Observable<UsuarioPage> | null = null;
 
@@ -30,8 +32,6 @@ export class UsuariosPesquisaComponent implements OnInit {
   totalElements: number = 0;
   totalPages: number = 0;
 
-  //@ViewChild(PaginationComponent) paginator!: PaginationComponent;
-
   constructor(
     private usuarioService: UsuarioService,
     private title: Title,
@@ -43,6 +43,7 @@ export class UsuariosPesquisaComponent implements OnInit {
     private route: ActivatedRoute,
     private auth: AuthService
   ) {
+    this.notAllowed = this.naoTemPermissao('CADASTRAR_USUARIOS_GRUPOS_PERMISSOES');
     this.onSearch();
   }
   ngOnInit(): void {
@@ -56,7 +57,6 @@ export class UsuariosPesquisaComponent implements OnInit {
       .pipe(
         first(),
         tap(resultado => {
-          console.log(resultado)
           this.totalElements = resultado.totalElements;
           this.totalPages = resultado.totalPages;
         }),

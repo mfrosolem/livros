@@ -20,8 +20,8 @@
 
   <div *ngIf="livros$ | async as livrosPages; else loading">
 
-    <app-livros-list [livros]="livrosPages.livros" (edit)="onEdit($event)" (remove)="confirmDelete($event)"
-      (naoTemPermissao)="naoTemPermissao($event)">
+    <app-livros-list [livros]="livrosPages.livros" [canNotEdit]="naoPodeEditar"
+    [canNotRemove]="naoPodeRemover" (edit)="onEdit($event)" (remove)="confirmDelete($event)">
     </app-livros-list>
   </div>
 
@@ -32,10 +32,12 @@
       </pagination>
     </div>
   </div>
+  
 
   <div class="row">
     <div class="col-md-12">
-      <a class="btn btn-outline-primary" role="button" (click)="onAdd()">Novo Livro</a>
+      <button type="button" class="btn btn-outline-primary" 
+      (click)="onAdd()" [disabled]="naoPodeEditar" >Novo Livro</button>
     </div>
   </div>
 

@@ -10,9 +10,10 @@ import { Editora } from '../../core/models/editora/editora';
 export class EditorasListComponent {
 
   @Input() editoras: Editora[] = [];
+  @Input() canNotEdit: boolean = true;
+  @Input() canNotRemove: boolean = true;
   @Output() edit = new EventEmitter(false);
   @Output() remove = new EventEmitter(false);
-  @Output() naoTemPermissao = new EventEmitter(false);
 
   onEdit(editora: Editora) {
     this.edit.emit(editora);
@@ -20,10 +21,6 @@ export class EditorasListComponent {
 
   onRemove(editora: Editora) {
     this.remove.emit(editora);
-  }
-
-  onNaoTemPermissao(nomePermissao: string) {
-    this.naoTemPermissao.emit(nomePermissao);
   }
 
 }

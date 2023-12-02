@@ -10,9 +10,10 @@ import { Grupo } from '../../core/models/grupo/grupo';
 export class GruposListComponent {
 
   @Input() grupos: Grupo[] = [];
+  @Input() canNotEdit: boolean = true;
+  @Input() canNotRemove: boolean = true;
   @Output() edit = new EventEmitter(false);
   @Output() remove = new EventEmitter(false);
-  @Output() naoTemPermissao = new EventEmitter(false);
 
   onEdit(grupo: Grupo) {
     this.edit.emit(grupo);
@@ -20,10 +21,6 @@ export class GruposListComponent {
 
   onRemove(grupo: Grupo) {
     this.remove.emit(grupo);
-  }
-
-  onNaoTemPermissao(nomePermissao: string) {
-    this.naoTemPermissao.emit(nomePermissao);
   }
 
 }

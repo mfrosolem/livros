@@ -10,9 +10,10 @@ import { Usuario } from '../../core/models/usuario/usuario';
 export class UsuariosListComponent {
 
   @Input() usuarios: Usuario[] = [];
+  @Input() canNotEdit: boolean = true;
+  @Input() canNotRemove: boolean = true;
   @Output() edit = new EventEmitter(false);
   @Output() remove = new EventEmitter(false);
-  @Output() naoTemPermissao = new EventEmitter(false);
 
   onEdit(usuario: Usuario) {
     this.edit.emit(usuario);
@@ -20,10 +21,6 @@ export class UsuariosListComponent {
 
   onRemove(usuario: Usuario) {
     this.remove.emit(usuario);
-  }
-
-  onNaoTemPermissao(nomePermissao: string) {
-    this.naoTemPermissao.emit(nomePermissao);
   }
 
 }

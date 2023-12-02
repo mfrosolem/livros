@@ -10,9 +10,10 @@ import { Genero } from '../../core/models/genero/genero';
 export class GenerosListComponent {
 
   @Input() generos: Genero[] = [];
+  @Input() canNotEdit: boolean = true;
+  @Input() canNotRemove: boolean = true;
   @Output() edit = new EventEmitter(false);
   @Output() remove = new EventEmitter(false);
-  @Output() naoTemPermissao = new EventEmitter(false);
 
   onEdit(genero: Genero) {
     this.edit.emit(genero);
@@ -22,8 +23,5 @@ export class GenerosListComponent {
     this.remove.emit(genero);
   }
 
-  onNaoTemPermissao(nomePermissao: string) {
-    this.naoTemPermissao.emit(nomePermissao);
-  }
 
 }

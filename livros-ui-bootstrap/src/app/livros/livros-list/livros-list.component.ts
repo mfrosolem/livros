@@ -10,9 +10,10 @@ import { Livro } from '../../core/models/livro/livro';
 export class LivrosListComponent {
 
   @Input() livros: Livro[] = [];
+  @Input() canNotEdit: boolean = true;
+  @Input() canNotRemove: boolean = true;
   @Output() edit = new EventEmitter(false);
   @Output() remove = new EventEmitter(false);
-  @Output() naoTemPermissao = new EventEmitter(false);
 
   onEdit(livro: Livro) {
     this.edit.emit(livro);
@@ -20,10 +21,6 @@ export class LivrosListComponent {
 
   onRemove(livro: Livro) {
     this.remove.emit(livro);
-  }
-
-  onNaoTemPermissao(nomePermissao: string) {
-    this.naoTemPermissao.emit(nomePermissao);
   }
 
 }

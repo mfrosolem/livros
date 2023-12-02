@@ -20,8 +20,8 @@
 
   <div *ngIf="grupos$ | async as gruposPage; else loading">
 
-    <app-grupos-list [grupos]="gruposPage.grupos" (edit)="onEdit($event)" (remove)="confirmDelete($event)"
-      (naoTemPermissao)="naoTemPermissao($event)">
+    <app-grupos-list [grupos]="gruposPage.grupos" [canNotEdit]="notAllowed"
+    [canNotRemove]="notAllowed" (edit)="onEdit($event)" (remove)="confirmDelete($event)">
 
     </app-grupos-list>
 
@@ -36,14 +36,13 @@
     </div>
 
 
-
     <div class="row">
       <div class="col-md-12">
-        <a class="btn btn-outline-primary" role="button" (click)="onAdd()">Novo grupo</a>
+        <button type="button" class="btn btn-outline-primary" 
+        (click)="onAdd()" [disabled]="notAllowed" >Novo grupo</button>
       </div>
     </div>
 
-  
 
   <ng-template #loading>
     <div class="d-flex justify-content-center text-info">

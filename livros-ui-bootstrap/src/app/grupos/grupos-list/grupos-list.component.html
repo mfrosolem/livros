@@ -11,7 +11,9 @@
           <tr *ngFor="let grupo of grupos">
             <td>{{ grupo.nome }}</td>
             <td class="col-acoes">
-              <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(grupo)" >
+              <button class="btn btn-outline-primary mb-1 btn-sm" 
+              (click)="onEdit(grupo)" 
+              [disabled]="canNotEdit">
                 <i class="bi bi-pencil"></i>
               </button>
 
@@ -20,7 +22,7 @@
               tooltip ="Excluir"
               placement="right"
               (click)="onRemove(grupo)"
-              [disabled]="onNaoTemPermissao('CADASTRAR_USUARIOS_GRUPOS_PERMISSOES')">
+              [disabled]="canNotRemove">
                 <i class="bi bi-trash3"></i>
               </button>          
             </td>

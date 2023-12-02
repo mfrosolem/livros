@@ -15,13 +15,15 @@
             <td>{{ autor.sobrenome }}</td>
             <td>{{ autor.nomeConhecido }}</td>
             <td class="col-acoes">
-              <button class="btn btn-outline-primary mb-1 btn-sm" (click)="onEdit(autor)">
+              <button class="btn btn-outline-primary mb-1 btn-sm" 
+              (click)="onEdit(autor)"
+              [disabled]="canNotEdit">
                 <i class="bi bi-pencil"></i>
               </button>
 
               <button type="button" class="btn btn-outline-danger mb-1 btn-sm" 
               (click)="onRemove(autor)"
-              [disabled]="onNaoTemPermissao('REMOVER_AUTOR')">
+              [disabled]=canNotRemove>
                 <i class="bi bi-trash3"></i>
               </button>
             </td>

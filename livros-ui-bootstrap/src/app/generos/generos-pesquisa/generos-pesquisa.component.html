@@ -20,8 +20,8 @@
 
   <div *ngIf="generos$ | async as generosPage; else loading">
 
-    <app-generos-list [generos]="generosPage.generos" (edit)="onEdit($event)" (remove)="confirmDelete($event)"
-      (naoTemPermissao)="naoTemPermissao($event)">
+    <app-generos-list [generos]="generosPage.generos" [canNotEdit]="naoPodeEditar"
+      [canNotRemove]="naoPodeRemover" (edit)="onEdit($event)" (remove)="confirmDelete($event)">
 
     </app-generos-list>
 
@@ -37,7 +37,8 @@
 
   <div class="row">
     <div class="col-md-12">
-      <a class="btn btn-outline-primary" role="button" (click)="onAdd()">Novo gênero</a>
+      <button type="button" class="btn btn-outline-primary" 
+      (click)="onAdd()" [disabled]="naoPodeEditar" >Novo gênero</button>
     </div>
   </div>
 

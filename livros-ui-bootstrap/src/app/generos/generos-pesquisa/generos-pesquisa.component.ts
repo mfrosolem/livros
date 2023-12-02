@@ -21,6 +21,9 @@ import { GeneroPage } from '../../core/models/genero/genero-page';
 })
 export class GenerosPesquisaComponent implements OnInit {
 
+  naoPodeRemover = true;
+  naoPodeEditar = true;
+
   generos$: Observable<GeneroPage> | null = null;
 
   form: FormGroup = this.formBuilder.group({
@@ -44,6 +47,8 @@ export class GenerosPesquisaComponent implements OnInit {
     private route: ActivatedRoute,
     private auth: AuthService
   ) { 
+    this.naoPodeRemover = this.naoTemPermissao('REMOVER_GENERO');
+    this.naoPodeEditar = this.naoTemPermissao('CADASTRAR_GENERO');
     this.onSearch();
   }
 

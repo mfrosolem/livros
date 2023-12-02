@@ -21,6 +21,9 @@ import { LivroPage } from '../../core/models/livro/livro-page';
 })
 export class LivrosPesquisaComponent implements OnInit {
 
+  naoPodeRemover = true;
+  naoPodeEditar = true;
+
   livros$: Observable<LivroPage> | null = null;
   form: FormGroup = this.formBuilder.group({
     titulo: []
@@ -41,11 +44,14 @@ export class LivrosPesquisaComponent implements OnInit {
     private route: ActivatedRoute,
     private title: Title,
     private auth: AuthService
-  ) { }
+  ) { 
+    this.naoPodeRemover = this.naoTemPermissao('REMOVER_LIVRO');
+    this.naoPodeEditar = this.naoTemPermissao('CADASTRAR_LIVRO');
+    this.onSearch();
+  }
 
   ngOnInit(): void {
-    this.title.setTitle('Pesquisa Livros');
-    this.onSearch();
+    this.title.setTitle('Pesquisa Livros');    
   }
 
   onAdd() {

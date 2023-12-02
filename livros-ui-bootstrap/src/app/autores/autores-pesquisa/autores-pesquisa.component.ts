@@ -22,6 +22,9 @@ import { AutorPage } from '../../core/models/autor/autor-pages';
 })
 export class AutoresPesquisaComponent implements OnInit {
 
+  naoPodeRemover = true;
+  naoPodeEditar = true;
+
   autores$: Observable<AutorPage> | null = null;
   form: FormGroup = this.formBuilder.group({
     nome: []
@@ -44,6 +47,9 @@ export class AutoresPesquisaComponent implements OnInit {
     private route: ActivatedRoute,
     private auth: AuthService
   ) {
+    this.naoPodeRemover = this.naoTemPermissao('REMOVER_AUTOR');
+    this.naoPodeEditar = this.naoTemPermissao('CADASTRAR_AUTOR');
+
     this.onSearch();
    }
 

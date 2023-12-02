@@ -10,9 +10,10 @@ import { Autor } from '../../core/models/autor/autor';
 export class AutoresListComponent {
 
   @Input() autores: Autor[] = [];
+  @Input() canNotEdit: boolean = true;
+  @Input() canNotRemove: boolean = true;
   @Output() edit = new EventEmitter(false);
   @Output() remove = new EventEmitter(false);
-  @Output() naoTemPermissao = new EventEmitter(false);
 
   onEdit(autor: Autor) {
     this.edit.emit(autor);
@@ -20,10 +21,6 @@ export class AutoresListComponent {
 
   onRemove(autor: Autor) {
     this.remove.emit(autor);
-  }
-
-  onNaoTemPermissao(nomePermissao: string) {
-    this.naoTemPermissao.emit(nomePermissao);
   }
 
 }

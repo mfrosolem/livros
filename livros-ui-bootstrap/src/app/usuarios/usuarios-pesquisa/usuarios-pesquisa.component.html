@@ -20,8 +20,8 @@
 
   <div *ngIf="usuarios$ | async as usuariosPage; else loading">
 
-    <app-usuarios-list [usuarios]="usuariosPage.usuarios" (edit)="onEdit($event)" (remove)="confirmDelete($event)"
-      (naoTemPermissao)="naoTemPermissao('CADASTRAR_USUARIOS_GRUPOS_PERMISSOES')">
+    <app-usuarios-list [usuarios]="usuariosPage.usuarios" [canNotEdit]="notAllowed"
+    [canNotRemove]="notAllowed" (edit)="onEdit($event)" (remove)="confirmDelete($event)">
 
     </app-usuarios-list>
 
@@ -35,11 +35,10 @@
     </div>
   </div>
 
-  
-
   <div class="row">
     <div class="col-md-12">
-      <a class="btn btn-outline-primary" role="button" (click)="onAdd()">Novo usuário</a>
+      <button type="button" class="btn btn-outline-primary" 
+      (click)="onAdd()" [disabled]="notAllowed" >Novo usuário</button>
     </div>
   </div>
 

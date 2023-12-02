@@ -19,6 +19,8 @@ import { GrupoPage } from '../../core/models/grupo/grupo-page';
 })
 export class GruposPesquisaComponent implements OnInit {
 
+  notAllowed = true;
+
   grupos$: Observable<GrupoPage> | null = null;
 
   form: FormGroup = this.formBuilder.group({
@@ -42,9 +44,9 @@ export class GruposPesquisaComponent implements OnInit {
     private route: ActivatedRoute,
     private auth: AuthService
   ) {
+    this.notAllowed = this.naoTemPermissao('CADASTRAR_USUARIOS_GRUPOS_PERMISSOES');
     this.onSearch();
   }
-
 
 
   ngOnInit(): void {

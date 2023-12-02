@@ -22,6 +22,9 @@ import { EditoraPage } from '../../core/models/editora/editora-page';
 })
 export class EditorasPesquisaComponent implements OnInit {
 
+  naoPodeRemover = true;
+  naoPodeEditar = true;
+
   editoras$: Observable<EditoraPage> | null = null;
 
   form: FormGroup = this.formBuilder.group({
@@ -44,6 +47,8 @@ export class EditorasPesquisaComponent implements OnInit {
     private route: ActivatedRoute,
     private auth: AuthService
   ) { 
+    this.naoPodeRemover = this.naoTemPermissao('REMOVER_EDITORA');
+    this.naoPodeEditar = this.naoTemPermissao('CADASTRAR_EDITORA');
     this.onSearch();
   }
 

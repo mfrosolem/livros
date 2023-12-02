@@ -20,8 +20,8 @@
 
   <div *ngIf="editoras$ | async as editorasPage; else loading">
 
-    <app-editoras-list [editoras]="editorasPage.editoras" (edit)="onEdit($event)" (remove)="confirmDelete($event)" 
-    (naoTemPermissao)="naoTemPermissao($event)">
+    <app-editoras-list [editoras]="editorasPage.editoras" [canNotEdit]="naoPodeEditar"
+    [canNotRemove]="naoPodeRemover" (edit)="onEdit($event)" (remove)="confirmDelete($event)">
 
     </app-editoras-list>
 
@@ -33,12 +33,12 @@
         [(ngModel)]="page" (pageChanged)="pageChanged($event)" previousText="Anterior" nextText="Próximo"></pagination>
     </div>
   </div>
-
-
+  
 
     <div class="row">
       <div class="col-md-12">
-        <a class="btn btn-outline-primary" role="button" (click)="onAdd()">Nova Editora</a>
+        <button type="button" class="btn btn-outline-primary" 
+        (click)="onAdd()" [disabled]="naoPodeEditar" >Nova Editora</button>
       </div>
     </div>
 

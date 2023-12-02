@@ -20,8 +20,8 @@
 
   <div *ngIf="autores$ | async as autoresPage; else loading">
 
-    <app-autores-list [autores]="autoresPage.autores" (edit)="onEdit($event)" (remove)="confirmDelete($event)" 
-    (naoTemPermissao)="naoTemPermissao($event)">
+    <app-autores-list [autores]="autoresPage.autores" [canNotEdit]="naoPodeEditar" [canNotRemove]="naoPodeRemover"
+    (edit)="onEdit($event)" (remove)="confirmDelete($event)">
 
     </app-autores-list>
 
@@ -34,12 +34,13 @@
     </div>
   </div>
 
+
   <div class="row">
     <div class="col-md-12">
-      <a class="btn btn-outline-primary" role="button" (click)="onAdd()">Novo Autor</a>
+      <button type="button" class="btn btn-outline-primary" 
+      (click)="onAdd()" [disabled]="naoPodeEditar" >Novo Autor</button>
     </div>
   </div>
-
 
 
   <ng-template #loading>
