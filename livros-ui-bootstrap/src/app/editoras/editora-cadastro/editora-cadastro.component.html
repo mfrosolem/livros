@@ -1,66 +1,79 @@
 <div class="container-fluid">
 
-  <form [formGroup]="form" autocomplete="off">
-    <div class="row">
-      <div>
-        <h1 class="mt-2">{{ editando ? 'Edição de' : 'Novo' }} Editora</h1>
+  <div *ngIf="editora$|async; else loading">
+
+    <form [formGroup]="form" autocomplete="off">
+      <div class="row">
+        <div>
+          <h1 class="mt-2">{{ editando ? 'Edição de' : 'Novo' }} Editora</h1>
+        </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label>Nome:</label>
-          <input type="text" class="form-control" name="nome" formControlName="nome"
-            [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Nome:</label>
+            <input type="text" class="form-control" name="nome" formControlName="nome"
+              [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched">
 
-          <div class="invalid-feedback" *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
-            Informe o nome
+            <div class="invalid-feedback" *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
+              Informe o nome
+            </div>
+
           </div>
-
         </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Site:</label>
+            <input type="text" class="form-control" name="urlSiteOficial" formControlName="urlSiteOficial">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Facebook:</label>
+            <input type="text" class="form-control" name="urlFacebook" formControlName="urlFacebook">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Twitter:</label>
+            <input type="text" class="form-control" name="urlTwitter" formControlName="urlTwitter">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Wikipedia:</label>
+            <input type="text" class="form-control" name="urlWikipedia" formControlName="urlWikipedia">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 py-2">
+          <button type="button" class="btn btn-outline-primary" [disabled]="form.invalid"
+            (click)="onSubmit()">Salvar</button>
+          <button type="button" class="btn btn-outline-danger" (click)="onCancel()">Cancelar</button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+
+  <ng-template #loading>
+    <div class="d-flex justify-content-center text-info">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Site:</label>
-          <input type="text" class="form-control" name="urlSiteOficial" formControlName="urlSiteOficial">
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Facebook:</label>
-          <input type="text" class="form-control" name="urlFacebook" formControlName="urlFacebook">
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Twitter:</label>
-          <input type="text" class="form-control" name="urlTwitter" formControlName="urlTwitter">
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Wikipedia:</label>
-          <input type="text" class="form-control" name="urlWikipedia" formControlName="urlWikipedia">
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-12 py-2">
-        <button type="button" class="btn btn-outline-primary" [disabled]="form.invalid" (click)="onSubmit()">Salvar</button>
-        <button type="button" class="btn btn-outline-danger" (click)="onCancel()">Cancelar</button>
-      </div>
-    </div>
-
-  </form>
+  </ng-template>
 
 </div>

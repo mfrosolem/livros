@@ -3,7 +3,6 @@ package com.maira.livrosapi.domain.service.impl;
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.NegocioException;
 import com.maira.livrosapi.domain.exception.UsuarioNaoEncontradoException;
-import com.maira.livrosapi.domain.model.Autor;
 import com.maira.livrosapi.domain.model.Grupo;
 import com.maira.livrosapi.domain.model.Usuario;
 import com.maira.livrosapi.domain.repository.UsuarioRepository;

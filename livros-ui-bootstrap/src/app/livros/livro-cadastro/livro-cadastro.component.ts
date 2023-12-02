@@ -13,6 +13,8 @@ import { LivroService } from './../livro.service';
 import { Genero } from '../../core/models/genero/genero';
 import { Autor } from '../../core/models/autor/autor';
 import { Editora } from '../../core/models/editora/editora';
+import { Observable } from 'rxjs';
+import { Livro } from '../../core/models/livro/livro';
 
 @Component({
   selector: 'app-livro-cadastro',
@@ -21,6 +23,8 @@ import { Editora } from '../../core/models/editora/editora';
   preserveWhitespaces: true
 })
 export class LivroCadastroComponent implements OnInit {
+
+  livro$: Observable<Livro|any> | null = null;
 
   autores: Autor[] = [];
   generos: Genero[] = [];
@@ -68,21 +72,21 @@ export class LivroCadastroComponent implements OnInit {
     private autorService: AutorService,
     private generoService: GeneroService,
     private editoraService: EditoraService
-  ) { }
+  ) { 
+    const codigoLivro = this.route.snapshot.params['codigo'];
+    if (codigoLivro) {
+      this.carregarRegistro(codigoLivro);
+      this.carregaFotoLivro(codigoLivro);
+    }
+  }
 
   ngOnInit(): void {
-    const codigoLivro = this.route.snapshot.params['codigo'];
-
     this.carregarAutores();
     this.carregarGeneros();
     this.carregarEditoras();
 
     this.title.setTitle('Novo Livro');
 
-    if (codigoLivro) {
-      this.carregarRegistro(codigoLivro);
-      this.carregaFotoLivro(codigoLivro);
-    }
   }
 
   get editando() {

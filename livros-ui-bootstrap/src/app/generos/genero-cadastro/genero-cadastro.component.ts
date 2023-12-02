@@ -8,6 +8,7 @@ import { ErrorHandlerService } from './../../core/error-handler.service';
 import { ToastService } from './../../shared/toast.service';
 import { GeneroService } from './../genero.service';
 import { Genero } from '../../core/models/genero/genero';
+import { Observable, catchError, first, of, tap } from 'rxjs';
 
 
 
@@ -19,11 +20,12 @@ import { Genero } from '../../core/models/genero/genero';
 })
 export class GeneroCadastroComponent implements OnInit {
 
+  genero$: Observable<Genero|any> | null = null;
+
   form: FormGroup = this.formBuilder.group({
     id: [],
     descricao: [null, [Validators.required, Validators.maxLength(60)]],
   });
-
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,17 +36,13 @@ export class GeneroCadastroComponent implements OnInit {
     private router: Router,
     private title: Title,
     private location: Location
-  ) { }
+  ) {
+    const idGenero = this.route.snapshot.params['codigo'];
+    this.carregarRegistro(idGenero);   
+   }
 
   ngOnInit(): void {
-
-    const codigoGenero = this.route.snapshot.params['codigo'];
-
     this.title.setTitle('Novo Gênero');
-
-    if (codigoGenero) {
-      this.carregarRegistro(codigoGenero);
-    }
   }
 
   get editando() {
@@ -69,23 +67,28 @@ export class GeneroCadastroComponent implements OnInit {
       });
   }
 
-  private carregarRegistro(codigo: number) {
-    this.generoService.findById(codigo)
-      .subscribe({
-        next: (generoRetornado: Genero) => {
-          this.form.patchValue(generoRetornado);
-          this.atualizarTituloEdicao();
-        },
-        error: (falha) => {
-          this.errorHandler.handle(falha);
-        },
-      });
+  private carregarRegistro(codigo?: number) {
+    if (!codigo) {
+      this.genero$ = of({});
+    } else {
+      this.genero$ = this.generoService.findById(codigo)
+        .pipe(
+          first(),
+          tap(resultado => {
+            this.form.patchValue(resultado);
+            this.atualizarTituloEdicao();
+          }),
+          catchError(falha => {
+            this.errorHandler.handle(falha);
+            this.onCancel();
+            return of({});
+          })
+        );
+    }
   }
 
   private atualizarTituloEdicao() {
     this.title.setTitle(`Edição gênero: ${this.form.value.descricao}`);
   }
-
-
 
 }

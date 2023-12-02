@@ -8,6 +8,7 @@ import { ErrorHandlerService } from './../../core/error-handler.service';
 import { ToastService } from './../../shared/toast.service';
 import { EditoraService } from './../editora.service';
 import { Editora } from '../../core/models/editora/editora';
+import { Observable, catchError, first, of, tap } from 'rxjs';
 
 
 @Component({
@@ -18,6 +19,7 @@ import { Editora } from '../../core/models/editora/editora';
 })
 export class EditoraCadastroComponent implements OnInit {
 
+  editora$: Observable<Editora|any> | null = null;
 
   form: FormGroup = this.formBuilder.group({
     id: [],
@@ -37,17 +39,13 @@ export class EditoraCadastroComponent implements OnInit {
     private router: Router,
     private title: Title,
     private location: Location
-  ) { }
+  ) {
+    const codigoEditora = this.route.snapshot.params['codigo'];
+    this.carregarRegistro(codigoEditora);
+   }
 
   ngOnInit(): void {
-
-    const codigoEditora = this.route.snapshot.params['codigo'];
-
     this.title.setTitle('Nova Editora');
-
-    if (codigoEditora) {
-      this.carregarRegistro(codigoEditora);
-    }
   }
 
   get editando() {
@@ -71,17 +69,24 @@ export class EditoraCadastroComponent implements OnInit {
     this.location.back();
   }
 
-  private carregarRegistro(codigo: number) {
-    this.editoraService.findById(codigo)
-      .subscribe({
-        next: (editoraRetornada: Editora) => {
-          this.form.patchValue(editoraRetornada);
-          this.atualizarTituloEdicao();
-        },
-        error: (falha) => {
-          this.errorHandlerService.handle(falha);
-        }
-      });
+  private carregarRegistro(codigo?: number) {
+    if (!codigo) {
+      this.editora$ = of({});
+    } else {
+      this.editora$ = this.editoraService.findById(codigo)
+        .pipe(
+          first(),
+          tap(resultado => {
+            this.form.patchValue(resultado);
+            this.atualizarTituloEdicao();
+          }),
+          catchError(falha => {
+            this.errorHandlerService.handle(falha);
+            this.onCancel();
+            return of({});
+          })
+        );
+    }
   }
 
   private popularForm(editora: Editora) {

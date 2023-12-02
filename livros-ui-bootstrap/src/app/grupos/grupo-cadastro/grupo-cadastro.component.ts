@@ -6,7 +6,8 @@ import { ToastService } from '../../shared/toast.service';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Location } from '@angular/common';
-import { Grupo } from '../../core/models/model';
+import { Observable, catchError, first, of, tap } from 'rxjs';
+import { Grupo } from '../../core/models/grupo/grupo';
 
 @Component({
   selector: 'app-grupo-cadastro',
@@ -15,6 +16,8 @@ import { Grupo } from '../../core/models/model';
   preserveWhitespaces: true
 })
 export class GrupoCadastroComponent implements OnInit{
+
+  grupo$: Observable<Grupo|any> | null = null;
 
   form: FormGroup = this.formBuilder.group({
     id: [],
@@ -31,11 +34,7 @@ export class GrupoCadastroComponent implements OnInit{
     private location: Location
   ) {
     const idGrupo = this.route.snapshot.params['codigo'];
-
-    if (idGrupo) {
-      console.log(idGrupo);
-      this.carregarRegistro(idGrupo);
-    }
+    this.carregarRegistro(idGrupo);    
   }
 
 
@@ -65,17 +64,24 @@ export class GrupoCadastroComponent implements OnInit{
       });
   }
 
-  private carregarRegistro(codigo: number) {
-    this.grupoService.findById(codigo)
-      .subscribe({
-        next: (grupoRetornado: Grupo) => {
-          this.form.patchValue(grupoRetornado);
-          this.atualizarTituloEdicao();
-        },
-        error: (falha) => {
-          this.errorHandlerService.handle(falha);
-        },
-      });
+  private carregarRegistro(codigo?: number) {
+    if (!codigo) {
+      this.grupo$ = of({});
+    } else {
+      this.grupo$ = this.grupoService.findById(codigo)
+        .pipe(
+          first(),
+          tap(resultado => {
+            this.form.patchValue(resultado);
+            this.atualizarTituloEdicao();
+          }),
+          catchError(falha => {
+            this.errorHandlerService.handle(falha);
+            this.onCancel();
+            return of({});
+          })
+        );
+    }
   }
 
   private atualizarTituloEdicao() {

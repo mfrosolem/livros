@@ -1,36 +1,48 @@
 <div class="container-fluid">
 
-    <form autocomplete="off" [formGroup]="form">
-        <div class="row">
-            <div>
-                <h1 class="mt-2">{{ editando ? 'Edição de' : 'Novo' }} Grupo</h1>
+    <div *ngIf="grupo$ |async; else loading">
+
+        <form autocomplete="off" [formGroup]="form">
+            <div class="row">
+                <div>
+                    <h1 class="mt-2">{{ editando ? 'Edição de' : 'Novo' }} Grupo</h1>
+                </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label>Nome:</label>
-                    <input type="text" class="form-control" formControlName="nome"
-                        [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Nome:</label>
+                        <input type="text" class="form-control" formControlName="nome"
+                            [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched">
 
-                    <div class="invalid-feedback" *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
-                        Informe o Nome
+                        <div class="invalid-feedback" *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">
+                            Informe o Nome
+                        </div>
+
                     </div>
 
                 </div>
+            </div>
 
+            <div class="row">
+                <div class="col-md-12 py-2">
+                    <button type="button" class="btn btn-outline-primary" [disabled]="form.invalid"
+                        (click)="onSubmit()">Salvar</button>
+                    <button type="button" class="btn btn-outline-danger" (click)="onCancel()">Cancelar</button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+    <ng-template #loading>
+        <div class="d-flex justify-content-center text-info">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-12 py-2">
-                <button type="button" class="btn btn-outline-primary" [disabled]="form.invalid"
-                    (click)="onSubmit()">Salvar</button>
-                <button type="button" class="btn btn-outline-danger" (click)="onCancel()">Cancelar</button>
-            </div>
-        </div>
-
-    </form>
+    </ng-template>
 
 </div>

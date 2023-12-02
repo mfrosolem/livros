@@ -8,6 +8,7 @@ import { ErrorHandlerService } from './../../core/error-handler.service';
 import { ToastService } from './../../shared/toast.service';
 import { AutorService } from './../autor.service';
 import { Autor } from '../../core/models/autor/autor';
+import { Observable, catchError, first, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-autor-cadastro',
@@ -16,6 +17,8 @@ import { Autor } from '../../core/models/autor/autor';
   preserveWhitespaces: true
 })
 export class AutorCadastroComponent implements OnInit {
+
+  autor$: Observable<Autor|any> | null = null;
 
   form: FormGroup = this.formBuilder.group({
     id: [],
@@ -44,18 +47,12 @@ export class AutorCadastroComponent implements OnInit {
     private route: ActivatedRoute,
     private title: Title
   ) {
-
+    const codigoAutor = this.route.snapshot.params['codigo'];
+    this.carregarRegistro(codigoAutor);
   }
 
   ngOnInit(): void {
-    const codigoAutor = this.route.snapshot.params['codigo'];
-
     this.title.setTitle('Novo Autor');
-
-    if (codigoAutor) {
-      this.carregarRegistro(codigoAutor);
-    }
-
   }
 
   get editando() {
@@ -81,17 +78,24 @@ export class AutorCadastroComponent implements OnInit {
     this.location.back();
   }
 
-  private carregarRegistro(codigo: number) {
-    this.autorService.findById(codigo)
-      .subscribe({
-        next: (autorRetornado: Autor) => {
-          this.form.patchValue(autorRetornado);
-          this.atualizarTituloEdicao();
-        },
-        error: (falha) => {
-          this.errorHandlerService.handle(falha);
-        }
-      });
+  private carregarRegistro(codigo?: number) {
+    if (!codigo) {
+      this.autor$ = of({});
+    } else {
+      this.autor$ = this.autorService.findById(codigo)
+        .pipe(
+          first(),
+          tap(resultado => {
+            this.form.patchValue(resultado);
+            this.atualizarTituloEdicao();
+          }),
+          catchError(falha => {
+            this.errorHandlerService.handle(falha);
+            this.onCancel();
+            return of({});
+          })
+        );
+    }
   }
 
   private popularForm(autor: Autor) {
