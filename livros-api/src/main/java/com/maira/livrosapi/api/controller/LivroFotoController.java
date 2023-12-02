@@ -10,6 +10,7 @@ import com.maira.livrosapi.domain.model.FotoLivro;
 import com.maira.livrosapi.domain.model.Livro;
 import com.maira.livrosapi.domain.service.FotoLivroService;
 import com.maira.livrosapi.domain.service.FotoStorageService;
+import com.maira.livrosapi.domain.service.FotoStorageService.FotoRecuperada;
 import com.maira.livrosapi.domain.service.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -58,32 +59,32 @@ public class LivroFotoController implements LivroFotoControllerOpenApi {
 		return fotoAssembler.toModel(fotoSalva);
 	}
 
-	
+
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public FotoLivroModel buscar(@PathVariable Long livroId) {
 		FotoLivro fotoLivro = fotoLivroService.buscarOuFalhar(livroId);
 		return fotoAssembler.toModel(fotoLivro);
 	}
 
-	
-	@CheckRoleSecurity.Livros.PodeCadastrarEditar
+
 	@GetMapping(produces = MediaType.ALL_VALUE)
 	public ResponseEntity<InputStreamResource> servir(@PathVariable Long livroId,
 			@RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
 
 		try {
 			FotoLivro fotoLivro = fotoLivroService.buscarOuFalhar(livroId);
+			List<String> listMedia = Arrays.stream(acceptHeader.split(";")).toList();
 
 			MediaType mediaTypeFoto = MediaType.parseMediaType(fotoLivro.getContentType());
-			List<MediaType> mediaTypesAceitas = MediaType.parseMediaTypes(acceptHeader);
+			List<MediaType> mediaTypesAceitas = MediaType.parseMediaTypes(listMedia);
 
 			verificarCompatibilidadeMediaType(mediaTypeFoto, mediaTypesAceitas);
 
-			InputStream inputStream = fotoStorage.recuperar(fotoLivro.getNomeArquivo());
+			FotoRecuperada fotoRecuperada = fotoStorage.recuperar(fotoLivro.getNomeArquivo());
 
 			return ResponseEntity.ok()
 					.contentType(mediaTypeFoto)
-					.body(new InputStreamResource(inputStream));
+					.body(new InputStreamResource(fotoRecuperada.getInputStream()));
 
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();

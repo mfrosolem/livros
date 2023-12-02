@@ -157,7 +157,7 @@ export class LivroService {
 
   getFoto(codigo: number) {
 
-    let headers = new HttpHeaders().set('Accept', "image/jpeg");
+    let headers = new HttpHeaders().set('Accept', "image/jpeg;image/png");
 
     return this.http.get(`${this.API}/${codigo}/foto`, { headers, responseType: 'blob' }).pipe(take(1));
 

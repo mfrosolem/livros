@@ -13,7 +13,7 @@ import { LivroService } from './../livro.service';
 import { Genero } from '../../core/models/genero/genero';
 import { Autor } from '../../core/models/autor/autor';
 import { Editora } from '../../core/models/editora/editora';
-import { Observable } from 'rxjs';
+import { Observable, catchError, delay, first, of, tap } from 'rxjs';
 import { Livro } from '../../core/models/livro/livro';
 
 @Component({
@@ -25,6 +25,8 @@ import { Livro } from '../../core/models/livro/livro';
 export class LivroCadastroComponent implements OnInit {
 
   livro$: Observable<Livro|any> | null = null;
+  foto$: Observable<Blob|any> | null = null;
+
 
   autores: Autor[] = [];
   generos: Genero[] = [];
@@ -72,20 +74,18 @@ export class LivroCadastroComponent implements OnInit {
     private autorService: AutorService,
     private generoService: GeneroService,
     private editoraService: EditoraService
-  ) { 
+  ) {
     const codigoLivro = this.route.snapshot.params['codigo'];
-    if (codigoLivro) {
-      this.carregarRegistro(codigoLivro);
-      this.carregaFotoLivro(codigoLivro);
-    }
+    this.carregarRegistro(codigoLivro);
+    this.carregaFotoLivro(codigoLivro);
   }
 
   ngOnInit(): void {
+    this.title.setTitle('Novo Livro');
+
     this.carregarAutores();
     this.carregarGeneros();
     this.carregarEditoras();
-
-    this.title.setTitle('Novo Livro');
 
   }
 
@@ -114,17 +114,25 @@ export class LivroCadastroComponent implements OnInit {
     this.router.navigate(['foto'], {  relativeTo: this.route });
   }
 
-  private carregarRegistro(codigo: number) {
-    this.livroService.findById(codigo)
-      .subscribe({
-        next: (livroRetornado: any) => {
-          this.form.patchValue(livroRetornado);
-          this.atualizarTituloEdicao();
-        },
-        error: (falha) => {
-          this.errorHandlerService.handle(falha);
-        }
-      });
+  private carregarRegistro(codigo?: number) {
+    if (!codigo) {
+      this.livro$ = of({});
+    } else {
+      this.livro$ = this.livroService.findById(codigo)
+        .pipe(
+          first(),
+          tap(resultado => {
+            this.form.patchValue(resultado);
+            this.atualizarTituloEdicao();
+          }),
+          catchError(falha => {
+            this.errorHandlerService.handle(falha);
+            this.onCancel();
+            return of({});
+          })
+        );
+    }
+
   }
 
 
@@ -156,18 +164,37 @@ export class LivroCadastroComponent implements OnInit {
       });
   }
 
-  private carregaFotoLivro(codigo: number) {
-    this.livroService.getFoto(codigo)
-      .subscribe({
-        next: (fotoRecebida: any) => {
-          this.readFile(fotoRecebida);
-        },
-        error: (falha) => {
-
-        }
-      });
+  private carregaFotoLivro(idLivro?: number) {
+    if (!idLivro) {
+      this.foto$ = of({});
+    } else {
+      this.foto$ = this.livroService.getFoto(idLivro)
+        .pipe(
+          first(),
+          tap(fotoRecebida => {
+            this.readFile(fotoRecebida);
+          }),
+          catchError(falha => {
+            // this.errorHandlerService.handle(falha);
+            return of({});
+          })
+        );
+    }
 
   }
+
+  // private carregaFotoLivro(codigo: number) {
+  //   this.livroService.getFoto(codigo)
+  //     .subscribe({
+  //       next: (fotoRecebida: any) => {
+  //         this.readFile(fotoRecebida);
+  //       },
+  //       error: (falha) => {
+
+  //       }
+  //     });
+
+  // }
 
   private readFile(blob: Blob) {
 

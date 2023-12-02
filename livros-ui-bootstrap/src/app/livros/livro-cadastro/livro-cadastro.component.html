@@ -1,5 +1,7 @@
 <div class="container-fluid">
 
+  <div *ngIf="livro$|async; else loading">
+
   <form autocomplete="off" [formGroup]="form">
     <div class="row">
       <div>
@@ -11,24 +13,21 @@
     <div class="row"> <!-- colocado -->
 
       <div class="col-md-2" *ngIf="editando"> <!-- inicia coluna foto -->
-        <div class="row">
-          <div class="col-md-12">
-
-            <img [src]="imagemUrl" class="rounded img-thumbnail img-fluid" [alt]="form.get('titulo')">
-
-          </div>
-
-        </div>
-
-        <div class="row">
-          <div class="d-grid">
-
-            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="onChangeFoto()">Mudar Foto</button>
-
+        <div *ngIf="foto$|async; else loading">
+          <div class="card border border-0 bg-body-tertiary" style="width: 18rem;">
+            <img [src]="imagemUrl" class="card-img-top" [alt]="form.get('titulo')">
+            <div class="card-body">
+             
+              <div class="row">
+                <div class="d-grid">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" (click)="onChangeFoto()">Mudar Foto</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
       </div> <!-- termina coluna foto -->
+    
 
       <div [ngClass]="editando ? 'col-md-10' : 'col-md-12'"> <!-- inicia coluna cadastro -->
 
@@ -206,5 +205,15 @@
     </div>
 
   </form>
+
+</div>
+
+<ng-template #loading>
+    <div class="d-flex justify-content-center text-info">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</ng-template>
 
 </div>
