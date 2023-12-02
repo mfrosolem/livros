@@ -5,6 +5,5 @@ import com.maira.livrosapi.domain.model.Usuario;
 public interface UsuarioService extends CadastroService<Usuario>{
 
     void alterarSenha(Long usuarioId, String senhaAtual, String novaSenha);
-    void associarGrupo(Long usuarioId, Long grupoId);
-    void desassociarGrupo(Long usuarioId, Long grupoId);
+
 }

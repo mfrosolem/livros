@@ -1,9 +1,7 @@
 package com.maira.livrosapi.core.security.authorizationserver;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.maira.livrosapi.domain.model.Usuario;
+import com.maira.livrosapi.domain.repository.UsuarioRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -13,14 +11,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.maira.livrosapi.domain.model.Usuario;
-import com.maira.livrosapi.domain.repository.UsuarioRepository;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class JpaUserDetailsService implements UserDetailsService {
-	
-	@Autowired
-	private UsuarioRepository usuarioRepository;
+
+	private final UsuarioRepository usuarioRepository;
+
+	public JpaUserDetailsService(UsuarioRepository usuarioRepository) {
+		this.usuarioRepository = usuarioRepository;
+	}
 
 	@Transactional(readOnly = true)
 	@Override
@@ -31,8 +32,7 @@ public class JpaUserDetailsService implements UserDetailsService {
 	}
 	
 	private Collection<GrantedAuthority> getAuthorities(Usuario usuario) {
-		return usuario.getGrupos().stream()
-				.flatMap(grupo -> grupo.getPermissoes().stream())
+		return usuario.getGrupo().getPermissoes().stream()
 				.map(permissao -> new SimpleGrantedAuthority(permissao.getNome().toUpperCase()))
 				.collect(Collectors.toSet());
 	}

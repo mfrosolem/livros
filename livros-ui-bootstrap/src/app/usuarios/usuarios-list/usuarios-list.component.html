@@ -5,6 +5,7 @@
                 <tr>
                     <th scope="col">Nome</th>
                     <th scope="col">E-mail</th>
+                    <th scope="col">Grupo</th>
                     <th class="col-acoes-header"></th>
                 </tr>
             </thead>
@@ -12,6 +13,7 @@
                 <tr *ngFor="let usuario of usuarios">
                     <td>{{ usuario.nome }}</td>
                     <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.grupo.nome }}</td>
                     <td class="col-acoes">
 
                         <button class="btn btn-outline-primary mb-1 btn-sm" 

@@ -5,8 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
@@ -34,21 +32,13 @@ public class Usuario {
 	@Column(nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataCadastro;
 
-	@ManyToMany
-	@JoinTable(name = "usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"),
-			inverseJoinColumns = @JoinColumn(name = "grupo_id"))
-	private Set<Grupo> grupos = new HashSet<>();
+	@ManyToOne //eager
+	@JoinColumn(name = "grupo_id", nullable = false)
+	private Grupo grupo;
 	
 	public boolean isNovo() {
 		return getId() == null;
 	}
-	
-	public boolean adicionarGrupo(Grupo grupo) {
-		return getGrupos().add(grupo);
-	}
-	
-	public boolean removerGrupo(Grupo grupo) {
-		return getGrupos().remove(grupo);
-	}
+
 
 }

@@ -68,28 +68,31 @@ class PermissaoIT {
 
         var grupoConsulta = Grupo.builder().nome("CONSULTA").permissoes(Set.of(permissao1)).build();
         var grupoCadastro = Grupo.builder().nome("CADASTRO").permissoes(Set.of(permissao1, permissao2)).build();
+        var grupoSemPermissao= Grupo.builder().nome("SEM PERMISSAO").build();
 
         grupoConsulta = this.grupoService.salvar(grupoConsulta);
         grupoCadastro = this.grupoService.salvar(grupoCadastro);
+        grupoSemPermissao = this.grupoService.salvar(grupoSemPermissao);
 
         usuarioConsulta = Usuario.builder()
                 .nome("joao")
                 .email("joao@livros.com")
                 .senha("123")
-                .grupos(Set.of(grupoConsulta))
+                .grupo(grupoConsulta)
                 .build();
 
         usuarioCadastro = Usuario.builder()
                 .nome("maria")
                 .email("maria@livros.com")
                 .senha("123")
-                .grupos(Set.of(grupoCadastro))
+                .grupo(grupoCadastro)
                 .build();
 
         usuarioSemPermissao = Usuario.builder()
                 .nome("teste")
                 .email("permissao@livros.com")
                 .senha("123")
+                .grupo(grupoSemPermissao)
                 .build();
 
         usuarioConsulta = this.usuarioService.salvar(usuarioConsulta);

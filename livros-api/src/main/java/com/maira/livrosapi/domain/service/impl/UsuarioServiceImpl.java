@@ -3,6 +3,7 @@ package com.maira.livrosapi.domain.service.impl;
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.NegocioException;
 import com.maira.livrosapi.domain.exception.UsuarioNaoEncontradoException;
+import com.maira.livrosapi.domain.model.Autor;
 import com.maira.livrosapi.domain.model.Grupo;
 import com.maira.livrosapi.domain.model.Usuario;
 import com.maira.livrosapi.domain.repository.UsuarioRepository;
@@ -40,7 +41,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public Usuario salvar(Usuario entidade) {
 		usuarioRepository.detach(entidade);
-		
+
+		Long grupoId = entidade.getGrupo().getId();
+		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
+		entidade.setGrupo(grupo);
+
 		Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(entidade.getEmail());
 		
 		if (usuarioExistente.isPresent() && !usuarioExistente.get().equals(entidade)) {
@@ -79,22 +84,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(String.format(MSG_USUARIO_EM_USO, id));
 		}
-	}
-	
-	@Transactional
-	@Override
-	public void associarGrupo(Long usuarioId, Long grupoId) {
-		Usuario usuario = buscarOuFalhar(usuarioId);
-		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
-		usuario.adicionarGrupo(grupo);
-	}
-	
-	@Transactional
-	@Override
-	public void desassociarGrupo(Long usuarioId, Long grupoId) {
-		Usuario usuario = buscarOuFalhar(usuarioId);
-		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
-		usuario.removerGrupo(grupo);
 	}
 
 	@Override

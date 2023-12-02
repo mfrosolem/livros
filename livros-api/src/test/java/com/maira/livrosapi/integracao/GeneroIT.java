@@ -85,7 +85,7 @@ class GeneroIT {
                 .nome("Usuario Teste")
                 .email("genero@livros.com")
                 .senha("123")
-                .grupos(Set.of(grupo))
+                .grupo(grupo)
                 .build();
         usuario = this.usuarioService.salvar(usuario);
     }

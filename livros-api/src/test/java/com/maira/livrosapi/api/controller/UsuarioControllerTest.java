@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maira.livrosapi.api.assembler.UsuarioInputDisassembler;
 import com.maira.livrosapi.api.assembler.UsuarioModelAssembler;
 import com.maira.livrosapi.api.exception.ApiExceptionHandler;
+import com.maira.livrosapi.api.model.GrupoModel;
 import com.maira.livrosapi.api.model.UsuarioModel;
+import com.maira.livrosapi.api.model.input.GrupoIdInput;
 import com.maira.livrosapi.api.model.input.SenhaInput;
 import com.maira.livrosapi.api.model.input.UsuarioComSenhaInput;
 import com.maira.livrosapi.api.model.input.UsuarioInput;
@@ -12,6 +14,7 @@ import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.EntidadeNaoEncontradaException;
 import com.maira.livrosapi.domain.exception.NegocioException;
 import com.maira.livrosapi.domain.exception.UsuarioNaoEncontradoException;
+import com.maira.livrosapi.domain.model.Grupo;
 import com.maira.livrosapi.domain.model.Usuario;
 import com.maira.livrosapi.domain.service.UsuarioService;
 import org.hamcrest.Matchers;
@@ -75,26 +78,33 @@ class UsuarioControllerTest {
         usuario = Usuario.builder().id(1L).nome("joao")
                 .email("joao@livros")
                 .senha("123")
-                .dataCadastro(OffsetDateTime.now()).build();
+                .dataCadastro(OffsetDateTime.now())
+                .grupo(Grupo.builder().id(1L).nome("GRUPO").build())
+                .build();
 
         usuarioSemId = Usuario.builder().nome("joao")
                 .email("joao@livros")
                 .senha("123")
-                .dataCadastro(OffsetDateTime.now()).build();
+                .dataCadastro(OffsetDateTime.now())
+                .grupo(Grupo.builder().id(1L).nome("GRUPO").build())
+                .build();
 
         usuarioComSenhaInput = UsuarioComSenhaInput.builder()
                 .nome("joao")
                 .email("joao@livros")
                 .senha("123")
+                .grupo(GrupoIdInput.builder().id(1L).build())
                 .build();
 
 
         usuarioInput = UsuarioInput.builder().nome("joao")
                 .email("joao@livros")
+                .grupo(GrupoIdInput.builder().id(1L).build())
                 .build();
 
         usuarioModel = UsuarioModel.builder().id(1L).nome("joao")
                 .email("joao@livros")
+                .grupo(GrupoModel.builder().id(1L).nome("GRUPO").build())
                 .build();
 
         usuarioId = 1L;

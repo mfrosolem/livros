@@ -76,6 +76,7 @@ class UsuarioServiceTest {
                 .email("joao@livros")
                 .senha("123")
                 .dataCadastro(OffsetDateTime.now())
+                .grupo(grupo)
                 .build();
     }
 
@@ -263,74 +264,6 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Dado um usuario valido e um grupo valido Quando chamar metodo associarGrupo Entao deve fazer a associação")
-    void Dado_um_usuario_valido_e_grupo_valido_Quando_chamar_metodo_associarGrupo_Entao_deve_fazer_associacao() {
-        var grupo2 = Grupo.builder().id(2L).nome("ADMIN").build();
-        usuario.setId(usuarioId);
-        Set<Grupo> grupos = new HashSet<>(){ { add(grupo); } };
-        usuario.setGrupos(grupos);
-        when(repository.findById(anyLong())).thenReturn(Optional.of(usuario));
-        when(grupoService.buscarOuFalhar(anyLong())).thenReturn(grupo2);
-
-        assertThatCode(() -> service.associarGrupo(usuario.getId(), grupo2.getId())).doesNotThrowAnyException();
-    }
-
-    @Test
-    @DisplayName("Dado um usuarioId invalido e grupoId valido Quando chamar metodo associarGrupo Entao deve lancar exception UsuarioNaoEncontradoException")
-    void Dado_um_usuarioId_invalido_e_grupoId_valido_Quando_chamar_metodo_associarGrupo_Entao_deve_lancar_exception_UsuarioNaoEncontradoException() {
-        this.buscarUsuarioPorIdComFalha();
-
-        assertThatThrownBy(() -> service.associarGrupo(usuarioId, grupoId))
-                .isInstanceOf(UsuarioNaoEncontradoException.class)
-                .hasMessage(String.format("Não existe cadastro de usuário com o código %d", usuarioId));
-    }
-
-    @Test
-    @DisplayName("Dado um usuarioId valido e um grupoId invalido Quando chamar metodo associarGrupo Entao deve lancar exception GrupoNaoEncontradoException")
-    void Dado_um_usuarioId_valido_e_um_grupoId_invalido_Quando_chamar_metodo_associarGrupo_Entao_deve_lancar_exception_GrupoNaoEncontradoException() {
-        this.buscarUsuarioPorIdComSucesso();
-        this.buscarGrupoPorIdComFalha();
-
-        assertThatThrownBy(() -> service.associarGrupo(usuarioId, grupoId))
-                .isInstanceOf(GrupoNaoEncontradoException.class)
-                .hasMessage(String.format("Não existe cadastro de grupo com o código %d", grupoId));
-    }
-
-    @Test
-    @DisplayName("Dado um usuario valido e uma grupo valido Quando chamar metodo desassociarGrupo Entao deve fazer a desassociação")
-    void Dado_um_usuario_valido_e_grupo_valido_Quando_chamar_metodo_desassociarGrupo_Entao_deve_fazer_desassociacao() {
-
-        usuario.setId(usuarioId);
-        Set<Grupo> grupos = new HashSet<>(){ { add(grupo); } };
-        usuario.setGrupos(grupos);
-        when(repository.findById(anyLong())).thenReturn(Optional.of(usuario));
-        when(grupoService.buscarOuFalhar(anyLong())).thenReturn(grupo);
-
-        assertThatCode(() -> service.desassociarGrupo(usuario.getId(), grupo.getId())).doesNotThrowAnyException();
-    }
-
-    @Test
-    @DisplayName("Dado um usuarioId invalido e um grupoId valido Quando chamar metodo desassociarGrupo Entao deve lancar exception UsuarioNaoEncontradoException")
-    void Dado_um_usuarioId_invalido_e_um_grupoId_valido_Quando_chamar_metodo_desassociarGrupo_Entao_deve_lancar_exception_UsuarioNaoEncontradoException() {
-        this.buscarUsuarioPorIdComFalha();
-
-        assertThatThrownBy(() -> service.desassociarGrupo(usuarioId, grupoId))
-                .isInstanceOf(UsuarioNaoEncontradoException.class)
-                .hasMessage(String.format("Não existe cadastro de usuário com o código %d", usuarioId));
-    }
-
-    @Test
-    @DisplayName("Dado um usuarioId valido e um grupoId invalido Quando chamar metodo desassociarGrupo Entao deve lancar exception GrupoNaoEncontradoException")
-    void Dado_um_usuarioId_valido_e_um_grupoId_invalido_Quando_chamar_metodo_desassociarGrupo_Entao_deve_lancar_exception_GrupoNaoEncontradoException() {
-        this.buscarUsuarioPorIdComSucesso();
-        this.buscarGrupoPorIdComFalha();
-
-        assertThatThrownBy(() -> service.desassociarGrupo(usuarioId, grupoId))
-                .isInstanceOf(GrupoNaoEncontradoException.class)
-                .hasMessage(String.format("Não existe cadastro de grupo com o código %d", grupoId));
-    }
-
-    @Test
     @DisplayName("Quando chamar metodo listByNomeContaining Entao deve retornar todos os usuarios")
     void listByNomeContaining_RetornaTodosUsuarios() {
         List<Usuario> usuarios = new ArrayList<>() {
@@ -371,7 +304,6 @@ class UsuarioServiceTest {
         when(repository.findById(anyLong())).thenAnswer(invocation -> {
             Long idUsuarioPassado = invocation.getArgument(0, Long.class);
             usuario.setId(idUsuarioPassado);
-            usuario.setGrupos(Set.of(grupo));
             return Optional.of(usuario);
         });
     }
