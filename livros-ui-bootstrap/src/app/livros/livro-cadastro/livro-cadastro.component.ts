@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, catchError, first, of, tap } from 'rxjs';
 
 import { AutorService } from './../../autores/autor.service';
 import { ErrorHandlerService } from './../../core/error-handler.service';
@@ -13,7 +14,6 @@ import { LivroService } from './../livro.service';
 import { Genero } from '../../core/models/genero/genero';
 import { Autor } from '../../core/models/autor/autor';
 import { Editora } from '../../core/models/editora/editora';
-import { Observable, catchError, delay, first, of, tap } from 'rxjs';
 import { Livro } from '../../core/models/livro/livro';
 
 @Component({
@@ -27,10 +27,9 @@ export class LivroCadastroComponent implements OnInit {
   livro$: Observable<Livro|any> | null = null;
   foto$: Observable<Blob|any> | null = null;
 
-
-  autores: Autor[] = [];
-  generos: Genero[] = [];
-  editoras: Editora[] = [];
+  generos$: Observable<Genero|any> | null = null;
+  autores$: Observable<Autor|any> | null = null;
+  editoras$: Observable<Editora|any> | null = null;
 
   URL_SEM_IMAGEM = '/assets/images/sem_imagem.jpg';
   imagemUrl = this.URL_SEM_IMAGEM;
@@ -78,15 +77,14 @@ export class LivroCadastroComponent implements OnInit {
     const codigoLivro = this.route.snapshot.params['codigo'];
     this.carregarRegistro(codigoLivro);
     this.carregaFotoLivro(codigoLivro);
+
+    this.carregarGeneros();
+    this.carregarAutores();
+    this.carregarEditoras();
   }
 
   ngOnInit(): void {
     this.title.setTitle('Novo Livro');
-
-    this.carregarAutores();
-    this.carregarGeneros();
-    this.carregarEditoras();
-
   }
 
   get editando() {
@@ -141,27 +139,36 @@ export class LivroCadastroComponent implements OnInit {
   }
 
   private carregarAutores() {
-    this.autorService.listAll()
-      .subscribe({
-        next: (result: Autor[]) => { this.autores = result; },
-        error: (falha) => { this.errorHandlerService.handle(falha); }
-      });
+    this.autores$ = this.autorService.listAll()
+      .pipe(
+        first(),
+        catchError(falha => {
+          this.errorHandlerService.handle(falha);
+          return of({});
+        })
+      );
   }
 
   private carregarGeneros() {
-    this.generoService.listAll()
-      .subscribe({
-        next: (result: Genero[]) => { this.generos = result; },
-        error: (falha) => { this.errorHandlerService.handle(falha); }
-      });
+    this.generos$ = this.generoService.listAll()
+      .pipe(
+        first(),
+        catchError(falha => {
+          this.errorHandlerService.handle(falha);
+          return of({});
+        })
+      );
   }
 
   private carregarEditoras() {
-    this.editoraService.listAll()
-      .subscribe({
-        next: (result: Editora[]) => { this.editoras = result; },
-        error: (falha) => { this.errorHandlerService.handle(falha); }
-      });
+    this.editoras$ = this.editoraService.listAll()
+      .pipe(
+        first(),
+        catchError(falha => {
+          this.errorHandlerService.handle(falha);
+          return of({});
+        })
+      );
   }
 
   private carregaFotoLivro(idLivro?: number) {
@@ -175,7 +182,6 @@ export class LivroCadastroComponent implements OnInit {
             this.readFile(fotoRecebida);
           }),
           catchError(falha => {
-            // this.errorHandlerService.handle(falha);
             return of({});
           })
         );
@@ -183,18 +189,6 @@ export class LivroCadastroComponent implements OnInit {
 
   }
 
-  // private carregaFotoLivro(codigo: number) {
-  //   this.livroService.getFoto(codigo)
-  //     .subscribe({
-  //       next: (fotoRecebida: any) => {
-  //         this.readFile(fotoRecebida);
-  //       },
-  //       error: (falha) => {
-
-  //       }
-  //     });
-
-  // }
 
   private readFile(blob: Blob) {
 

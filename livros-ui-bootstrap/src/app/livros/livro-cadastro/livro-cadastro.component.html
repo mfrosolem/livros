@@ -73,13 +73,11 @@
               <label>Gênero:</label>
               <select id="inputState" class="form-select" name="genero" formControlName="id"
                 [class.is-invalid]="form.get('genero')?.invalid && form.get('genero')?.touched">
-                <option *ngFor="let genero of generos" [value]="genero.id">{{ genero.descricao }}</option>
+                <option *ngFor="let genero of generos$|async" [value]="genero.id">{{ genero.descricao }}</option>
               </select>
-
               <div class="invalid-feedback" *ngIf="form.get('genero')?.invalid && form.get('genero')?.touched">
                 Selecione um gênero
               </div>
-
             </div>
           </div>
 
@@ -88,7 +86,7 @@
               <label>Autor:</label>
               <select id="inputState" class="form-select" name="autor" formControlName="id"
                 [class.is-invalid]="form.get('autor')?.invalid && form.get('autor')?.touched">
-                <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nomeConhecido }}</option>
+                <option *ngFor="let autor of autores$|async" [value]="autor.id">{{ autor.nomeConhecido }}</option>
               </select>
 
               <div class="invalid-feedback" *ngIf="form.get('autor')?.invalid && form.get('autor')?.touched">
@@ -103,7 +101,7 @@
               <label>Editora:</label>
               <select id="inputState" class="form-select" name="editora" formControlName="id"
                 [class.is-invalid]="form.get('editora')?.invalid && form.get('editora')?.touched">
-                <option *ngFor="let editora of editoras" [value]="editora.id">{{ editora.nome }}</option>
+                <option *ngFor="let editora of editoras$|async" [value]="editora.id">{{ editora.nome }}</option>
               </select>
 
               <div class="invalid-feedback" *ngIf="form.get('editora')?.invalid && form.get('editora')?.touched">
