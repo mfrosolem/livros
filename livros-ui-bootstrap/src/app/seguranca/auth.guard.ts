@@ -37,6 +37,7 @@ export class AuthGuard  {
   podeAcessarRota(roles: String[]): boolean {
     if (roles && !this.auth.hasAnyPermission(roles)) {
       this.router.navigate(['/pagina-nao-autorizada']);
+      return false;
     }
     return true;
   }

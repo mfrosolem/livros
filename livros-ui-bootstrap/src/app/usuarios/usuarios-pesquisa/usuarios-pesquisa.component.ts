@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { EMPTY, Observable, catchError, first, of, switchMap, tap } from 'rxjs';
-import { UsuarioPage } from '../../core/models/usuario/usuario-page';
-import { UsuarioFilter, UsuarioService } from '../usuario.service';
-import { Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { EMPTY, Observable, catchError, first, of, switchMap, tap } from 'rxjs';
+import { PageChangedEvent } from 'ngx-bootstrap/pagination';
+
+import { UsuarioFilter, UsuarioService } from '../usuario.service';
 import { ErrorHandlerService } from '../../core/error-handler.service';
 import { ConfirmModalService } from '../../shared/confirm-modal.service';
 import { AuthService } from '../../seguranca/auth.service';
 import { Usuario } from '../../core/models/usuario/usuario';
+import { UsuarioPage } from '../../core/models/usuario/usuario-page';
 import { ToastService } from '../../shared/toast.service';
-import { PageChangedEvent } from 'ngx-bootstrap/pagination';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-usuarios-pesquisa',
