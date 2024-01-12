@@ -1,5 +1,5 @@
 <!-- <nav class="navbar navbar-dark navbar-expand-lg bg-primary"> -->
-  <nav class="navbar navbar-dark navbar-expand-lg bg-primary">
+  <nav class="navbar navbar-expand-lg bg-primary fixed-top" data-bs-theme="dark">
 
   <div class="container-fluid">
     <a class="navbar-brand">Livros</a>
@@ -29,20 +29,47 @@
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Adm
           </a>
-
           <ul class="dropdown-menu bg-primary">
-            <li><a class="dropdown-item bg-primary text-white" routerLinkActive="active" routerLink="/grupos">Grupo</a></li>
-            <li><a class="dropdown-item bg-primary text-white" routerLinkActive="active" routerLink="/permissoes">Permissão</a></li>
-            <li><a class="dropdown-item bg-primary text-white" routerLinkActive="active" routerLink="/usuarios">Usuários</a></li>
+            <li><a class="dropdown-item bg-primary" routerLinkActive="active" routerLink="/grupos">Grupo</a></li>
+            <li><a class="dropdown-item bg-primary" routerLinkActive="active" routerLink="/permissoes">Permissão</a></li>
+            <li><a class="dropdown-item bg-primary" routerLinkActive="active" routerLink="/usuarios">Usuários</a></li>
           </ul>
-
         </li>
 
-        <li class="nav-item">
+        <!-- <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Usuário
+          </a>
+          <ul class="dropdown-menu bg-primary">
+            <li><a class="dropdown-item bg-primary" routerLinkActive="active" routerLink="/usuarios/alterar-senha">Trocar Senha</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item bg-primary" routerLinkActive="active" href="javascript:;" (click)="logout()" >Logout</a></li>
+          </ul>
+        </li> -->
+
+        <!-- <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" href="javascript:;" (click)="logout()" >Logout</a>
-        </li>
+        </li> -->
 
       </ul>
+
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Usuário
+          </a>
+          <ul class="dropdown-menu bg-primary">
+            <li><a class="dropdown-item bg-primary" routerLinkActive="active" routerLink="/usuarios/alterar-senha">Trocar Senha</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item bg-primary" routerLinkActive="active" href="javascript:;" (click)="logout()" >Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+
+
+      <span class="navbar-text">
+        {{ nomeUsuarioLogado }}
+      </span>
     </div>
   </div>
 </nav>

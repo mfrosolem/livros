@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AuthService } from 'src/app/seguranca/auth.service';
 
 @Component({
@@ -6,15 +6,9 @@ import { AuthService } from 'src/app/seguranca/auth.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
-
-  usuarioLogado: string = '';
+export class NavbarComponent {
 
   constructor(private auth: AuthService) { }
-
-  ngOnInit(): void {
-    this.usuarioLogado = this.auth.jwtPayload?.nome;
-  }
 
   temPermissao(permissao: string) {
     return this.auth.hasPermission(permissao);
@@ -23,5 +17,10 @@ export class NavbarComponent implements OnInit {
   logout() {
     this.auth.logout();
   }
+
+  get nomeUsuarioLogado() {
+    return this.auth.jwtPayload?.nome;
+  }
+
 
 }
