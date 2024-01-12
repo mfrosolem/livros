@@ -2,7 +2,7 @@
 
   <div class="row">
     <div>
-      <h1 class="mt-2">{{ livro.titulo }}</h1>
+      <h1 class="mt-2">{{ livro?.titulo }}</h1>
     </div>
   </div>
 
@@ -18,7 +18,7 @@
 
             <div *ngIf="imagemUrl && imagemUrl !== ''">
 
-              <img [src]="imagemUrl" class="rounded img-thumbnail" alt="{{ livro.titulo }}">
+              <img [src]="imagemUrl" class="rounded img-thumbnail" alt="{{ livro?.titulo }}">
             </div>
 
           </div>

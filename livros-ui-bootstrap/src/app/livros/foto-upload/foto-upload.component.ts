@@ -9,8 +9,7 @@ import { ToastService } from '../../shared/toast.service';
 
 import { LivroService } from '../livro.service';
 import { ConfirmModalService } from './../../shared/confirm-modal.service';
-//import { Livro } from '../../core/models/livro/livro';
-import { Livro } from 'src/app/core/models/model';
+import { Livro } from '../../core/models/livro/livro';
 
 @Component({
   selector: 'app-foto-upload',
@@ -21,8 +20,7 @@ export class FotoUploadComponent implements OnInit {
 
   URL_SEM_IMAGEM = '/assets/images/sem_imagem.jpg';
   imagemUrl = this.URL_SEM_IMAGEM;
-  livro: Livro = new Livro();
-  //livro: Livro | null = null;
+  livro: Livro | null = null;
   fileFoto!: File;
   habilitaExcluir: boolean = false;
 
@@ -77,7 +75,7 @@ export class FotoUploadComponent implements OnInit {
         .subscribe({
           next: (response) => {
             this.form.reset();
-            this.toastService.showSuccessToast(`Foto para o livro ${this.livro.titulo} salva com sucesso!`);
+            this.toastService.showSuccessToast(`Foto para o livro ${this.livro?.titulo} salva com sucesso!`);
             this.habilitaExcluir = true;
             this.location.back();
           },
@@ -93,7 +91,7 @@ export class FotoUploadComponent implements OnInit {
   }
 
   onRemoveFoto() {
-    this.confirmDelete(Number(this.livro.id));
+    this.confirmDelete(Number(this.livro!.id));
   }
 
   private confirmDelete(codigo: number) {
