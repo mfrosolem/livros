@@ -13,6 +13,12 @@ Projeto em desenvolvimento para organização de livros.
 - `Autor(a)`: Cadastro, edição, exclusão, consulta e lista de autores;
 - `Livro`: Cadastro, edição, exclusão, consulta e lista de livros;
 - `Foto do livro`: Upload, substituição e remoção da foto de capa do livro;
+- `Grupo`: Cadastro, edição, exclusão, consulta, lista e vinculação com permissões;
+- `Permissão`: Consulta e lista de permissões;
+- `Usuário`: Cadastro, edição, exclusão, consulta e lista de usuários;
+- `Alteração de Senha`: Validação e alteração da senha do usuário logado;
+- `Envio de E-mail`: Envio de e-mail com a senha gerada após cadastro do usuário;
+- `Login`;
 - Testes Unitários
 
 ## :computer: Tecnologias utilizadas
@@ -65,3 +71,22 @@ ng serve --port 8000
 ```
 
 4. Abra o seu navegador e acesse **http://localhost:8000**
+
+### Executando o back-end e front-end com Docker
+
+Você precisa ter o Docker instalado.
+
+1. Entre no diretório do projeto 
+2. Execute o comando abaixo para construir as imagens e subir os containers:
+
+```
+./start.sh
+```
+3. Abra o seu navegador e acesse **http://localhost:8000**
+4. Para parar as aplicações derrubar e remover os containers:
+
+```
+./stop.sh
+```
+
+
