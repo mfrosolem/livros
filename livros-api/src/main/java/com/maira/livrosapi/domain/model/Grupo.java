@@ -22,6 +22,7 @@ public class Grupo {
     @Column(nullable = false, unique = true)
     private String nome;
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(name = "grupo_permissao", joinColumns = @JoinColumn(name = "grupo_id"),
             inverseJoinColumns = @JoinColumn(name = "permissao_id"))

@@ -1,9 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { map, take } from 'rxjs';
+import { map, take, first } from 'rxjs';
+
 import { Grupo } from '../core/models/grupo/grupo';
 import { GrupoPage } from '../core/models/grupo/grupo-page';
+import { Permissao } from '../core/models/permissao/permissao';
+import { environment } from 'src/environments/environment';
 
 
 export class GrupoFilter{
@@ -79,8 +81,22 @@ export class GrupoService {
     }
   }
 
-  remove(codigo: number) {
-    return this.http.delete<void>(`${this.API}/${codigo}`).pipe(take(1));
+  remove(idGrupo: number) {
+    return this.http.delete<void>(`${this.API}/${idGrupo}`).pipe(take(1));
+  }
+
+  getPermissoes(idGrupo: number) {
+    return this.http.get<Permissao[]>(`${this.API}/${idGrupo}/permissoes`).pipe(first());
+  }
+
+  attach(idGrupo: number, idPermissao: number) {
+    return this.http.put<void>(`${this.API}/${idGrupo}/permissoes/${idPermissao}`, null)
+      .pipe(first());
+  }
+
+  detach(idGrupo: number, idPermissao: number) {
+    return this.http.delete<void>(`${this.API}/${idGrupo}/permissoes/${idPermissao}`)
+      .pipe(first());
   }
 
   private create(record: GrupoInput) {
@@ -90,7 +106,5 @@ export class GrupoService {
   private update(codigo: number, record: GrupoInput) {
     return this.http.put<Grupo>(`${this.API}/${codigo}`, record).pipe(take(1));
   }
-
-
 
 }

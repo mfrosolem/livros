@@ -5,7 +5,7 @@ import { PaginaNaoEncontradaComponent } from './core/pagina-nao-encontrada.compo
 import { PaginaNaoAutorizadaComponent } from './core/pagina-nao-autorizada.component';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'generos' },
+  { path: '', pathMatch: 'full', redirectTo: 'livros' },
   { path: 'pagina-nao-encontrada', component: PaginaNaoEncontradaComponent },
   { path: 'pagina-nao-autorizada', component: PaginaNaoAutorizadaComponent },
   {

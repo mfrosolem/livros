@@ -9,6 +9,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { SharedModule } from '../shared/shared.module';
 import { GruposListComponent } from './grupos-list/grupos-list.component';
 import { GrupoCadastroComponent } from './grupo-cadastro/grupo-cadastro.component';
+import { GrupoPermissoesComponent } from './grupo-permissoes/grupo-permissoes.component';
 
 
 
@@ -16,7 +17,8 @@ import { GrupoCadastroComponent } from './grupo-cadastro/grupo-cadastro.componen
   declarations: [
     GruposPesquisaComponent,
     GruposListComponent,
-    GrupoCadastroComponent
+    GrupoCadastroComponent,
+    GrupoPermissoesComponent
   ],
   imports: [
     CommonModule,

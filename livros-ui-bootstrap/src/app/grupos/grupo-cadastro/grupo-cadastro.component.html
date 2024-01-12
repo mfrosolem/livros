@@ -33,6 +33,16 @@
                 </div>
             </div>
 
+            <div *ngIf="(editando)">
+                <div *ngIf="(permissoes$|async) as permissoes">
+                    <div *ngIf="(permissoesGrupo$|async) as grpPermissoes">
+                        <app-grupo-permissoes [permissoes]="permissoes" [grupoPermissoes]="grpPermissoes"
+                        (attach)="onAttach($event)" (detach)="onDetach($event)">
+                        </app-grupo-permissoes>
+                    </div>
+                </div>
+            </div>
+
         </form>
 
     </div>
