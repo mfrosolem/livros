@@ -1,0 +1,73 @@
+<div class="row row-cols-2">
+
+    <div class="col-6">
+        <div class="row">
+            <div>
+                <h4 class="mt-2">Permissões Adicionadas</h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-primary table-hover" #tabelaGrpPermissoes>
+                        <thead>
+                            <tr>
+                                <th scope="col">Nome</th>
+                                <th class="col-acoes-header"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let grpPermissao of grupoPermissoes">
+                                <td>{{ grpPermissao.nome }}</td>
+                                <td class="col-acoes">
+                                    <button type="button" class="btn btn-outline-danger mb-1 btn-sm" tooltip="Excluir"
+                                        placement="right" (click)="onDetach(grpPermissao)">
+                                        <i class="bi bi-chevron-double-right"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-6">
+        <div class="row">
+            <div>
+                <h4 class="mt-2">Permissões</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-warning table-hover" #tabelaPermissoes>
+                        <thead>
+                            <tr>
+                                <th class="col-acoes-header"></th>
+                                <th scope="col">Nome</th>
+                                <!-- <th scope="col">Descrição</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let permissao of permissoes">
+                                <td class="col-acoes">
+                                    <button type="button" class="btn btn-outline-success mb-1 btn-sm"
+                                        tooltip="Adicionar" placement="right" (click)="onAttach(permissao)">
+                                        <i class="bi bi-chevron-double-left"></i>
+                                    </button>
+                                </td>
+                                <td>{{ permissao.nome }}</td>
+                                <!-- <td>{{ permissao.descricao }}</td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
