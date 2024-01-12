@@ -1,15 +1,9 @@
 package com.maira.livrosapi.api.openapi.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-
 import com.maira.livrosapi.api.model.UsuarioModel;
 import com.maira.livrosapi.api.model.input.SenhaInput;
-import com.maira.livrosapi.api.model.input.UsuarioComSenhaInput;
 import com.maira.livrosapi.api.model.input.UsuarioInput;
 import com.maira.livrosapi.core.springdoc.PageableDocParameter;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +12,9 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 @SecurityRequirement(name = "security_auth")
 @Tag(name = "Usuários")
@@ -50,7 +47,7 @@ public interface UsuarioControllerOpenApi {
 					@ApiResponse(responseCode = "201", description = "Usuário cadastrado")
 			}
 			)
-	public UsuarioModel adicionar(@RequestBody(description = "Representação de um usuário") UsuarioComSenhaInput usuarioInput);
+	public UsuarioModel adicionar(@RequestBody(description = "Representação de um usuário") UsuarioInput usuarioInput);
 	
 	@Operation(summary = "Atualiza um usuário por ID",
 			responses = {

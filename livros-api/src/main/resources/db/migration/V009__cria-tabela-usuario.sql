@@ -5,6 +5,7 @@ CREATE TABLE usuario (
 	email VARCHAR(255) NOT NULL,
 	senha VARCHAR(255) NOT NULL,
 	data_cadastro datetime not null,
+	primeiro_acesso tinyint(1) not null,
 	
 	primary key (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

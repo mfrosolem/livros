@@ -19,5 +19,8 @@ public class UsuarioModel {
 	@Schema(example = "joao.silva@livros.com")
 	private String email;
 
+	@Schema(example = "false")
+	private Boolean primeiroAcesso;
+
 	private GrupoModel grupo;
 }

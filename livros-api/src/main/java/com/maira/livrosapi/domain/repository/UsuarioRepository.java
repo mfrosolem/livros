@@ -11,6 +11,7 @@ import com.maira.livrosapi.domain.model.Usuario;
 @Repository
 public interface UsuarioRepository extends CustomJpaRepository<Usuario, Long>{
 
+	Boolean existsByEmail(String email);
 	Optional<Usuario> findByEmail(String email);
 	
 	Page<Usuario> findByNomeContaining(String nome, Pageable pageable);

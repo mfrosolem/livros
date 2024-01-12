@@ -2,6 +2,7 @@ package com.maira.livrosapi.api.model.input;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Getter
@@ -15,8 +16,9 @@ public class SenhaInput {
 	@NotBlank
 	private String senhaAtual;
 	
-	@Schema(example = "321")
+	@Schema(example = "1Ab$56")
 	@NotBlank
+	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,8}$")
 	private String novaSenha;
 
 }

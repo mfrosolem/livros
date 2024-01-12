@@ -101,23 +101,23 @@ insert into grupo_permissao (grupo_id, permissao_id)
 select 3, id from permissao where nome like 'CONSULTAR_%';
 
 
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (1, 1, 'Administrador', 'admin@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (2, 2, 'Maira', 'maira@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (1, 1, 'Administrador', 'admin@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, false);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (2, 2, 'Maira', 'maira@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, false);
 
 
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (3, 3, 'teste3', 'teste3@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (4, 3, 'teste4', 'teste4@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (5, 3, 'teste5', 'teste5@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (6, 3, 'teste6', 'teste6@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (7, 3, 'teste7', 'teste7@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (8, 3, 'teste8', 'teste8@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (9, 3, 'teste9', 'teste9@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (10, 3, 'teste10', 'teste10@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (11, 3, 'teste11', 'teste11@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (12, 3, 'teste12', 'teste12@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (13, 3, 'teste13', 'teste13@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (14, 3, 'teste14', 'teste14@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro) values (15, 3, 'teste15', 'teste15@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (3, 3, 'teste3', 'teste3@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (4, 3, 'teste4', 'teste4@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (5, 3, 'teste5', 'teste5@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (6, 3, 'teste6', 'teste6@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (7, 3, 'teste7', 'teste7@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (8, 3, 'teste8', 'teste8@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (9, 3, 'teste9', 'teste9@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (10, 3, 'teste10', 'teste10@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (11, 3, 'teste11', 'teste11@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (12, 3, 'teste12', 'teste12@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (13, 3, 'teste13', 'teste13@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (14, 3, 'teste14', 'teste14@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (15, 3, 'teste15', 'teste15@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, true);
 
 
 

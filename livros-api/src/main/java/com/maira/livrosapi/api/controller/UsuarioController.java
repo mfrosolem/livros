@@ -5,7 +5,6 @@ import com.maira.livrosapi.api.assembler.UsuarioInputDisassembler;
 import com.maira.livrosapi.api.assembler.UsuarioModelAssembler;
 import com.maira.livrosapi.api.model.UsuarioModel;
 import com.maira.livrosapi.api.model.input.SenhaInput;
-import com.maira.livrosapi.api.model.input.UsuarioComSenhaInput;
 import com.maira.livrosapi.api.model.input.UsuarioInput;
 import com.maira.livrosapi.api.openapi.controller.UsuarioControllerOpenApi;
 import com.maira.livrosapi.domain.model.Usuario;
@@ -51,7 +50,7 @@ public class UsuarioController implements UsuarioControllerOpenApi{
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@Override
-	public UsuarioModel adicionar(@RequestBody @Valid UsuarioComSenhaInput usuarioInput) {
+	public UsuarioModel adicionar(@RequestBody @Valid UsuarioInput usuarioInput) {
 		var usuario = usuarioInputDisassembler.toDomainObject(usuarioInput);
 		usuario = cadastroUsuario.salvar(usuario);
 		var usuarioModel = usuarioModelAssembler.toModel(usuario);
