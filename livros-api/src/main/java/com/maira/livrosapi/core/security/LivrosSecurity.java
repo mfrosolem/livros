@@ -37,61 +37,73 @@ public class LivrosSecurity {
 		return getAuthentication().getAuthorities().stream()
 				.anyMatch(authority -> authority.getAuthority().equals(authorityName));
 	}
+
+	public boolean temEscopoEscrita() {
+		return hasAuthority("SCOPE_WRITE");
+	}
+
+	public boolean temEscopoLeitura() {
+		return hasAuthority("SCOPE_READ");
+	}
+
+	public boolean temEscopoExclusao() {
+		return hasAuthority("SCOPE_DELETE");
+	}
 	
 	public boolean podeConsultarGeneros() {
-		return isAuthenticated() && hasAuthority("CONSULTAR_GENERO");
+		return isAuthenticated() && (temEscopoLeitura() || hasAuthority("CONSULTAR_GENERO"));
 	}
 	
 	public boolean podeCadastrarEditarGenero() {
-		return isAuthenticated() && hasAuthority("CADASTRAR_GENERO");
+		return isAuthenticated() && (temEscopoEscrita() || hasAuthority("CADASTRAR_GENERO"));
 	}
 	
 	public boolean podeRemoverGenero() {
-		return isAuthenticated() && hasAuthority("REMOVER_GENERO");
+		return isAuthenticated() && (temEscopoExclusao() || hasAuthority("REMOVER_GENERO"));
 	}
 	
 	public boolean podeConsultarEditoras() {
-		return isAuthenticated() && hasAuthority("CONSULTAR_EDITORA");
+		return isAuthenticated() && (temEscopoLeitura() || hasAuthority("CONSULTAR_EDITORA"));
 	}
 	
 	public boolean podeCadastrarEditarEditora() {
-		return isAuthenticated() && hasAuthority("CADASTRAR_EDITORA");
+		return isAuthenticated() && (temEscopoEscrita() || hasAuthority("CADASTRAR_EDITORA"));
 	}
 	
 	public boolean podeRemoverEditora() {
-		return isAuthenticated() && hasAuthority("REMOVER_EDITORA");
+		return isAuthenticated() && (temEscopoExclusao() || hasAuthority("REMOVER_EDITORA"));
 	}
 	
 	public boolean podeConsultarAutores() {
-		return isAuthenticated() && hasAuthority("CONSULTAR_AUTOR");
+		return isAuthenticated() && (temEscopoLeitura() || hasAuthority("CONSULTAR_AUTOR"));
 	}
 	
 	public boolean podeCadastrarEditarAutor() {
-		return isAuthenticated() && hasAuthority("CADASTRAR_AUTOR");
+		return isAuthenticated() && ( temEscopoEscrita() || hasAuthority("CADASTRAR_AUTOR"));
 	}
 	
 	public boolean podeRemoverAutor() {
-		return isAuthenticated() && hasAuthority("REMOVER_AUTOR");
+		return isAuthenticated() && (temEscopoExclusao() || hasAuthority("REMOVER_AUTOR"));
 	}
 	
 	public boolean podeConsultarLivros() {
-		return isAuthenticated() && hasAuthority("CONSULTAR_LIVRO");
+		return isAuthenticated() && (temEscopoLeitura() || hasAuthority("CONSULTAR_LIVRO"));
 	}
 	
 	public boolean podeCadastrarEditarLivro() {
-		return isAuthenticated() && hasAuthority("CADASTRAR_LIVRO");
+		return isAuthenticated() && (temEscopoEscrita() || hasAuthority("CADASTRAR_LIVRO"));
 	}
 	
 	public boolean podeRemoverLivro() {
-		return isAuthenticated() && hasAuthority("REMOVER_LIVRO");
+		return isAuthenticated() && (temEscopoExclusao() || hasAuthority("REMOVER_LIVRO"));
 	}
 
 	public boolean podeConsultarUsuariosGruposPermissoes() {
-		return isAuthenticated() && hasAuthority("CONSULTAR_USUARIOS_GRUPOS_PERMISSOES");
+		return isAuthenticated() && (temEscopoLeitura() || hasAuthority("CONSULTAR_USUARIOS_GRUPOS_PERMISSOES"));
 	}
 
 	public boolean podeEditarUsuariosGruposPermissoes() {
-		return isAuthenticated() && hasAuthority("CADASTRAR_USUARIOS_GRUPOS_PERMISSOES");
+		return isAuthenticated() && ((temEscopoEscrita() && temEscopoExclusao()) || hasAuthority("CADASTRAR_USUARIOS_GRUPOS_PERMISSOES"));
 	}
 
 }

@@ -3,6 +3,7 @@ package com.maira.livrosapi.core.security;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Bean;
@@ -31,37 +32,37 @@ import com.nimbusds.jose.proc.SecurityContext;
 public class ResourceServerConfig {
 	
 	@Bean
-	@Order(2)
+	//@Order(2)
 	public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
-		
-		http.formLogin(Customizer.withDefaults()).
-				authorizeHttpRequests(authorizeConfig -> {
-			authorizeConfig.anyRequest().authenticated();
 
-		})
-		.csrf(AbstractHttpConfigurer::disable)
-		//.cors(AbstractHttpConfigurer::disable)
-		.oauth2ResourceServer(configJwt -> {
-			configJwt.jwt((conv) -> {
-				conv.jwtAuthenticationConverter(jwtAuthenticationConverter());
+		http
+				.csrf(csrf -> csrf.disable())
+				.formLogin(Customizer.withDefaults())
+				.authorizeHttpRequests(authorizeConfig -> {
+					authorizeConfig.anyRequest().authenticated();
+
+				})
+				.oauth2ResourceServer(configJwt -> {
+					configJwt.jwt((conv) -> {
+						conv.jwtAuthenticationConverter(jwtAuthenticationConverter());
+					});
 				});
-		});
-		
+
 		http.logout(logoutConfig -> {
 			logoutConfig.logoutSuccessHandler((httpServletRequest, httpServletResponse, authentication) -> {
 				String returnTo = httpServletRequest.getParameter("returnTo");
-				
+
 				if (!StringUtils.hasText(returnTo)) {
 					returnTo = "http://localhost:8080";
 				}
-				
+
 				httpServletResponse.setStatus(302);
 				httpServletResponse.sendRedirect(returnTo);
 			});
 		});
-	
-        
-     return http.build();
+
+
+		return http.build();
 	}
 	
 	@Bean
@@ -70,27 +71,33 @@ public class ResourceServerConfig {
     }
 	
 	private JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
-        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-            List<String> authorities = jwt.getClaimAsStringList("authorities");
+		converter.setJwtGrantedAuthoritiesConverter(jwt -> {
 
-            if (authorities == null) {
-                return Collections.emptyList();
-            }
+			//"authorities" e um campo costumizado no AuthorizationServerConfig
+			List<String> authorities = jwt.getClaimAsStringList("authorities");
 
-            JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-            Collection<GrantedAuthority> grantedAuthorities = authoritiesConverter.convert(jwt);
+			//JwtGrantedAuthoritiesConverter converte os Scopes do JWT em Authority
+			JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+			Collection<GrantedAuthority> grantedAuthorities = authoritiesConverter.convert(jwt);
 
-            grantedAuthorities.addAll(authorities
-                    .stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList()));
+			//Se for Client Credentials, a authorities é null
+			//Logo, deve retornar grantedAuthorities que contem os SCOPES
+			if (Objects.isNull(authorities)) {
+				return grantedAuthorities; 	//Evita erro de serializacao durante a leitura do token
+			}
 
-            return grantedAuthorities;
-        });
+			//Combina as duas linhas: a que vem dos scopes de JWT (grantedAuthorities) e as que vem dos "authorities" do JWT
+			grantedAuthorities.addAll(authorities
+					.stream()
+					.map(SimpleGrantedAuthority::new)
+					.collect(Collectors.toList()));
 
-        return converter;
+			return grantedAuthorities;
+		});
+
+		return converter;
     }
 
 	

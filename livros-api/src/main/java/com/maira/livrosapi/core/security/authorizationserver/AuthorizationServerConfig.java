@@ -1,12 +1,12 @@
 package com.maira.livrosapi.core.security.authorizationserver;
 
-import java.io.InputStream;
-import java.security.KeyStore;
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.maira.livrosapi.domain.model.Usuario;
+import com.maira.livrosapi.domain.repository.UsuarioRepository;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -24,7 +24,6 @@ import org.springframework.security.oauth2.server.authorization.client.InMemoryR
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
@@ -33,14 +32,12 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.maira.livrosapi.domain.model.Usuario;
-import com.maira.livrosapi.domain.repository.UsuarioRepository;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 public class AuthorizationServerConfig {
@@ -55,15 +52,29 @@ public class AuthorizationServerConfig {
 	
 	
 	@Bean
-	public AuthorizationServerSettings providerSettings(/*LivrosSecurityProperties properties*/) {
+	public AuthorizationServerSettings providerSettings() {
 		return AuthorizationServerSettings.builder()
-				/*.issuer(properties.getProviderUrl())*/
 				.build();
 	}
 	
 	
 	@Bean
 	public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
+
+		RegisteredClient livrosbackend = RegisteredClient
+				.withId("1")
+				.clientId("livros-backend")
+				.clientSecret(passwordEncoder.encode("backend123"))
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+				.scope("READ")
+				.scope("WRITE")
+				.scope("DELETE")
+				.tokenSettings(TokenSettings.builder()
+						.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+						.accessTokenTimeToLive(Duration.ofMinutes(30))
+						.build())
+				.build();
 
 		
 		//Fluxo Authorization Code para Front-end e Documentação Swagger
@@ -90,7 +101,7 @@ public class AuthorizationServerConfig {
 						.build())
 				.build();
 		
-		return new InMemoryRegisteredClientRepository(Arrays.asList(livrosWeb));
+		return new InMemoryRegisteredClientRepository(Arrays.asList(livrosbackend, livrosWeb));
 	}
 	
 	
@@ -125,6 +136,8 @@ public class AuthorizationServerConfig {
 				}
 				
 				context.getClaims().claim("usuario_id", usuario.getId().toString());
+				context.getClaims().claim("nome", usuario.getNome().toString());
+				context.getClaims().claim("primeiro_acesso", usuario.getPrimeiroAcesso());
 				context.getClaims().claim("authorities", authorities);
 			}
 		};
