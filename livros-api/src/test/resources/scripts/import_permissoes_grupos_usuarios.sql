@@ -16,14 +16,9 @@ INSERT INTO permissao (id, nome, descricao) values (14, 'CADASTRAR_USUARIOS_GRUP
 
 INSERT INTO grupo (id, nome) values (1, 'Admin');
 
-
 -- Adiciona todas as permissoes no grupo do admin
-insert into grupo_permissao (grupo_id, permissao_id)
-select 1, id from permissao;
+insert into grupo_permissao (grupo_id, permissao_id) select 1, id from permissao;
 
 
+INSERT INTO usuario (id, grupo_id, nome, email, senha, data_cadastro, primeiro_acesso) values (1, 1, 'Teste', 'teste@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp, false);
 
-INSERT INTO usuario (id, nome, email, senha, data_cadastro) values (1, 'Teste', 'teste@livros.com', '$2a$12$SM5Hz2FssKbAOrmYM4Yr..PAMyN8vXKA242ix/3PZnwefz5YopCFi', utc_timestamp);
-
--- admin
-INSERT INTO usuario_grupo (usuario_id, grupo_id) values (1, 1);

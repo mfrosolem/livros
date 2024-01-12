@@ -1,14 +1,10 @@
 package com.maira.livrosapi.integracao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.maira.livrosapi.domain.model.Grupo;
-import com.maira.livrosapi.domain.model.Permissao;
-import com.maira.livrosapi.domain.model.Usuario;
-import com.maira.livrosapi.domain.service.GrupoService;
-import com.maira.livrosapi.domain.service.PermissaoService;
-import com.maira.livrosapi.domain.service.UsuarioService;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -19,8 +15,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.Set;
 
 import static com.maira.livrosapi.common.GeneroConstants.GENERO_INPUT;
 import static com.maira.livrosapi.common.GeneroConstants.ROMANCE;
@@ -33,8 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ActiveProfiles("it")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@WithUserDetails(value = "genero@livros.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+@Sql(scripts = {"/scripts/import_permissoes_grupos_usuarios.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = {"/scripts/remove_permissoes_grupos_usuarios.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
+@WithUserDetails(value = "teste@livros.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
 class GeneroIT {
 
     private MockMvc mvc;
@@ -43,53 +38,7 @@ class GeneroIT {
     private WebApplicationContext context;
 
     @Autowired
-    private PermissaoService permissaoService;
-
-    @Autowired
-    private GrupoService grupoService;
-
-    @Autowired
-    private UsuarioService usuarioService;
-
-    @Autowired
     private ObjectMapper objectMapper;
-
-    Usuario usuario;
-
-
-    @BeforeAll
-    public void initAll() {
-        var permissaoConsultar = Permissao.builder()
-                .nome("CONSULTAR_GENERO")
-                .descricao("Pode pesquisar genero")
-                .build();
-        var permissaoCadastrar = Permissao.builder()
-                .nome("CADASTRAR_GENERO")
-                .descricao("Pode cadastrar e editar genero")
-                .build();
-
-        var permissaoRemover = Permissao.builder()
-                .nome("REMOVER_GENERO")
-                .descricao("Pode remover genero")
-                .build();
-
-        permissaoConsultar = this.permissaoService.salvar(permissaoConsultar);
-        permissaoCadastrar = this.permissaoService.salvar(permissaoCadastrar);
-        permissaoRemover = this.permissaoService.salvar(permissaoRemover);
-
-        var grupo = Grupo.builder().nome("GRP_GENERO")
-                .permissoes(Set.of(permissaoConsultar, permissaoCadastrar, permissaoRemover)).build();
-        grupo = this.grupoService.salvar(grupo);
-
-        usuario = Usuario.builder()
-                .nome("Usuario Teste")
-                .email("genero@livros.com")
-                .senha("123")
-                .grupo(grupo)
-                .build();
-        usuario = this.usuarioService.salvar(usuario);
-    }
-
 
     @BeforeEach
     public void setupEach() {
@@ -99,7 +48,6 @@ class GeneroIT {
                 .apply(springSecurity())
                 .build();
     }
-
 
     @Test
     @DisplayName("Quando chamar GET e nao existir genero Entao deve retornar status 200 e lista vazia")

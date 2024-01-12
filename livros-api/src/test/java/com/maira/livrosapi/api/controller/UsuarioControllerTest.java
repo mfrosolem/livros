@@ -8,7 +8,6 @@ import com.maira.livrosapi.api.model.GrupoModel;
 import com.maira.livrosapi.api.model.UsuarioModel;
 import com.maira.livrosapi.api.model.input.GrupoIdInput;
 import com.maira.livrosapi.api.model.input.SenhaInput;
-import com.maira.livrosapi.api.model.input.UsuarioComSenhaInput;
 import com.maira.livrosapi.api.model.input.UsuarioInput;
 import com.maira.livrosapi.domain.exception.EntidadeEmUsoException;
 import com.maira.livrosapi.domain.exception.EntidadeNaoEncontradaException;
@@ -68,7 +67,6 @@ class UsuarioControllerTest {
     private Usuario usuario;
     private Usuario usuarioSemId;
     private UsuarioInput usuarioInput;
-    private UsuarioComSenhaInput usuarioComSenhaInput;
     private UsuarioModel usuarioModel;
     private Long usuarioId;
 
@@ -87,13 +85,6 @@ class UsuarioControllerTest {
                 .senha("123")
                 .dataCadastro(OffsetDateTime.now())
                 .grupo(Grupo.builder().id(1L).nome("GRUPO").build())
-                .build();
-
-        usuarioComSenhaInput = UsuarioComSenhaInput.builder()
-                .nome("joao")
-                .email("joao@livros")
-                .senha("123")
-                .grupo(GrupoIdInput.builder().id(1L).build())
                 .build();
 
 
@@ -252,7 +243,7 @@ class UsuarioControllerTest {
         mockMvc.perform(post("/usuarios")
                         .contentType("application/json")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(usuarioComSenhaInput)))
+                        .content(objectMapper.writeValueAsString(usuarioInput)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andDo(print());
@@ -272,7 +263,7 @@ class UsuarioControllerTest {
         mockMvc.perform(post("/usuarios")
                         .contentType("application/json")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(usuarioComSenhaInput)))
+                        .content(objectMapper.writeValueAsString(usuarioInput)))
                 .andExpect(status().isConflict())
                 .andExpect(result ->
                         assertThat(result.getResolvedException()).isInstanceOf(EntidadeEmUsoException.class))
@@ -318,7 +309,7 @@ class UsuarioControllerTest {
     @Test
     @DisplayName("Dado um usuario com os dados validos Quando chamar metodo alterarSenha Entao deve retornar status 204")
     void alterarSenhaUsuario_ComDadosUsuarioValido_RetornaNoContent() throws Exception {
-        var senhaInput = SenhaInput.builder().senhaAtual("123").novaSenha("321").build();
+        var senhaInput = SenhaInput.builder().senhaAtual("123").novaSenha("1Ab$56").build();
 
         mockMvc.perform(put("/usuarios/{usuarioId}/senha",usuarioId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -334,7 +325,7 @@ class UsuarioControllerTest {
     @Test
     @DisplayName("Dado um usuario com a senha atual nao confere Quando chamar metodo alterarSenha Entao deve retornar status 400")
     void alterarSenhaUsuario_ComSenhaUsuarioNaoConfere_RetornaBadRequest() throws Exception {
-        var senhaInput = SenhaInput.builder().senhaAtual("123").novaSenha("321").build();
+        var senhaInput = SenhaInput.builder().senhaAtual("123").novaSenha("1Ab$56").build();
         doThrow(new NegocioException("Senha atual informada não coincide com a senha do usuário."))
                 .when(service).alterarSenha(anyLong(), anyString(), anyString());
 
@@ -353,7 +344,7 @@ class UsuarioControllerTest {
     @Test
     @DisplayName("Dado um idUsuario inexistente Quando chamar metodo alterarSenha Entao deve retornar status 404")
     void alterarSenhaUsuario_ComIdUsuarioInexistente_RetornaNotFound() throws Exception {
-        var senhaInput = SenhaInput.builder().senhaAtual("123").novaSenha("321").build();
+        var senhaInput = SenhaInput.builder().senhaAtual("123").novaSenha("1Ab$56").build();
         doThrow(new UsuarioNaoEncontradoException(usuarioId))
                 .when(service).alterarSenha(anyLong(), anyString(), anyString());
 

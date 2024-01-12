@@ -8,6 +8,7 @@ import com.maira.livrosapi.domain.model.Grupo;
 import com.maira.livrosapi.domain.model.Permissao;
 import com.maira.livrosapi.domain.model.Usuario;
 import com.maira.livrosapi.domain.repository.UsuarioRepository;
+import com.maira.livrosapi.domain.service.event.UsuarioCadastradoEvent;
 import com.maira.livrosapi.domain.service.impl.UsuarioServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -46,6 +48,9 @@ class UsuarioServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private ApplicationEventPublisher publisher;
+
     private Usuario usuario;
     private Long usuarioId = 1L;
 
@@ -74,7 +79,7 @@ class UsuarioServiceTest {
         usuario = Usuario.builder()
                 .nome("joao")
                 .email("joao@livros")
-                .senha("123")
+                .senha("1Ab$56")
                 .dataCadastro(OffsetDateTime.now())
                 .grupo(grupo)
                 .build();
@@ -130,8 +135,8 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Dado um usuario valido e novo Quando chamar salvar Entao deve chamar o PasswordEncoder")
-    void Dado_um_usuario_valido_novo_Quando_salvar_Entao_deve_chamar_PasswordEncoder() {
+    @DisplayName("Dado um usuario valido e novo Quando chamar salvar Entao deve chamar o PasswordEncoder e UsuarioCadastroEvent")
+    void Dado_um_usuario_valido_novo_Quando_salvar_Entao_deve_chamar_PasswordEncoder_UsuarioCadastroEvent() {
         when(repository.findByEmail(anyString()))
                 .thenReturn(Optional.empty());
 
@@ -149,6 +154,7 @@ class UsuarioServiceTest {
         assertThat(sut).isInstanceOf(Usuario.class);
         assertThat(sut.getId()).isNotNull();
         verify(passwordEncoder, times(1)).encode(any());
+        verify(publisher, times(1)).publishEvent(any(UsuarioCadastradoEvent.class));
     }
 
     @Test
@@ -161,7 +167,7 @@ class UsuarioServiceTest {
                             .id(2L)
                             .nome("joao")
                             .email(emailPassado)
-                            .senha("123")
+                            .senha("1Ab$56")
                             .build();
                     return Optional.of(usuarioEncontrado);
                 });
@@ -181,7 +187,8 @@ class UsuarioServiceTest {
                             .id(usuarioId)
                             .nome("joao")
                             .email(emailPassado)
-                            .senha("123")
+                            .senha("1Ab$56")
+                            .primeiroAcesso(false)
                             .build();
                     return Optional.of(usuarioEncontrado);
                 });
@@ -207,7 +214,7 @@ class UsuarioServiceTest {
         this.mockPasswordEncoderSucesso();
         when(passwordEncoder.matches(any(CharSequence.class), anyString())).thenReturn(Boolean.TRUE);
 
-        assertThatCode(() -> service.alterarSenha(usuarioId, "123", "123456")).doesNotThrowAnyException();
+        assertThatCode(() -> service.alterarSenha(usuarioId, "123", "1Ab$56")).doesNotThrowAnyException();
 
         verify(passwordEncoder, times(1)).encode(any(CharSequence.class));
     }
@@ -224,7 +231,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Quando chamar alterarSenha se usuario informar senha atual incorreta Entao deve retornar exception NegocioException")
+    @DisplayName("Quando chamar alterarSenha com senha atual incorreta Entao deve retornar exception NegocioException")
     void alterarSenhaFalhaSenhaAtualUsuario() {
         this.buscarUsuarioPorIdComSucesso();
         when(passwordEncoder.matches(any(CharSequence.class), anyString())).thenReturn(Boolean.FALSE);
