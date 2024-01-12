@@ -40,11 +40,11 @@ scopes = {
 		@OAuthScope(name = "DELETE", description = "delete scope") })))
 public class SpringDocConfig {
 	
-	private static final String badRequestResponse = "BadRequestResponse";
-	private static final String notFoundResponse = "NotFoundResponse";
-	private static final String notAcceptableResponse = "NotAcceptableResponse";
-    private static final String internalServerErrorResponse = "InternalServerErrorResponse";
-    private static final String unsupportedMediaType = "UnsupportedMediaType";
+	private static final String BAD_REQUEST_RESPONSE = "BadRequestResponse";
+	private static final String NOT_FOUND_RESPONSE = "NotFoundResponse";
+	private static final String NOT_ACCEPTABLE_RESPONSE = "NotAcceptableResponse";
+    private static final String INTERNAL_SERVER_ERROR_RESPONSE = "InternalServerErrorResponse";
+    private static final String UNSUPPORTED_MEDIA_TYPE = "UnsupportedMediaType";
 	
     @Bean
     public OpenAPI openAPI() {
@@ -83,27 +83,27 @@ public class SpringDocConfig {
     				ApiResponses responses = operation.getResponses();
     				switch (httpMethod) {
 					case GET: 
-						responses.addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse().$ref(notAcceptableResponse));
-						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(internalServerErrorResponse));
+						responses.addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse().$ref(NOT_ACCEPTABLE_RESPONSE));
+						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(INTERNAL_SERVER_ERROR_RESPONSE));
 						break;
 					case POST: 
-						responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse().$ref(badRequestResponse));
-						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(internalServerErrorResponse));
-						responses.addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse().$ref(notAcceptableResponse));
-						responses.addApiResponse(String.valueOf(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()), new ApiResponse().$ref(unsupportedMediaType));
+						responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse().$ref(BAD_REQUEST_RESPONSE));
+						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(INTERNAL_SERVER_ERROR_RESPONSE));
+						responses.addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse().$ref(NOT_ACCEPTABLE_RESPONSE));
+						responses.addApiResponse(String.valueOf(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()), new ApiResponse().$ref(UNSUPPORTED_MEDIA_TYPE));
 						break;
 					case PUT: 
-						responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse().$ref(badRequestResponse));
-						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(internalServerErrorResponse));
-						responses.addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse().$ref(notAcceptableResponse));
-						responses.addApiResponse(String.valueOf(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()), new ApiResponse().$ref(unsupportedMediaType));
+						responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse().$ref(BAD_REQUEST_RESPONSE));
+						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(INTERNAL_SERVER_ERROR_RESPONSE));
+						responses.addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse().$ref(NOT_ACCEPTABLE_RESPONSE));
+						responses.addApiResponse(String.valueOf(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()), new ApiResponse().$ref(UNSUPPORTED_MEDIA_TYPE));
 						break;
 					case DELETE: 
-						responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse().$ref(badRequestResponse));
-						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(internalServerErrorResponse));
+						responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse().$ref(BAD_REQUEST_RESPONSE));
+						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(INTERNAL_SERVER_ERROR_RESPONSE));
 						break;
 					default:
-						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(internalServerErrorResponse));
+						responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse().$ref(INTERNAL_SERVER_ERROR_RESPONSE));
 						break;
 					}
     				
@@ -134,23 +134,23 @@ public class SpringDocConfig {
 				.addMediaType(APPLICATION_JSON_VALUE, 
 						new MediaType().schema(new Schema<Problem>().$ref("Problema")));
 		
-		apiResponseMap.put(badRequestResponse, new ApiResponse()
+		apiResponseMap.put(BAD_REQUEST_RESPONSE, new ApiResponse()
 				.description("Requisição inválida")
 				.content(content));
 		
-		apiResponseMap.put(notFoundResponse, new ApiResponse()
+		apiResponseMap.put(NOT_FOUND_RESPONSE, new ApiResponse()
 				.description("Recurso não encontrado")
 				.content(content));
 		
-		apiResponseMap.put(notAcceptableResponse, new ApiResponse()
+		apiResponseMap.put(NOT_ACCEPTABLE_RESPONSE, new ApiResponse()
 				.description("Recurso não possui representação que poderia ser aceita pelo consumidor")
 				.content(content));
 		
-		apiResponseMap.put(internalServerErrorResponse, new ApiResponse()
+		apiResponseMap.put(INTERNAL_SERVER_ERROR_RESPONSE, new ApiResponse()
 				.description("Erro interno no servidor")
 				.content(content));
 		
-		apiResponseMap.put(unsupportedMediaType, new ApiResponse()
+		apiResponseMap.put(UNSUPPORTED_MEDIA_TYPE, new ApiResponse()
 				.description("Requisição recusada porque o corpo está em um formato não suportado")
 				.content(content));
 		
