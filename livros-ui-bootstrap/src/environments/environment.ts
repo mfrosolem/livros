@@ -7,8 +7,8 @@ export const environment = {
   API: 'http://localhost:8080/',
   tokenAllowedDomains: [/localhost:8080/],
   tokenDisallowedRoutes: [/\/oauth2\/token/],
-  oauthCallbackUrl: 'http://local-livros.com:8000/authorized',
-  logoutRedirectToUrl: 'http://local-livros.com:8000'
+  oauthCallbackUrl: 'http://127.0.0.1:8000/authorized',
+  logoutRedirectToUrl: 'http://127.0.0.1:8000'
 };
 
 /*

@@ -41,7 +41,13 @@ import java.util.Set;
 
 @Configuration
 public class AuthorizationServerConfig {
-	
+
+	private final LivrosSecurityProperties livrosSecurityProperties;
+
+	public AuthorizationServerConfig(LivrosSecurityProperties livrosSecurityProperties) {
+		this.livrosSecurityProperties = livrosSecurityProperties;
+	}
+
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
@@ -94,8 +100,7 @@ public class AuthorizationServerConfig {
 						.accessTokenTimeToLive(Duration.ofMinutes(30))
 						.refreshTokenTimeToLive(Duration.ofDays(30))
 						.build())
-				.redirectUri("http://local-livros.com:8000/authorized")
-				.redirectUri("http://local-livros.com:8080/swagger-ui/oauth2-redirect.html")
+				.redirectUris(uris -> uris.addAll(livrosSecurityProperties.getRedirectsUriPermitidos()))
 				.clientSettings(ClientSettings.builder()
 						.requireAuthorizationConsent(false)
 						.build())
@@ -136,7 +141,7 @@ public class AuthorizationServerConfig {
 				}
 				
 				context.getClaims().claim("usuario_id", usuario.getId().toString());
-				context.getClaims().claim("nome", usuario.getNome().toString());
+				context.getClaims().claim("nome", usuario.getNome());
 				context.getClaims().claim("primeiro_acesso", usuario.getPrimeiroAcesso());
 				context.getClaims().claim("authorities", authorities);
 			}

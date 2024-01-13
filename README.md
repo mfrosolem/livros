@@ -23,7 +23,7 @@ Projeto em desenvolvimento para organização de livros.
 
 ## :computer: Tecnologias utilizadas
 - Java 17
-- Spring Boot 3.1.5 (Spring 6)
+- Spring Boot 3.2.1
 - MySQL 8.0
 - JPA
 - Maven
@@ -39,7 +39,7 @@ Projeto em desenvolvimento para organização de livros.
 
 ### Executando o back-end
 
-Você precisa ter Java e Maven instalados e configurados local.
+Você precisa ter Java, Maven e MySQL instalados e configurados local.
 
 1. Abra o projeto `livros-api` em sua IDE favorita como um projeto Maven; 
 2. Abra o arquivo `application.properties` e configure a aplicação;
@@ -51,7 +51,7 @@ mvn dependency:resolve
 
 4. Execute o projeto como Spring Boot application.
 
-5. Para conhecer a documentação feita com SpringDoc, abra o navegador e acesse **http://local-livros.com:8080/swagger-ui/index.html**
+5. Para conhecer a documentação feita com SpringDoc, abra o navegador e acesse **http://localhost:8080/swagger-ui/index.html**
 
 ### Executando o front-end
 
