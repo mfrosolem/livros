@@ -27,6 +27,10 @@ Projeto em desenvolvimento para organização de livros.
 - MySQL 8.0
 - JPA
 - Maven
+- SpringDoc
+- Spring OAuth2 Authorization Server
+- Flyway
+- Apache FreeMarker
 - Angular v16
 - BootStrap 5.3.2
 - Docker
@@ -88,5 +92,3 @@ Você precisa ter o Docker instalado.
 ```
 ./stop.sh
 ```
-
-
