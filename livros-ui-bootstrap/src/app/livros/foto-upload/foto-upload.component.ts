@@ -72,6 +72,9 @@ export class FotoUploadComponent implements OnInit {
     if (this.livro?.id) {
 
       this.livroService.uploadFoto(this.livro.id, this.fileFoto)
+        .pipe(
+          take(1)
+        )
         .subscribe({
           next: (response) => {
             this.form.reset();
@@ -123,6 +126,9 @@ export class FotoUploadComponent implements OnInit {
 
   private carregarRegistroLivro(codigo: number) {
     this.livroService.findById(codigo)
+      .pipe(
+        take(1)
+      )
       .subscribe({
         next: (livroRetornado: Livro) => {
           this.livro = livroRetornado;
@@ -135,6 +141,9 @@ export class FotoUploadComponent implements OnInit {
 
   private carregaFotoLivro(codigo: number) {
     this.livroService.getFoto(codigo)
+      .pipe(
+        take(1)
+      )
       .subscribe({
         next: (fotoRecebida: any) => {
           this.fileFoto = fotoRecebida;

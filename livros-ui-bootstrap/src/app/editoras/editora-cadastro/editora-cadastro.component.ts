@@ -8,7 +8,7 @@ import { ErrorHandlerService } from './../../core/error-handler.service';
 import { ToastService } from './../../shared/toast.service';
 import { EditoraService } from './../editora.service';
 import { Editora } from '../../core/models/editora/editora';
-import { Observable, catchError, first, of, tap } from 'rxjs';
+import { Observable, catchError, first, of, take, tap } from 'rxjs';
 
 
 @Component({
@@ -54,7 +54,11 @@ export class EditoraCadastroComponent implements OnInit {
 
   onSubmit() {
     const descricaoOpercao = this.editando ? 'atualizada' : 'cadastrada';
-    this.editoraService.save(this.form.value).subscribe({
+    this.editoraService.save(this.form.value)
+    .pipe(
+      take(1)
+    )
+    .subscribe({
       next: (result) => {
         this.toastService.showSuccessToast(`Editora ${descricaoOpercao} com sucesso!`);
         this.location.back();

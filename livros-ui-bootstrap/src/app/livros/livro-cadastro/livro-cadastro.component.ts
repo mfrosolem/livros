@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, catchError, first, of, tap } from 'rxjs';
+import { Observable, catchError, first, of, take, tap } from 'rxjs';
 
 import { AutorService } from './../../autores/autor.service';
 import { ErrorHandlerService } from './../../core/error-handler.service';
@@ -93,7 +93,11 @@ export class LivroCadastroComponent implements OnInit {
 
   onSubmit() {
     const descricaoOpercao = this.editando ? 'atualizado' : 'cadastrado';
-    this.livroService.save(this.form.value).subscribe({
+    this.livroService.save(this.form.value)
+    .pipe(
+      take(1)
+    )
+    .subscribe({
       next: (result) => {
         this.toastService.showSuccessToast(`Livro ${descricaoOpercao} com sucesso!`);
         this.location.back();

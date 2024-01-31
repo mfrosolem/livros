@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Location } from '@angular/common';
-import { Observable, catchError, first, of, tap } from 'rxjs';
+import { Observable, catchError, first, of, take, tap } from 'rxjs';
 
 import { GrupoService } from '../grupo.service';
 import { PermissaoService } from '../../permissoes/permissao.service';
@@ -63,6 +63,9 @@ export class GrupoCadastroComponent implements OnInit{
   onSubmit() {
     const descricaoOperacao = this.editando ? 'atualizado' : 'cadastrado';
     this.grupoService.save(this.form.value)
+    .pipe(
+      take(1)
+    )
       .subscribe({
         next: (grupoAdicionado) => {
           this.toastService.showSuccessToast(`Grupo ${descricaoOperacao} com sucesso!`);
@@ -79,6 +82,9 @@ export class GrupoCadastroComponent implements OnInit{
   onAttach(permissao: Permissao) {
     if (this.editando) {
       this.grupoService.attach(this.form.value.id, permissao.id)
+      .pipe(
+        take(1)
+      )
         .subscribe({
           next: () => {
             this.toastService.showSuccessToast(`Permissão ${permissao.nome} vinculada com sucesso!`);
@@ -94,6 +100,9 @@ export class GrupoCadastroComponent implements OnInit{
   onDetach(permissao: Permissao) {
     if (this.editando) {
       this.grupoService.detach(this.form.value.id, permissao.id)
+      .pipe(
+        take(1)
+      )
         .subscribe({
           next: () => {
             this.toastService.showSuccessToast(`Permissão ${permissao.nome} desvinculada com sucesso!`);

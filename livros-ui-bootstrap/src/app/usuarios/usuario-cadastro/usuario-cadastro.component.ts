@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import { Observable, catchError, first, map, of, tap } from 'rxjs';
+import { Observable, catchError, first, map, of, take, tap } from 'rxjs';
 
 import { UsuarioService } from '../usuario.service';
 import { GrupoService } from '../../grupos/grupo.service';
@@ -67,7 +67,11 @@ export class UsuarioCadastroComponent implements OnInit {
 
   onSubmit() {
     const descricaoOperacao = this.editando ? 'atualizado' : 'cadastrado';
-    this.usuarioService.save(this.form.value).subscribe({
+    this.usuarioService.save(this.form.value)
+    .pipe(
+      take(1)
+    )
+    .subscribe({
       next: (result) => {
         this.toastService.showSuccessToast(`Usuário ${descricaoOperacao} com sucesso!`);
         this.location.back();

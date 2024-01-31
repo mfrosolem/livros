@@ -8,7 +8,7 @@ import { ErrorHandlerService } from './../../core/error-handler.service';
 import { ToastService } from './../../shared/toast.service';
 import { GeneroService } from './../genero.service';
 import { Genero } from '../../core/models/genero/genero';
-import { Observable, catchError, first, of, tap } from 'rxjs';
+import { Observable, catchError, first, of, take, tap } from 'rxjs';
 
 
 
@@ -56,6 +56,9 @@ export class GeneroCadastroComponent implements OnInit {
   onSubmit() {
     const descricaoOpercao = this.editando ? 'atualizado' : 'cadastrado';
     this.generoService.save(this.form.value)
+      .pipe(
+        take(1)
+      )
       .subscribe({
         next: (generoAdicionado) => {
           this.toastService.showSuccessToast(`Gênero ${descricaoOpercao} com sucesso!`);

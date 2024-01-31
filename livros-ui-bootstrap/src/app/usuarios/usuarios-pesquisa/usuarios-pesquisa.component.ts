@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { EMPTY, Observable, catchError, first, of, switchMap, tap } from 'rxjs';
+import { EMPTY, Observable, catchError, first, of, switchMap, take, tap } from 'rxjs';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
 
 import { UsuarioFilter, UsuarioService } from '../usuario.service';
@@ -82,7 +82,7 @@ export class UsuariosPesquisaComponent implements OnInit {
 
     resultado$.asObservable()
     .pipe(
-      first(),
+      take(1),
       switchMap(resultConfirm => resultConfirm ? this.usuarioService.remove(usuario.id) : EMPTY)
     )
     .subscribe({

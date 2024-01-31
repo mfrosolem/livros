@@ -1,90 +1,94 @@
-<div class="container-fluid">
+<div class="container-fluid text-center">
 
 
-        <form autocomplete="off" [formGroup]="form">
-            <div class="row">
-                <div>
-                    <h1 class="mt-2">Alterando Senha do Usuário</h1>
+    <form autocomplete="off" [formGroup]="form">
+        <div class="row">
+            <div>
+                <h1 class="mt-2">Alterando Senha do Usuário</h1>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div>
+                <h4 class="mt-2">Usuário: {{ nomeUsuarioLogado }}</h4>
+            </div>
+        </div>
+
+
+        <div class="row row-cols-1">
+            <div class="col-md-6 offset-md-3">
+                <div class="form-group">
+                    <label>Senha atual:</label>
+                    <input type="password" class="form-control" formControlName="senhaAtual"
+                        [class.is-invalid]="senhaAtual?.invalid && senhaAtual?.touched" />
+
+                    <div class="invalid-feedback"
+                        *ngIf="senhaAtual?.invalid && senhaAtual?.touched && senhaAtual?.errors?.['required']">
+                        Informe a senha atual
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1">
+            <div class="col-md-6 offset-md-3">
+                <div class="form-group">
+                    <label>Nova senha:</label>
+                    <input type="password" class="form-control" formControlName="novaSenha"
+                        [class.is-invalid]="novaSenha?.invalid && novaSenha?.touched" />
+
+                    <div class="invalid-feedback"
+                        *ngIf="novaSenha?.invalid && novaSenha?.touched && novaSenha?.errors?.['required']">
+                        Informe a nova senha
+                    </div>
+
+                    <div class="invalid-feedback"
+                        *ngIf="novaSenha?.invalid && novaSenha?.touched && novaSenha?.errors?.['pattern']">
+                        A senha deve ter tamanho mínimo de 6 e máximo 8 caracteres. Deve conter no mínimo uma letra
+                        maiúscula, uma letra minúscula, um número e um caracter especial(@$!%*).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1">
+            <div class="col-md-6 offset-md-3">
+                <div class="form-group">
+                    <label>Confirma nova senha:</label>
+                    <input type="password" class="form-control" formControlName="confirmaNovaSenha"
+                        [class.is-invalid]="confirmaNovaSenha?.invalid && confirmaNovaSenha?.touched" />
+
+                    <div class="invalid-feedback" *ngIf="confirmaNovaSenha?.errors?.['required']">
+                        Confirme a nova senha
+                    </div>
+
+                    <div class="invalid-feedback"
+                        *ngIf="confirmaNovaSenha?.invalid && confirmaNovaSenha?.touched && confirmaNovaSenha?.errors?.['pattern']">
+                        A senha deve ter tamanho mínimo de 6 e máximo 8 caracteres. Deve conter no mínimo uma letra
+                        maiúscula, uma letra minúscula, um número e um caracter especial(@$!%*).
+                    </div>
+
+                    <div class="invalid-feedback" *ngIf="confirmaNovaSenha?.errors?.['equalsTo']">
+                        Nova senha não coincide
+                    </div>
+
+
                 </div>
             </div>
 
+        </div>
 
-            <div class="row">
-                <div>
-                    <h4 class="mt-2">Usuário: {{ nomeUsuarioLogado }}</h4>
-                </div>
+
+        <div class="row">
+            <div class="col-md-12 py-2">
+                <button type="button" class="btn btn-outline-primary" [disabled]="form.invalid"
+                    (click)="onSubmit()">Salvar</button>
+                <button type="button" class="btn btn-outline-danger" (click)="onCancel()">Cancelar</button>
             </div>
+        </div>
 
+    </form>
 
-            <div class="row">
-
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Senha atual:</label>
-                        <input type="password" class="form-control" formControlName="senhaAtual"
-                        [class.is-invalid]="senhaAtual?.invalid && senhaAtual?.touched"/>
-
-                        <div class="invalid-feedback" *ngIf="senhaAtual?.invalid && senhaAtual?.touched && senhaAtual?.errors?.['required']">
-                            Informe a senha atual
-                        </div>
-                    </div>
-                </div> 
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Nova senha:</label>
-                        <input type="password" class="form-control" formControlName="novaSenha"
-                        [class.is-invalid]="novaSenha?.invalid && novaSenha?.touched"/>
-
-                        <div class="invalid-feedback" *ngIf="novaSenha?.invalid && novaSenha?.touched && novaSenha?.errors?.['required']">
-                            Informe a nova senha
-                        </div>
-
-                        <div class="invalid-feedback" *ngIf="novaSenha?.invalid && novaSenha?.touched && novaSenha?.errors?.['pattern']">
-                            A senha deve ter tamanho mínimo de 6 e máximo 8 caracteres. Deve conter no mínimo uma letra maiúscula, uma letra minúscula, um número e um caracter especial(@$!%*).
-                        </div>
-                    </div>
-                </div> 
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Confirma nova senha:</label>
-                        <input type="password" class="form-control" formControlName="confirmaNovaSenha"
-                        [class.is-invalid]="confirmaNovaSenha?.invalid && confirmaNovaSenha?.touched"/>
-                    
-                        <div class="invalid-feedback" 
-                        *ngIf="confirmaNovaSenha?.errors?.['required']">
-                            Confirme a nova senha
-                        </div>
-
-                        <div class="invalid-feedback" *ngIf="confirmaNovaSenha?.invalid && confirmaNovaSenha?.touched && confirmaNovaSenha?.errors?.['pattern']">
-                            A senha deve ter tamanho mínimo de 6 e máximo 8 caracteres. Deve conter no mínimo uma letra maiúscula, uma letra minúscula, um número e um caracter especial(@$!%*).
-                        </div>
-
-                        <div class="invalid-feedback" 
-                        *ngIf="confirmaNovaSenha?.errors?.['equalsTo']">
-                            Nova senha não coincide
-                        </div>
-
-                
-                    </div>
-                </div> 
-
-            </div>
-
-
-            <div class="row">
-                <div class="col-md-12 py-2">
-                    <button type="button" class="btn btn-outline-primary" [disabled]="form.invalid"
-                        (click)="onSubmit()">Salvar</button>
-                    <button type="button" class="btn btn-outline-danger" (click)="onCancel()">Cancelar</button>
-                </div>
-            </div>
-
-        </form>
-
-    
-
-   
 
 </div>

@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/seguranca/auth.service';
 import { Location } from '@angular/common';
 import { UsuarioValidacao } from '../../shared/form-validacao';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-alterar-senha',
@@ -63,7 +64,11 @@ export class AlterarSenhaComponent implements OnInit {
   }
 
   onSubmit() {
-    this.usuarioService.alterarSenhaUsuario(this.idUsuarioLogado, this.form.value).subscribe({
+    this.usuarioService.alterarSenhaUsuario(this.idUsuarioLogado, this.form.value)
+    .pipe(
+      take(1)
+    )
+    .subscribe({
       next: (result) => {
         this.toastService.showSuccessToast("Senha alterada com sucesso!");
         this.location.back();
