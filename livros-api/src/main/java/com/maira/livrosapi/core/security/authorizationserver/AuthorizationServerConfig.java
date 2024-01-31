@@ -102,7 +102,7 @@ public class AuthorizationServerConfig {
 						.build())
 				.redirectUris(uris -> uris.addAll(livrosSecurityProperties.getRedirectsUriPermitidos()))
 				.clientSettings(ClientSettings.builder()
-						.requireAuthorizationConsent(false)
+						.requireAuthorizationConsent(true)
 						.build())
 				.build();
 		
